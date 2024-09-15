@@ -45,6 +45,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     sports_club = models.CharField(max_length=100, null=True, blank=True)
     emergency_contact_name = models.CharField(max_length=100, null=True, blank=True)
     emergency_contact_phone = models.CharField(max_length=20, null=True, blank=True)
+    events_registered = models.ManyToManyField('event.Event', through='event.EventRegistration', related_name='registered_users')
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

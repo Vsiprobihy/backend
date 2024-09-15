@@ -2,6 +2,9 @@ from drf_yasg import openapi
 from authentication.serializers import RegisterSerializer, UserProfileSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from event.serializers import EventSerializer, EventRegistrationSerializer, OrganizerEventSerializer, \
+    AdditionalItemEventSerializer, DistanceEventSerializer
+
 
 class SwaggerDocs:
     class Register:
@@ -40,3 +43,228 @@ class SwaggerDocs:
             'operation_description': "Login with JWT token",
         }
 
+    class Event:
+        get = {
+            'tags': ['Events'],
+            'responses': {
+                200: openapi.Response('Success', EventSerializer),
+                404: 'Event not found',
+            },
+            'operation_description': "Retrieve event details by ID.",
+        }
+        post = {
+            'tags': ['Events'],
+            'request_body': EventSerializer,
+            'responses': {
+                201: openapi.Response('Event created successfully', EventSerializer),
+                400: 'Bad request',
+            },
+            'operation_description': "Create a new event with associated organizer, additional items, and distances.",
+        }
+        put = {
+            'tags': ['Events'],
+            'request_body': EventSerializer,
+            'responses': {
+                200: openapi.Response('Success', EventSerializer),
+                404: 'Event not found',
+            },
+            'operation_description': "Update event details by ID.",
+        }
+        patch = {
+            'tags': ['Events'],
+            'request_body': EventSerializer,
+            'responses': {
+                200: openapi.Response('Success', EventSerializer),
+                404: 'Event not found',
+            },
+            'operation_description': "Partially update event details by ID.",
+        }
+        delete = {
+            'tags': ['Events'],
+            'responses': {
+                204: 'Event deleted successfully',
+                404: 'Event not found',
+            },
+            'operation_description': "Delete an event by ID.",
+        }
+
+    class EventRegistration:
+        post = {
+            'tags': ['Event Registration'],
+            'request_body': EventRegistrationSerializer,
+            'responses': {
+                201: openapi.Response('User registered for the event', EventRegistrationSerializer),
+                400: 'Bad request',
+                404: 'Event not found',
+            },
+            'operation_description': "Register a user for an event. The user is identified via JWT, and the event is identified by its ID.",
+        }
+        get = {
+            'tags': ['Event Registration'],
+            'responses': {
+                200: openapi.Response('Success', EventRegistrationSerializer),
+                404: 'Event registration not found',
+            },
+            'operation_description': "Retrieve details of a specific event registration by ID.",
+        }
+        put = {
+            'tags': ['Event Registration'],
+            'request_body': EventRegistrationSerializer,
+            'responses': {
+                200: openapi.Response('Updated event registration', EventRegistrationSerializer),
+                404: 'Event registration not found',
+            },
+            'operation_description': "Update event registration details by ID.",
+        }
+        patch = {
+            'tags': ['Event Registration'],
+            'request_body': EventRegistrationSerializer,
+            'responses': {
+                200: openapi.Response('Partially updated event registration', EventRegistrationSerializer),
+                404: 'Event registration not found',
+            },
+            'operation_description': "Partially update event registration details by ID.",
+        }
+        delete = {
+            'tags': ['Event Registration'],
+            'responses': {
+                204: 'Event registration deleted successfully',
+                404: 'Event registration not found',
+            },
+            'operation_description': "Delete an event registration by ID.",
+        }
+
+    class Organizer:
+        get = {
+            'tags': ['Organizers'],
+            'responses': {
+                200: openapi.Response('Success', OrganizerEventSerializer),
+                404: 'Organizer not found',
+            },
+            'operation_description': "Retrieve the details of an event organizer by ID.",
+        }
+        post = {
+            'tags': ['Organizers'],
+            'request_body': OrganizerEventSerializer,
+            'responses': {
+                201: openapi.Response('Organizer created successfully', OrganizerEventSerializer),
+                400: 'Bad request',
+            },
+            'operation_description': "Create a new organizer for an event.",
+        }
+        put = {
+            'tags': ['Organizers'],
+            'request_body': OrganizerEventSerializer,
+            'responses': {
+                200: openapi.Response('Updated organizer', OrganizerEventSerializer),
+                404: 'Organizer not found',
+            },
+            'operation_description': "Update an event organizer by ID.",
+        }
+        patch = {
+            'tags': ['Organizers'],
+            'request_body': OrganizerEventSerializer,
+            'responses': {
+                200: openapi.Response('Partially updated organizer', OrganizerEventSerializer),
+                404: 'Organizer not found',
+            },
+            'operation_description': "Partially update an event organizer by ID.",
+        }
+        delete = {
+            'tags': ['Organizers'],
+            'responses': {
+                204: 'Organizer deleted successfully',
+                404: 'Organizer not found',
+            },
+            'operation_description': "Delete an event organizer by ID.",
+        }
+
+    class AdditionalItem:
+        get = {
+            'tags': ['Additional Items'],
+            'responses': {
+                200: openapi.Response('Success', AdditionalItemEventSerializer),
+                404: 'Additional item not found',
+            },
+            'operation_description': "Retrieve details of additional items for an event by ID.",
+        }
+        post = {
+            'tags': ['Additional Items'],
+            'request_body': AdditionalItemEventSerializer,
+            'responses': {
+                201: openapi.Response('Additional item added successfully', AdditionalItemEventSerializer),
+                400: 'Bad request',
+            },
+            'operation_description': "Add additional items (e.g., T-shirt, Medal) for an event.",
+        }
+        put = {
+            'tags': ['Additional Items'],
+            'request_body': AdditionalItemEventSerializer,
+            'responses': {
+                200: openapi.Response('Updated additional item', AdditionalItemEventSerializer),
+                404: 'Additional item not found',
+            },
+            'operation_description': "Update additional items for an event by ID.",
+        }
+        patch = {
+            'tags': ['Additional Items'],
+            'request_body': AdditionalItemEventSerializer,
+            'responses': {
+                200: openapi.Response('Partially updated additional item', AdditionalItemEventSerializer),
+                404: 'Additional item not found',
+            },
+            'operation_description': "Partially update additional items for an event by ID.",
+        }
+        delete = {
+            'tags': ['Additional Items'],
+            'responses': {
+                204: 'Additional item deleted successfully',
+                404: 'Additional item not found',
+            },
+            'operation_description': "Delete additional items for an event by ID.",
+        }
+
+    class Distance:
+        get = {
+            'tags': ['Distances'],
+            'responses': {
+                200: openapi.Response('Success', DistanceEventSerializer),
+                404: 'Distance not found',
+            },
+            'operation_description': "Retrieve details of event distances by ID.",
+        }
+        post = {
+            'tags': ['Distances'],
+            'request_body': DistanceEventSerializer,
+            'responses': {
+                201: openapi.Response('Distance created successfully', DistanceEventSerializer),
+                400: 'Bad request',
+            },
+            'operation_description': "Create a new distance for an event.",
+        }
+        put = {
+            'tags': ['Distances'],
+            'request_body': DistanceEventSerializer,
+            'responses': {
+                200: openapi.Response('Updated distance', DistanceEventSerializer),
+                404: 'Distance not found',
+            },
+            'operation_description': "Update event distance by ID.",
+        }
+        patch = {
+            'tags': ['Distances'],
+            'request_body': DistanceEventSerializer,
+            'responses': {
+                200: openapi.Response('Partially updated distance', DistanceEventSerializer),
+                404: 'Distance not found',
+            },
+            'operation_description': "Partially update event distance by ID.",
+        }
+        delete = {
+            'tags': ['Distances'],
+            'responses': {
+                204: 'Distance deleted successfully',
+                404: 'Distance not found',
+            },
+            'operation_description': "Delete event distance by ID.",
+        }

@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'social_django',
     'authentication',
+    'event',
 ]
 
 MIDDLEWARE = [

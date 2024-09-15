@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from event.serializers import EventSerializer
 from .models import CustomUser
 
 
@@ -25,10 +27,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    registered_events = EventSerializer(source='events_registered', many=True, read_only=True)
+
     class Meta:
         model = CustomUser
         fields = [
             'first_name', 'last_name', 'gender', 'date_of_birth', 't_shirt_size',
             'country', 'city', 'phone_number', 'sports_club', 'emergency_contact_name',
-            'emergency_contact_phone'
+            'emergency_contact_phone', 'registered_events'
         ]
