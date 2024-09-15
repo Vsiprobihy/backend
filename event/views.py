@@ -58,11 +58,6 @@ class AdditionalItemsDetailView(APIView):
 
 # Distances
 class DistancesListView(APIView):
-    @swagger_auto_schema(**SwaggerDocs.Distance.get)
-    def get(self, request):
-        distances = DistanceEvent.objects.all()
-        serializer = DistanceEventSerializer(distances, many=True)
-        return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.Distance.post)
     def post(self, request):
@@ -157,11 +152,6 @@ class EventDetailView(APIView):
 
 # Organizers
 class OrganizersListView(APIView):
-    @swagger_auto_schema(**SwaggerDocs.Organizer.get)
-    def get(self, request):
-        organizers = OrganizerEvent.objects.all()
-        serializer = OrganizerEventSerializer(organizers, many=True)
-        return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.Organizer.post)
     def post(self, request):
@@ -210,12 +200,6 @@ class OrganizerDetailView(APIView):
 # Event Registrations
 class EventRegistrationsListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-
-    @swagger_auto_schema(**SwaggerDocs.EventRegistration.get)
-    def get(self, request):
-        registrations = EventRegistration.objects.all()
-        serializer = EventRegistrationSerializer(registrations, many=True)
-        return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.EventRegistration.post)
     def post(self, request):
