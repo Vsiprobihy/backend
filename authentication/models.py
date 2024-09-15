@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -20,12 +21,14 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     T_SHIRT_SIZE_CHOICES = [
+        ('XXS', 'Very Extra Small'),
         ('XS', 'Extra Small'),
         ('S', 'Small'),
         ('M', 'Medium'),
         ('L', 'Large'),
         ('XL', 'Extra Large'),
         ('XXL', 'Extra Extra Large'),
+        ('XXXL', 'Very Extra Extra Large'),
     ]
 
     first_name = models.CharField(max_length=50, null=True, blank=True)
