@@ -27,8 +27,11 @@ class AdditionalItemsDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalItem.get)
     def get(self, request, pk):
-        item = self.get_object(pk)
-        serializer = AdditionalItemEventSerializer(item)
+        items = AdditionalItemEvent.objects.filter(event_id=pk)
+        if not items.exists():
+            return Response({"detail": "No additional items found for this event."}, status=404)
+
+        serializer = AdditionalItemEventSerializer(items, many=True)
         return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalItem.put)

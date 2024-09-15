@@ -11,7 +11,7 @@ class OrganizerEventSerializer(serializers.ModelSerializer):
 class AdditionalItemEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdditionalItemEvent
-        fields = ['item_type', 'price']
+        fields = ['id', 'item_type', 'price']
 
 
 class DistanceEventSerializer(serializers.ModelSerializer):
