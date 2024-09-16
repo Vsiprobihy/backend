@@ -440,13 +440,90 @@ class SwaggerDocs:
 
         patch = {
             'tags': ['Distances'],
-            'request_body': DistanceEventSerializer,
+            'operation_description': """
+            Partially update one or more distances associated with a specific event identified by the `event_id` in the URL. 
+            You can update one or more fields of the distances. The `id` field is required to identify each distance to be updated.
+            """,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(
+                            type=openapi.TYPE_INTEGER,
+                            description='ID of the distance being updated',
+                        ),
+                        'name': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Name of the distance (optional)',
+                        ),
+                        'cost': openapi.Schema(
+                            type=openapi.TYPE_NUMBER,
+                            description='Cost of the distance (optional)',
+                            example=100.00,
+                        ),
+                        'is_free': openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN,
+                            description='Indicates whether the distance is free (optional)',
+                            example=False,
+                        ),
+                    },
+                    required=['id'],
+                ),
+            ),
             'responses': {
-                200: openapi.Response('Partially updated distance', DistanceEventSerializer),
-                404: 'Distance not found',
+                200: openapi.Response(
+                    description='Partially updated distances',
+                    schema=openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'id': openapi.Schema(
+                                    type=openapi.TYPE_INTEGER,
+                                    description='ID of the updated distance',
+                                ),
+                                'name': openapi.Schema(
+                                    type=openapi.TYPE_STRING,
+                                    description='Name of the updated distance',
+                                ),
+                                'cost': openapi.Schema(
+                                    type=openapi.TYPE_NUMBER,
+                                    description='Cost of the updated distance',
+                                    example=100.00,
+                                ),
+                                'is_free': openapi.Schema(
+                                    type=openapi.TYPE_BOOLEAN,
+                                    description='Indicates if the updated distance is free',
+                                    example=False,
+                                ),
+                                'event': openapi.Schema(
+                                    type=openapi.TYPE_INTEGER,
+                                    description='ID of the event the distance is associated with',
+                                ),
+                            },
+                        ),
+                    ),
+                ),
+                400: openapi.Response(
+                    description='Bad request due to validation errors',
+                    examples={
+                        "application/json": {
+                            "detail": "Expected a dictionary or a list of items."
+                        }
+                    },
+                ),
+                404: openapi.Response(
+                    description='Distance or event not found',
+                    examples={
+                        "application/json": {
+                            "detail": "Distance with id X not found."
+                        }
+                    },
+                ),
             },
-            'operation_description': "Partially update event distance by ID.",
         }
+
         delete = {
             'tags': ['Distances'],
             'responses': {
