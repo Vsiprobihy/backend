@@ -153,10 +153,15 @@ class DistanceDetailView(APIView):
 
         updated_data = []
         for data in data_list:
-            # Находим объект по id и event_id
+            if 'event' in data:
+                del data['event']
+
+            # Находим объект по id
             item = distances.filter(id=data.get('id')).first()
             if not item:
                 return Response({"detail": f"Distance with id {data.get('id')} not found."}, status=404)
+
+            data['event'] = event_id
 
             serializer = DistanceEventSerializer(item, data=data)
             if serializer.is_valid():

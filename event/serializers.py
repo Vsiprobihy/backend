@@ -21,6 +21,7 @@ class DistanceEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistanceEvent
         fields = ['name', 'cost', 'is_free', 'event']
+        extra_kwargs = {'event': {'read_only': True}}
 
     def create(self, validated_data):
         event = validated_data.pop('event')
