@@ -9,9 +9,12 @@ class OrganizerEventSerializer(serializers.ModelSerializer):
 
 
 class AdditionalItemEventSerializer(serializers.ModelSerializer):
+    event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=False)
+
     class Meta:
         model = AdditionalItemEvent
-        fields = ['id', 'item_type', 'price']
+        fields = ['id', 'item_type', 'price', 'event']
+        extra_kwargs = {'event': {'read_only': True}}
 
 
 class DistanceEventSerializer(serializers.ModelSerializer):
@@ -35,7 +38,6 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
         return value
 
 
-
 class EventSerializer(serializers.ModelSerializer):
     organizer = OrganizerEventSerializer()
     additional_items = AdditionalItemEventSerializer(many=True)
@@ -45,7 +47,8 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ['name', 'competition_type', 'date_from', 'date_to', 'place', 'photos', 'description',
                   'registration_link',
-                  'hide_participants', 'schedule_pdf', 'organizer', 'additional_items', 'distances', 'extended_description']
+                  'hide_participants', 'schedule_pdf', 'organizer', 'additional_items', 'distances',
+                  'extended_description']
 
     # Метод создания события с дополнительными элементами и дистанциями
     def create(self, validated_data):

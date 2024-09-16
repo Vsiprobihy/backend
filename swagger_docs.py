@@ -188,33 +188,91 @@ class SwaggerDocs:
             },
             'operation_description': "Retrieve details of additional items for an event by ID.",
         }
+
         post = {
             'tags': ['Additional Items'],
-            'request_body': AdditionalItemEventSerializer,
+            'manual_parameters': [
+                openapi.Parameter('event_id', openapi.IN_PATH, description="Event ID", type=openapi.TYPE_INTEGER)
+            ],
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'item_type': openapi.Schema(type=openapi.TYPE_STRING),
+                    'price': openapi.Schema(type=openapi.TYPE_NUMBER),
+                }
+            ),
             'responses': {
                 201: openapi.Response('Additional item added successfully', AdditionalItemEventSerializer),
                 400: 'Bad request',
             },
             'operation_description': "Add additional items (e.g., T-shirt, Medal) for an event.",
         }
+
         put = {
             'tags': ['Additional Items'],
-            'request_body': AdditionalItemEventSerializer,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Items(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(
+                            type=openapi.TYPE_INTEGER,
+                            description='ID of the additional item'
+                        ),
+                        'item_type': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Item type, choices: "transfer", "medal", "t_shirt"'
+                        ),
+                        'price': openapi.Schema(
+                            type=openapi.TYPE_NUMBER,
+                            description='Item price'
+                        ),
+                        'is_free': openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN,
+                            description='Is the item free'
+                        ),
+                    },
+                    required=['id', 'item_type', 'price', 'is_free'],
+                ),
+            ),
             'responses': {
-                200: openapi.Response('Updated additional item', AdditionalItemEventSerializer),
-                404: 'Additional item not found',
+                200: openapi.Response('Updated additional items', AdditionalItemEventSerializer(many=True)),
+                404: 'Additional items not found',
             },
-            'operation_description': "Update additional items for an event by ID.",
+            'operation_description': "Update additional items for an event by ID and Event_ID.",
         }
+
         patch = {
             'tags': ['Additional Items'],
-            'request_body': AdditionalItemEventSerializer,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'id': openapi.Schema(
+                        type=openapi.TYPE_INTEGER,
+                        description='ID of the additional item (required for update)'
+                    ),
+                    'item_type': openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        description='Type of the item, choices: "transfer", "medal", "t_shirt"'
+                    ),
+                    'price': openapi.Schema(
+                        type=openapi.TYPE_NUMBER,
+                        description='Price of the item'
+                    ),
+                    'is_free': openapi.Schema(
+                        type=openapi.TYPE_BOOLEAN,
+                        description='Is the item free or not'
+                    ),
+                },
+                required=['id'],
+            ),
             'responses': {
-                200: openapi.Response('Partially updated additional item', AdditionalItemEventSerializer),
+                200: openapi.Response('Successfully updated additional item', AdditionalItemEventSerializer),
                 404: 'Additional item not found',
             },
-            'operation_description': "Partially update additional items for an event by ID.",
+            'operation_description': "Partial update of additional items for an event by ID.",
         }
+
         delete = {
             'tags': ['Additional Items'],
             'responses': {
