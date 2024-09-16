@@ -285,12 +285,44 @@ class SwaggerDocs:
     class Distance:
         get = {
             'tags': ['Distances'],
+            'operation_description': "Retrieve a list of distances associated with a specific event identified by the event_id passed in the URL.",
             'responses': {
-                200: openapi.Response('Success', DistanceEventSerializer),
-                404: 'Distance not found',
+                200: openapi.Response(
+                    description='A list of distances for the event',
+                    schema=openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'name': openapi.Schema(
+                                    type=openapi.TYPE_STRING,
+                                    description='Name of the distance (e.g., "5K Run")',
+                                ),
+                                'cost': openapi.Schema(
+                                    type=openapi.TYPE_NUMBER,
+                                    description='Cost of the distance in numeric format, or null if free.',
+                                    example=100.00,
+                                ),
+                                'is_free': openapi.Schema(
+                                    type=openapi.TYPE_BOOLEAN,
+                                    description='Indicates whether the distance is free or not. If True, cost is null.',
+                                    example=False,
+                                ),
+                            },
+                        ),
+                    ),
+                ),
+                404: openapi.Response(
+                    description='No distances found for the specified event.',
+                    examples={
+                        "application/json": {
+                            "detail": "No distances found for this event."
+                        }
+                    },
+                ),
             },
-            'operation_description': "Retrieve details of event distances by ID.",
         }
+
         post = {
             'tags': ['Distances'],
             'request_body': openapi.Schema(
