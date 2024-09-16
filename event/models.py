@@ -3,7 +3,6 @@ from django.db import models
 from authentication.models import CustomUser
 
 
-
 class OrganizerEvent(models.Model):
     name = models.CharField(max_length=255)
     site_url = models.URLField(blank=True, null=True)

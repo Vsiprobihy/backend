@@ -212,7 +212,6 @@ class DistanceDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
 # Events
 class EventsListView(APIView):
 
@@ -260,51 +259,55 @@ class EventDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# Organizers
-class OrganizersListView(APIView):
-
-    @swagger_auto_schema(**SwaggerDocs.Organizer.post)
-    def post(self, request):
-        serializer = OrganizerEventSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 class OrganizerDetailView(APIView):
     def get_object(self, pk):
         return OrganizerEvent.objects.get(pk=pk)
 
     @swagger_auto_schema(**SwaggerDocs.Organizer.get)
-    def get(self, request, pk):
-        organizer = self.get_object(pk)
-        serializer = OrganizerEventSerializer(organizer)
-        return Response(serializer.data)
+    def get(self, request, event_id):
+        try:
+            organizer = OrganizerEvent.objects.get(events__id=event_id)
+            serializer = OrganizerEventSerializer(organizer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except OrganizerEvent.DoesNotExist:
+            return Response({"detail": "Organizer not found."}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(**SwaggerDocs.Organizer.put)
-    def put(self, request, pk):
-        organizer = self.get_object(pk)
-        serializer = OrganizerEventSerializer(organizer, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, event_id):
+        try:
+            organizer = OrganizerEvent.objects.get(
+                events__id=event_id)
+            serializer = OrganizerEventSerializer(organizer, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except OrganizerEvent.DoesNotExist:
+            return Response({"detail": "Organizer not found."}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(**SwaggerDocs.Organizer.patch)
-    def patch(self, request, pk):
-        organizer = self.get_object(pk)
-        serializer = OrganizerEventSerializer(organizer, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, event_id):
+        try:
+            organizer = OrganizerEvent.objects.get(
+                events__id=event_id)
+            serializer = OrganizerEventSerializer(organizer, data=request.data,
+                                                  partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except OrganizerEvent.DoesNotExist:
+            return Response({"detail": "Organizer not found."}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(**SwaggerDocs.Organizer.delete)
-    def delete(self, request, pk):
-        organizer = self.get_object(pk)
-        organizer.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, event_id):
+        try:
+            organizer = OrganizerEvent.objects.get(
+                events__id=event_id)
+            organizer.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except OrganizerEvent.DoesNotExist:
+            return Response({"detail": "Organizer not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 # Event Registrations

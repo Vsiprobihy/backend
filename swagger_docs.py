@@ -141,17 +141,9 @@ class SwaggerDocs:
                 200: openapi.Response('Success', OrganizerEventSerializer),
                 404: 'Organizer not found',
             },
-            'operation_description': "Retrieve the details of an event organizer by ID.",
+            'operation_description': "Retrieve the details of an event organizer by event_id. The event_id is used to find the organizer associated with a specific event.",
         }
-        post = {
-            'tags': ['Organizers'],
-            'request_body': OrganizerEventSerializer,
-            'responses': {
-                201: openapi.Response('Organizer created successfully', OrganizerEventSerializer),
-                400: 'Bad request',
-            },
-            'operation_description': "Create a new organizer for an event.",
-        }
+
         put = {
             'tags': ['Organizers'],
             'request_body': OrganizerEventSerializer,
@@ -159,8 +151,9 @@ class SwaggerDocs:
                 200: openapi.Response('Updated organizer', OrganizerEventSerializer),
                 404: 'Organizer not found',
             },
-            'operation_description': "Update an event organizer by ID.",
+            'operation_description': "Update the details of an event organizer by event_id. The event_id is used to find the organizer, and the request body contains the updated information about the organizer.",
         }
+
         patch = {
             'tags': ['Organizers'],
             'request_body': OrganizerEventSerializer,
@@ -168,15 +161,16 @@ class SwaggerDocs:
                 200: openapi.Response('Partially updated organizer', OrganizerEventSerializer),
                 404: 'Organizer not found',
             },
-            'operation_description': "Partially update an event organizer by ID.",
+            'operation_description': "Partially update an event organizer by event_id. Only the fields provided in the request body will be updated.",
         }
+
         delete = {
             'tags': ['Organizers'],
             'responses': {
                 204: 'Organizer deleted successfully',
                 404: 'Organizer not found',
             },
-            'operation_description': "Delete an event organizer by ID.",
+            'operation_description': "Delete an event organizer by event_id. The event_id is used to find and delete the organizer associated with a specific event.",
         }
 
     class AdditionalItem:
