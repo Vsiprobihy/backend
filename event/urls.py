@@ -3,8 +3,7 @@ from .views import (
     AdditionalItemsDetailView,
     DistanceDetailView,
     EventsListView, EventDetailView,
-    OrganizerDetailView,
-    EventRegistrationsListView, EventRegistrationDetailView
+    OrganizerDetailView, EventRegistrationDetailView, EventRegistrationsListView
 )
 
 urlpatterns = [
@@ -14,6 +13,6 @@ urlpatterns = [
     path('events/', EventsListView.as_view(), name='event_events_list'),
     path('events/<int:pk>/', EventDetailView.as_view(), name='event_events_detail'),
     path('organizers/<int:event_id>/', OrganizerDetailView.as_view(), name='event_organizers_detail'),
-    path('registrations/', EventRegistrationsListView.as_view(), name='event_registrations_list'),
-    path('registrations/<int:pk>/', EventRegistrationDetailView.as_view(), name='event_registrations_detail'),
+    path('registrations/', EventRegistrationsListView.as_view(), name='event-registration-list'),
+    path('registrations/<int:pk>/', EventRegistrationDetailView.as_view(), name='event-registration-detail'),
 ]

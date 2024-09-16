@@ -78,8 +78,11 @@ class Event(models.Model):
 class EventRegistration(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='registrations')
     event = models.ForeignKey('Event', on_delete=models.CASCADE, related_name='registrations')
+    distances = models.ManyToManyField('DistanceEvent', blank=True, related_name='registrations')
+    additional_items = models.ManyToManyField('AdditionalItemEvent', blank=True, related_name='registrations')
     registration_date = models.DateTimeField(auto_now_add=True)
     is_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user.username} registered for {self.event.name} on {self.registration_date}"
+        return f"{self.user.email} registered for {self.event.name} on {self.registration_date}"
+

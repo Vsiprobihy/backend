@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from event.serializers import EventSerializer
 from .models import CustomUser
 
 
@@ -27,7 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    registered_events = EventSerializer(source='events_registered', many=True, read_only=True)
+    registered_events = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -36,3 +35,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'country', 'city', 'phone_number', 'sports_club', 'emergency_contact_name',
             'emergency_contact_phone', 'registered_events'
         ]
+
+    def get_registered_events(self, obj):
+        from event.serializers import EventSerializer
+        events = obj.events_registered.all()
+        return EventSerializer(events, many=True).data
