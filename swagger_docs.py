@@ -293,13 +293,33 @@ class SwaggerDocs:
         }
         post = {
             'tags': ['Distances'],
-            'request_body': DistanceEventSerializer,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'name': openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        description='Name of the distance (e.g., "5K Run")',
+                    ),
+                    'cost': openapi.Schema(
+                        type=openapi.TYPE_NUMBER,
+                        description='Cost of the distance in numeric format, leave null if free.',
+                        example=100.00,
+                    ),
+                    'is_free': openapi.Schema(
+                        type=openapi.TYPE_BOOLEAN,
+                        description='Indicates whether the distance is free or not. If True, cost should be null.',
+                        example=False,
+                    ),
+                },
+                required=['name', 'is_free'],
+            ),
             'responses': {
                 201: openapi.Response('Distance created successfully', DistanceEventSerializer),
                 400: 'Bad request',
             },
-            'operation_description': "Create a new distance for an event.",
+            'operation_description': "Create a new distance for an event. The event is identified by the event_id passed in the URL.",
         }
+
         put = {
             'tags': ['Distances'],
             'request_body': DistanceEventSerializer,
