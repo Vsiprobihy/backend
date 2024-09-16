@@ -373,19 +373,23 @@ class EventRegistrationDetailView(APIView):
     @swagger_auto_schema(**SwaggerDocs.EventRegistration.put)
     def put(self, request, pk=None):
         registration = self.get_object(pk)
-        serializer = EventRegistrationSerializer(registration, data=request.data)
+        serializer = EventRegistrationDetailSerializer(registration, data=request.data)
+
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.EventRegistration.patch)
     def patch(self, request, pk=None):
         registration = self.get_object(pk)
-        serializer = EventRegistrationSerializer(registration, data=request.data, partial=True)
+        serializer = EventRegistrationDetailSerializer(registration, data=request.data, partial=True)
+
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.EventRegistration.delete)
@@ -393,3 +397,4 @@ class EventRegistrationDetailView(APIView):
         registration = self.get_object(pk)
         registration.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
