@@ -13,6 +13,7 @@ class EventFilterView(APIView):
         month = request.GET.get('month', None)
         year = request.GET.get('year', None)
         place = request.GET.get('place', None)
+        distance_km = request.GET.get('distance_km', None)
 
         # Base QuerySet for Event objects
         events = Event.objects.all()
@@ -38,6 +39,8 @@ class EventFilterView(APIView):
         if place:
             events = events.filter(place__icontains=place)
 
+        if distance_km:
+            events = events.filter(distances__name__regex=rf'^{distance_km}\s?(км|km)')
         # Serialize the results
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
