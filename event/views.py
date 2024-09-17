@@ -216,6 +216,11 @@ class DistanceDetailView(APIView):
 
 # Events
 class EventsListView(APIView):
+    @swagger_auto_schema(**SwaggerDocs.Event.get)
+    def get(self, request):
+        events = Event.objects.all()
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.Event.post)
     def post(self, request):
