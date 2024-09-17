@@ -1,10 +1,15 @@
 from django.urls import path
+
 from .views import (
     AdditionalItemsDetailView,
     DistanceDetailView,
-    EventsListView, EventDetailView,
-    OrganizerDetailView, EventRegistrationDetailView, EventRegistrationsListView
+    EventDetailView,
+    EventRegistrationDetailView,
+    EventRegistrationsListView,
+    EventsListView,
+    OrganizerDetailView,
 )
+
 
 urlpatterns = [
 

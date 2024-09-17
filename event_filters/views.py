@@ -1,10 +1,13 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+import re
+
+from django.db.models import Q
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from event.models import Event
 from event.serializers import EventSerializer
-from django.db.models import Q
-import re
+
 
 class EventFilterView(APIView):
     def get(self, request):
@@ -23,7 +26,7 @@ class EventFilterView(APIView):
         # Apply filters
         if competition_type:
             events = events.filter(competition_type=competition_type)
-        
+
         if name:
             events = events.filter(name__icontains=name)
 
@@ -66,7 +69,7 @@ class EventFilterView(APIView):
                 events = filtered_events
 
             except ValueError:
-                return Response({"error": "Invalid distance range"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid distance range'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Serialize results
         serializer = EventSerializer(events, many=True)
