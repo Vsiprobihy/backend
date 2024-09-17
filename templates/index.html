@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Root</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
+        .container {
+            margin-top: 100px;
+            text-align: center;
+        }
+        .btn-large {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Django REST API</h1>
+        <p class="flow-text">Виберіть необхідну документацію або перейдіть в адмінку:</p>
+
+        <div class="row">
+            <a href="{% url 'schema-swagger-ui' %}" class="btn-large waves-effect waves-light blue darken-1">Документація №1 (Swagger)</a>
+            <a href="{% url 'schema-redoc' %}" class="btn-large waves-effect waves-light red darken-1">Документація №2 (ReDoc)</a>
+            <a href="{% url 'admin:index' %}" class="btn-large waves-effect waves-light green darken-1">Адмінка</a>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
