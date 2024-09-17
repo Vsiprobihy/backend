@@ -1,10 +1,11 @@
 from django.urls import path
-from .views import (
-    AdditionalItemsDetailView,
-    DistanceDetailView,
-    EventsListView, EventDetailView,
-    OrganizerDetailView, EventRegistrationDetailView, EventRegistrationsListView
-)
+
+from event.views.additional_items import AdditionalItemsDetailView
+from event.views.distance_detail import DistanceDetailView
+from event.views.event_registrations import EventRegistrationsListView, EventRegistrationDetailView
+from event.views.events import EventsListView, EventDetailView
+from event.views.organizer_detail import OrganizerDetailView
+
 
 urlpatterns = [
 

@@ -2,8 +2,11 @@ from drf_yasg import openapi
 from authentication.serializers import RegisterSerializer, UserProfileSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from event.serializers import EventSerializer, EventRegistrationSerializer, OrganizerEventSerializer, \
-    AdditionalItemEventSerializer, DistanceEventSerializer, EventRegistrationDetailSerializer
+from event.serializers.additional_items import AdditionalItemEventSerializer
+from event.serializers.distance_detail import DistanceEventSerializer
+from event.serializers.event_registrations import EventRegistrationSerializer, EventRegistrationDetailSerializer
+from event.serializers.events import EventSerializer
+from event.serializers.organizer_detail import OrganizerEventSerializer
 
 
 class SwaggerDocs:
