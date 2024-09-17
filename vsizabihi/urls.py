@@ -9,7 +9,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="API Documentation",
         default_version='v1',
-        description="Documentation for API",
+        description="Посилання на OAuth - http://localhost:8000/auth/oauth/login/google-oauth2/",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="support@example.com"),
         license=openapi.License(name="BSD License"),
