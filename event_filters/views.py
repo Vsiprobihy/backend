@@ -55,7 +55,7 @@ class EventFilterView(APIView):
                     # Check each event's distance
                     for distance in event.distances.all():
                         # Extract number from string
-                        match = re.search(rf'(\d+)(\s?км|\s?km)', distance.name, re.IGNORECASE)
+                        match = re.search(r'(\d+)(\s?км|\s?km)', distance.name, re.IGNORECASE)
                         if match:
                             distance_value = float(match.group(1))
                             # If distance is within the range
