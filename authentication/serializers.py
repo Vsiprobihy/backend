@@ -37,6 +37,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         ]
 
     def get_registered_events(self, obj):
-        from event.serializers import EventSerializer
+        from event.serializers.events import EventSerializer
         events = obj.events_registered.all()
         return EventSerializer(events, many=True).data
