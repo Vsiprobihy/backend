@@ -111,9 +111,9 @@ class SwaggerDocs:
                 },
                 required=['event', 'distances'],
                 example={
-                    "event": 2,
-                    "distances": [5, 6],
-                    "additional_items": [1, 3]
+                    "event": 1,
+                    "distances": [1, 2],
+                    "additional_items": [1, 2]
                 }
             ),
             'responses': {
@@ -122,9 +122,9 @@ class SwaggerDocs:
                     EventRegistrationSerializer,
                     examples={
                         "application/json": {
-                            "event": 2,
-                            "distances": [5, 6],
-                            "additional_items": [1, 3],
+                            "event": 1,
+                            "distances": [1, 2],
+                            "additional_items": [1, 2],
                             "registration_date": "2024-09-17T12:34:56.789Z",
                             "is_confirmed": False
                         }
@@ -162,9 +162,9 @@ class SwaggerDocs:
                                 "emergency_contact_name": "Jane Doe",
                                 "emergency_contact_phone": "+987654321"
                             },
-                            "event": 2,
-                            "distances": [5, 6],
-                            "additional_items": [1, 3],
+                            "event": 1,
+                            "distances": [1, 2],
+                            "additional_items": [1, 2],
                             "registration_date": "2024-09-17T12:34:56.789Z",
                             "is_confirmed": False
                         }
@@ -197,8 +197,8 @@ class SwaggerDocs:
                 },
                 required=['event', 'distances'],
                 example={
-                    "event": 2,
-                    "distances": [5, 7],
+                    "event": 1,
+                    "distances": [1, 2],
                     "additional_items": [1, 2]
                 }
             ),
@@ -208,8 +208,8 @@ class SwaggerDocs:
                     EventRegistrationDetailSerializer,
                     examples={
                         "application/json": {
-                            "event": 2,
-                            "distances": [5, 7],
+                            "event": 1,
+                            "distances": [1, 2],
                             "additional_items": [1, 2],
                             "registration_date": "2024-09-17T12:34:56.789Z",
                             "is_confirmed": False
@@ -252,8 +252,8 @@ class SwaggerDocs:
                     EventRegistrationDetailSerializer,
                     examples={
                         "application/json": {
-                            "event": 2,
-                            "distances": [5],
+                            "event": 1,
+                            "distances": [1],
                             "additional_items": [1],
                             "registration_date": "2024-09-17T12:34:56.789Z",
                             "is_confirmed": False
