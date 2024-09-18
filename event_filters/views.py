@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from event.models import Event
-from event.serializers import EventSerializer
+from event.serializers.events import EventSerializer
 
 
 class EventFilterView(APIView):
