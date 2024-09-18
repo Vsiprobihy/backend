@@ -56,7 +56,6 @@ class EventFilterView(APIView):
                                 filtered_events.append(event)
                                 break
 
-                # Use filtered_events to count and serialize
                 event_count = len(filtered_events)
                 serializer = EventSerializer(filtered_events, many=True)
 
@@ -70,7 +69,6 @@ class EventFilterView(APIView):
             except ValueError:
                 return Response({'error': 'Invalid distance range'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # If no distance filter, use the original events for count and serialization
         event_count = events.count()
         serializer = EventSerializer(events, many=True)
 
