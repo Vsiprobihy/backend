@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'social_django',
     'authentication',
     'event',
+    'event_filters',
 ]
 
 MIDDLEWARE = [
