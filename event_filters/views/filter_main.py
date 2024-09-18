@@ -1,5 +1,3 @@
-import re
-
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
@@ -7,6 +5,7 @@ from rest_framework.views import APIView
 
 from event.models import Event
 from event.serializers.events import EventSerializer
+from event_filters.views.filter_service import EventFilterService
 
 
 class EventFilterView(APIView):
@@ -41,35 +40,15 @@ class EventFilterView(APIView):
                 distance_min = float(distance_min)
                 distance_max = float(distance_max)
 
-                filtered_events = []
-                for event in events:
-                    for distance in event.distances.all():
-                        match = re.search(r'(\d+)(\s?км|\s?km|\s?м|\s?m)', distance.name, re.IGNORECASE)
-                        if match:
-                            distance_value = float(match.group(1))
-                            unit = match.group(2).strip().lower()
+                events = EventFilterService.filter_by_distance(events, distance_min, distance_max)
 
-                            if unit in ['м', 'm']:
-                                distance_value /= 1000
-                            
-                            if distance_min <= distance_value <= distance_max:
-                                filtered_events.append(event)
-                                break
-
-                event_count = len(filtered_events)
-                serializer = EventSerializer(filtered_events, many=True)
-
-                response_data = {
-                    'count': event_count,
-                    'events': serializer.data
-                }
-
-                return Response(response_data, status=status.HTTP_200_OK)
-            
             except ValueError:
                 return Response({'error': 'Invalid distance range'}, status=status.HTTP_400_BAD_REQUEST)
 
-        event_count = events.count()
+        return self._create_response(events)
+
+    def _create_response(self, events):
+        event_count = len(events)
         serializer = EventSerializer(events, many=True)
 
         response_data = {
