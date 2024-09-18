@@ -6,9 +6,11 @@ from rest_framework.views import APIView
 from event.models import Event
 from event.serializers.events import EventSerializer
 from event_filters.views.filter_service import EventFilterService
+from event_filters.swagger_schemas import event_filter_schema 
 
 
 class EventFilterView(APIView):
+    @event_filter_schema
     def get(self, request):
         competition_type = request.GET.get('competition_type', None)
         name = request.GET.get('name', None)
