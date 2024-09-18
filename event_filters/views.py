@@ -11,7 +11,6 @@ from event.serializers import EventSerializer
 
 class EventFilterView(APIView):
     def get(self, request):
-        # Get filtering parameters from GET request
         competition_type = request.GET.get('competition_type', None)
         name = request.GET.get('name', None)
         month = request.GET.get('month', None)
@@ -20,10 +19,8 @@ class EventFilterView(APIView):
         distance_min = request.GET.get('distance_min', None)
         distance_max = request.GET.get('distance_max', None)
 
-        # Base QuerySet for Event objects
         events = Event.objects.all()
 
-        # Apply filters
         if competition_type:
             events = events.filter(competition_type=competition_type)
 
@@ -39,32 +36,20 @@ class EventFilterView(APIView):
         if place:
             events = events.filter(place__icontains=place)
 
-        # Filter by distance range
         if distance_min and distance_max:
             try:
-                # Attempt to convert to float numbers.
-                # If values cannot be converted to numbers
-                # (e.g., user entered non-numeric data), an error will occur.
                 distance_min = float(distance_min)
                 distance_max = float(distance_max)
 
-                # Apply distance filtering
-                # events = events.filter(
-                #     distances__name__regex=rf'(\d+)(\s?км|\s?km)'
-                # ).distinct()
-
                 filtered_events = []
                 for event in events:
-                    # Check each event's distance
                     for distance in event.distances.all():
-                        # Extract number from string
                         match = re.search(r'(\d+)(\s?км|\s?km)', distance.name, re.IGNORECASE)
                         if match:
                             distance_value = float(match.group(1))
-                            # If distance is within the range
                             if distance_min <= distance_value <= distance_max:
                                 filtered_events.append(event)
-                                break  # If at least one distance fits, add the event
+                                break
 
                 events = filtered_events
 
