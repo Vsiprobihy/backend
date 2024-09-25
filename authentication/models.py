@@ -31,6 +31,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('XXXL', 'Very Extra Extra Large'),
     ]
 
+    USER = 'user'
+    ORGANIZER = 'organizer'
+    ADMIN = 'admin'
+
+    ROLE_CHOICES = [
+        (USER, 'User'),
+        (ORGANIZER, 'Organizer'),
+        (ADMIN, 'Administrator'),
+    ]
+
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female')], null=True, blank=True)
@@ -47,6 +57,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     emergency_contact_phone = models.CharField(max_length=20, null=True, blank=True)
     events_registered = models.ManyToManyField('event.Event', through='event.EventRegistration', related_name='registered_users')
 
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=USER)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
