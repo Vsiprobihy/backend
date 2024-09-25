@@ -3,7 +3,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from authentication.auth_views import google_login, google_account_info
 from authentication.views import RegisterView, UserProfileView
-
 urlpatterns = [
     path('oauth/', include('social_django.urls', namespace='social')),
     path('oauth/login-success/', google_login, name='google_login'),

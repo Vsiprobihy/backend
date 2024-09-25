@@ -8,6 +8,7 @@ from swagger_docs import SwaggerDocs
 from .serializers import RegisterSerializer, UserProfileSerializer
 
 
+
 class RegisterView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Register.post)
     def post(self, request):
@@ -44,3 +45,23 @@ class UserProfileView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# class AdminOnlyView(APIView):
+#     permission_classes = [IsAuthenticated, IsAdmin]
+
+#     def get(self, request):
+#         return Response({"message": "Only for admins"})
+
+# class OrganizerOnlyView(APIView):
+#     permission_classes = [IsAuthenticated, IsOrganizer]
+
+#     def get(self, request):
+#         return Response({"message": "Only for organizers"})
+
+# class PublicView(APIView):
+#     permission_classes = []
+
+#     def get(self, request):
+#         return Response({"message": "This is a public endpoint, accessible by anyone."})
