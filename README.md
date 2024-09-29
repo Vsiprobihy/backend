@@ -19,9 +19,9 @@ cd backend
 ### 2. Create a `.env` file.
 Create a `.env` file in the root directory of your project and add any environment variables that the project needs, such as:
 ```makefile
-GOOGLE_OAUTH_CLIENT_ID=RANDOM_SECRET_KEY
+GOOGLE_OAUTH_CLIENT_ID=883340219680-mj2cqr29c5009i11aafp4g61sm1hfj29.apps.googleusercontent.com
 GOOGLE_OAUTH_CLIENT_SECRET=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
-SECRET_KEY=django-insecure-=eo4f2ko_e85r261zj^7^8cox_&6vv-dh^6hnx&9i55=59z+zt
+SECRET_KEY=RANDOM_SECRET_KEY
 ```
 ### 3. Build and run the Docker containers.
 To build the Docker containers and start the Django development server, run the following command:
