@@ -14,8 +14,46 @@ class SwaggerDocs:
         post = {
             'request_body': RegisterSerializer,
             'responses': {
-                201: openapi.Response('User registered successfully'),
-                400: 'Bad request'
+                201: openapi.Response(
+                    description='User registered successfully',
+                    schema=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'message': openapi.Schema(
+                                type=openapi.TYPE_STRING,
+                                description='Confirmation message',
+                                example='User registered successfully'
+                            ),
+                        },
+                    )
+                ),
+                400: openapi.Response(
+                    description='Bad request',
+                    schema=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'email': openapi.Schema(
+                                type=openapi.TYPE_ARRAY,
+                                items=openapi.Items(type=openapi.TYPE_STRING),
+                                description="Error messages related to the email field",
+                                example=["This field is required."]
+                            ),
+                            'password': openapi.Schema(
+                                type=openapi.TYPE_ARRAY,
+                                items=openapi.Items(type=openapi.TYPE_STRING),
+                                description="Error messages related to the password field",
+                                example=["This field is required."]
+                            ),
+                            'password2': openapi.Schema(
+                                type=openapi.TYPE_ARRAY,
+                                items=openapi.Items(type=openapi.TYPE_STRING),
+                                description="Error messages related to the password confirmation field",
+                                example=["Passwords must match."]
+                            ),
+                        },
+                        required=['email', 'password', 'password2']
+                    )
+                ),
             },
             'operation_description': "User Registration Endpoint.",
         }

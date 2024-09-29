@@ -3,10 +3,13 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 from swagger_docs import SwaggerDocs
 from .serializers import RegisterSerializer, UserProfileSerializer
-
 
 
 class RegisterView(APIView):
@@ -47,6 +50,23 @@ class UserProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    @swagger_auto_schema(
+        operation_description="Login with JWT token",
+        request_body=TokenObtainPairSerializer,
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Refresh Token'),
+                    'access': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Access Token'),
+                },
+                required=['refresh', 'access'],
+            )
+        }
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 # class AdminOnlyView(APIView):
 #     permission_classes = [IsAuthenticated, IsAdmin]
