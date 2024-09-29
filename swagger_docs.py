@@ -95,30 +95,110 @@ class SwaggerDocs:
         }
         post = {
             'tags': ['Events'],
-            'request_body': EventSerializer,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the event', default='string'),
+                    'competition_type': openapi.Schema(
+                        type=openapi.TYPE_STRING, 
+                        description='Type of competition', 
+                        default='running'  # Дефолтное значение
+                    ),
+                    'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date', default='2024-09-29'),
+                    'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date', default='2024-09-29'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='string'),
+                    'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description', default='string'),
+                    'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link', default='http://site.com/registation/'),
+                    'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants', default=True),
+                    'organizer': openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the organizer', default='string'),
+                            'site_url': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Website of the organizer', default='http://site.com/'),
+                            'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number of the organizer', default='1230001'),
+                            'email': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_EMAIL, description='Email of the organizer', default='user@example.com'),
+                            'instagram_url': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Instagram link', default='http://instagramurl.com/'),
+                            'facebook_url': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Facebook link', default='http://facebookurl.com/'),
+                            'telegram_url': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Telegram link', default='http://telegramurl.com/'),
+                        }
+                    ),
+                    'additional_items': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'item_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of additional item', default='transfer'),
+                                'price': openapi.Schema(type=openapi.TYPE_STRING, description='Price of additional item', default='100'),
+                            },
+                        ),
+                        description='List of additional items'
+                    ),
+                    'distances': openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the distance', default='10km'),
+                                'cost': openapi.Schema(type=openapi.TYPE_STRING, description='Cost of the distance', default='200'),
+                                'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free', default=False),
+                            }
+                        ),
+                        description='List of distances'
+                    ),
+                    'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event', default='string'),
+                },
+                required=['name', 'competition_type', 'date_from', 'date_to', 'place', 'description', 'registration_link', 'hide_participants', 'organizer', 'additional_items', 'distances']
+            ),
             'responses': {
                 201: openapi.Response('Event created successfully', EventSerializer),
                 400: 'Bad request',
             },
-            'operation_description': "Create a new event with associated organizer, additional items, and distances.",
+            'operation_description': "Create a new event with all related details including organizer, additional items, and distances.",
         }
         put = {
             'tags': ['Events'],
-            'request_body': EventSerializer,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the event'),
+                    'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running'),
+                    'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date'),
+                    'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event'),
+                    'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description'),
+                    'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link'),
+                    'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants'),
+                    'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event'),
+                },
+                required=['name', 'competition_type', 'date_from', 'date_to', 'place', 'description', 'registration_link', 'hide_participants']
+            ),
             'responses': {
                 200: openapi.Response('Success', EventSerializer),
                 404: 'Event not found',
             },
-            'operation_description': "Update event details by ID.",
+            'operation_description': "Update event details without organizer, additional_items, or distances fields.",
         }
         patch = {
             'tags': ['Events'],
-            'request_body': EventSerializer,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the event'),
+                    'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running'),
+                    'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date'),
+                    'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event'),
+                    'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description'),
+                    'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link'),
+                    'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants'),
+                    'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event'),
+                },
+            ),
             'responses': {
                 200: openapi.Response('Success', EventSerializer),
                 404: 'Event not found',
             },
-            'operation_description': "Partially update event details by ID.",
+            'operation_description': "Partially update event details without organizer, additional_items, or distances fields.",
         }
         delete = {
             'tags': ['Events'],
