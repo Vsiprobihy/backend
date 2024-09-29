@@ -104,21 +104,48 @@ class SwaggerDocs:
         }
         put = {
             'tags': ['Events'],
-            'request_body': EventSerializer,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the event'),
+                    'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running'),
+                    'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date'),
+                    'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event'),
+                    'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description'),
+                    'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link'),
+                    'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants'),
+                    'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event'),
+                },
+                required=['name', 'competition_type', 'date_from', 'date_to', 'place', 'description', 'registration_link', 'hide_participants']
+            ),
             'responses': {
                 200: openapi.Response('Success', EventSerializer),
                 404: 'Event not found',
             },
-            'operation_description': "Update event details by ID.",
+            'operation_description': "Update event details without organizer, additional_items, or distances fields.",
         }
         patch = {
             'tags': ['Events'],
-            'request_body': EventSerializer,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the event'),
+                    'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running'),
+                    'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date'),
+                    'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event'),
+                    'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description'),
+                    'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link'),
+                    'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants'),
+                    'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event'),
+                },
+            ),
             'responses': {
                 200: openapi.Response('Success', EventSerializer),
                 404: 'Event not found',
             },
-            'operation_description': "Partially update event details by ID.",
+            'operation_description': "Partially update event details without organizer, additional_items, or distances fields.",
         }
         delete = {
             'tags': ['Events'],
