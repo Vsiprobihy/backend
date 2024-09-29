@@ -41,3 +41,5 @@ docker-compose logs -f
 ```bash
 docker-compose down
 ```
+
+The easiest method is to clone the repository, and in the terminal of your IDE type the command ```docker-compose up --build```
