@@ -18,17 +18,14 @@ class EventSerializer(serializers.ModelSerializer):
                   'distances', 'extended_description']
 
     def __init__(self, *args, **kwargs):
-        # Перевіряємо контекст на наявність методу запиту
         super().__init__(*args, **kwargs)
         request_method = self.context['request'].method if 'request' in self.context else None
 
-        # Якщо це POST-запит, робимо поля обов'язковими
         if request_method == 'POST':
             self.fields['organizer'].required = True
             self.fields['additional_items'].required = True
             self.fields['distances'].required = True
         else:
-            # Якщо PUT або PATCH, ці поля не обов'язкові
             self.fields['organizer'].required = False
             self.fields['additional_items'].required = False
             self.fields['distances'].required = False
@@ -50,7 +47,6 @@ class EventSerializer(serializers.ModelSerializer):
         return event
 
     def update(self, instance, validated_data):
-        # Ігноруємо поля additional_items, distances і organizer під час оновлення
         validated_data.pop('organizer', None)
         validated_data.pop('additional_items', None)
         validated_data.pop('distances', None)
