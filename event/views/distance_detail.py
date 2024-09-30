@@ -105,13 +105,21 @@ class DistanceDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Distance.delete)
     def delete(self, request, event_id):
-        item_id = request.data.get('id')
-        if not item_id:
-            return Response({"detail": "ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        ids = request.data
+        if not isinstance(ids, list):
+            return Response({"detail": "Expected a list of IDs."}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            distance = DistanceEvent.objects.get(id=item_id, event_id=event_id)
+        deleted_ids = []
+        for data in ids:
+            item_id = data.get('id')
+            if not item_id:
+                return Response({"detail": "Each item must include an 'id' field."}, status=status.HTTP_400_BAD_REQUEST)
+
+            distance = DistanceEvent.objects.filter(id=item_id, event_id=event_id).first()
+            if not distance:
+                return Response({"detail": f"Distance with id {item_id} not found."}, status=status.HTTP_404_NOT_FOUND)
+
             distance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except DistanceEvent.DoesNotExist:
-            return Response({"detail": "Distance not found for this event."}, status=status.HTTP_404_NOT_FOUND)
+            deleted_ids.append(item_id)
+
+        return Response({"deleted_ids": deleted_ids}, status=status.HTTP_204_NO_CONTENT)
