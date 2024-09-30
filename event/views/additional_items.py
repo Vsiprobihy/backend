@@ -102,7 +102,22 @@ class AdditionalItemsDetailView(APIView):
         return Response(updated_data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalItem.delete)
-    def delete(self, request, pk):
-        item = self.get_object(pk)
-        item.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, event_id):
+        ids = request.data
+        if not isinstance(ids, list):
+            return Response({"detail": "Expected a list of IDs."}, status=status.HTTP_400_BAD_REQUEST)
+
+        deleted_ids = []
+        for data in ids:
+            item_id = data.get('id')
+            if not item_id:
+                return Response({"detail": "Each item must include an 'id' field."}, status=status.HTTP_400_BAD_REQUEST)
+
+            item = AdditionalItemEvent.objects.filter(id=item_id, event_id=event_id).first()
+            if not item:
+                return Response({"detail": f"Item with id {item_id} not found for this event."}, status=status.HTTP_404_NOT_FOUND)
+
+            item.delete()
+            deleted_ids.append(item_id)
+
+        return Response({"deleted_ids": deleted_ids}, status=status.HTTP_204_NO_CONTENT)

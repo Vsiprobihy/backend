@@ -534,12 +534,45 @@ class SwaggerDocs:
 
         delete = {
             'tags': ['Additional Items'],
+            'operation_description': """
+            Delete multiple additional items associated with a specific event identified by the `event_id` in the URL. 
+            The `id` field is required to identify each additional item to be deleted.
+            """,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'id': openapi.Schema(
+                            type=openapi.TYPE_INTEGER,
+                            description='ID of the additional item to delete',
+                            example=1
+                        ),
+                    },
+                    required=['id'],
+                ),
+            ),
             'responses': {
-                204: 'Additional item deleted successfully',
-                404: 'Additional item not found',
+                204: 'Additional items deleted successfully',
+                400: openapi.Response(
+                    description='Bad request due to missing or invalid IDs',
+                    examples={
+                        "application/json": {
+                            "detail": "Each item must include an 'id' field."
+                        }
+                    }
+                ),
+                404: openapi.Response(
+                    description='One or more additional items not found',
+                    examples={
+                        "application/json": {
+                            "detail": "Item with id X not found for this event."
+                        }
+                    }
+                ),
             },
-            'operation_description': "Delete additional items for an event by ID.",
         }
+
 
     class Distance:
         get = {
