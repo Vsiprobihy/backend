@@ -785,9 +785,39 @@ class SwaggerDocs:
 
         delete = {
             'tags': ['Distances'],
+            'operation_description': """
+            Delete a distance associated with a specific event identified by the `event_id` in the URL. 
+            The `id` field is required to identify the distance to be deleted.
+            """,
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'id': openapi.Schema(
+                        type=openapi.TYPE_INTEGER,
+                        description='ID of the distance to delete',
+                        example=1
+                    ),
+                },
+                required=['id'],
+            ),
             'responses': {
                 204: 'Distance deleted successfully',
-                404: 'Distance not found',
+                400: openapi.Response(
+                    description='Bad request due to missing ID',
+                    examples={
+                        "application/json": {
+                            "detail": "ID is required."
+                        }
+                    }
+                ),
+                404: openapi.Response(
+                    description='Distance not found',
+                    examples={
+                        "application/json": {
+                            "detail": "Distance not found for this event."
+                        }
+                    }
+                ),
             },
-            'operation_description': "Delete event distance by ID.",
         }
+

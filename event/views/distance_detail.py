@@ -56,7 +56,6 @@ class DistanceDetailView(APIView):
             if 'event' in data:
                 del data['event']
 
-            # Находим объект по id
             item = distances.filter(id=data.get('id')).first()
             if not item:
                 return Response({"detail": f"Distance with id {data.get('id')} not found."}, status=404)
@@ -95,7 +94,6 @@ class DistanceDetailView(APIView):
             if not item:
                 return Response({"detail": f"Distance with id {item_id} not found."}, status=status.HTTP_404_NOT_FOUND)
 
-            # Частичное обновление (partial=True)
             serializer = DistanceEventSerializer(item, data=data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -106,7 +104,14 @@ class DistanceDetailView(APIView):
         return Response(updated_data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.Distance.delete)
-    def delete(self, request, pk):
-        distance = self.get_object(pk)
-        distance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, event_id):
+        item_id = request.data.get('id')
+        if not item_id:
+            return Response({"detail": "ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            distance = DistanceEvent.objects.get(id=item_id, event_id=event_id)
+            distance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except DistanceEvent.DoesNotExist:
+            return Response({"detail": "Distance not found for this event."}, status=status.HTTP_404_NOT_FOUND)
