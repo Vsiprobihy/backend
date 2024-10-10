@@ -7,9 +7,9 @@ from ..models import Event, OrganizerEvent, AdditionalItemEvent, DistanceEvent
 
 
 class EventSerializer(serializers.ModelSerializer):
-    organizer = OrganizerEventSerializer(required=False)
+    organizer = OrganizerEventSerializer(required=True)
     additional_items = AdditionalItemEventSerializer(many=True, required=False)
-    distances = DistanceEventSerializer(many=True, required=False)
+    distances = DistanceEventSerializer(many=True, required=True)
 
     class Meta:
         model = Event
@@ -19,20 +19,29 @@ class EventSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        request_method = self.context['request'].method if 'request' in self.context else None
+        # Fields that are required
+        self.fields['name'].required = True
+        self.fields['competition_type'].required = True
+        self.fields['date_from'].required = True
+        self.fields['date_to'].required = True
+        self.fields['place'].required = True
+        # Fields that are optional
+        self.fields['description'].required = False
+        self.fields['registration_link'].required = False
+        self.fields['hide_participants'].required = False
+        self.fields['schedule_pdf'].required = False
+        self.fields['extended_description'].required = False
 
-        if request_method == 'POST':
-            self.fields['organizer'].required = True
-            self.fields['additional_items'].required = True
-            self.fields['distances'].required = True
-        else:
-            self.fields['organizer'].required = False
-            self.fields['additional_items'].required = False
-            self.fields['distances'].required = False
+    def validate(self, data):
+        if data['date_to'] < data['date_from']:
+            raise serializers.ValidationError({
+                "date_to": ("The end date cannot be earlier than the start date.")
+            })
+        return data
 
     def create(self, validated_data):
         organizer_data = validated_data.pop('organizer')
-        additional_items_data = validated_data.pop('additional_items')
+        additional_items_data = validated_data.pop('additional_items', [])
         distances_data = validated_data.pop('distances')
 
         organizer, _ = OrganizerEvent.objects.get_or_create(**organizer_data)
