@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'authentication',
     'event',
     'event_filters',
+    'mainpage',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +155,6 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
+MAIN_PAGE_START_DATE_DAYS_AHEAD = 1  # Количество дней для начальной даты
+MAIN_PAGE_EVENT_DAYS_AHEAD = 5  # Количество дней, до которого отображаем события
