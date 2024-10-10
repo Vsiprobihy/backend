@@ -17,18 +17,12 @@ class EventSerializer(serializers.ModelSerializer):
                   'registration_link', 'hide_participants', 'schedule_pdf', 'organizer', 'additional_items',
                   'distances', 'extended_description']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request_method = self.context['request'].method if 'request' in self.context else None
-
-        if request_method == 'POST':
-            self.fields['organizer'].required = True
-            self.fields['additional_items'].required = True
-            self.fields['distances'].required = True
-        else:
-            self.fields['organizer'].required = False
-            self.fields['additional_items'].required = False
-            self.fields['distances'].required = False
+    def validate(self, data):
+        if data['date_to'] < data['date_from']:
+            raise serializers.ValidationError({
+                "date_to": ("The end date cannot be earlier than the start date.")
+            })
+        return data
 
     def create(self, validated_data):
         organizer_data = validated_data.pop('organizer')
