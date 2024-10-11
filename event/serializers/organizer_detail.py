@@ -6,4 +6,5 @@ from event.models import OrganizerEvent
 class OrganizerEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizerEvent
-        fields = ['name', 'site_url', 'phone_number', 'email', 'instagram_url', 'facebook_url', 'telegram_url']
+        fields = '__all__'
+        read_only_fields = ['user'] 

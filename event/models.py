@@ -4,6 +4,7 @@ from authentication.models import CustomUser
 
 
 class OrganizerEvent(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='organizers')
     name = models.CharField(max_length=255)
     site_url = models.URLField(blank=True, null=True)
     phone_number = models.CharField(max_length=20)
