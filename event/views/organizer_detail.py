@@ -1,8 +1,8 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import generics, permissions
+from authentication.permissions import IsOrganizer
 from event.models import OrganizerEvent, OrganizationAccess
 from event.serializers.organizer_detail import OrganizerEventSerializer, OrganizationAccessSerializer
 from swagger_docs import SwaggerDocs
@@ -13,7 +13,7 @@ User = get_user_model()
 
 class OrganizerEventListCreateView(generics.ListCreateAPIView):
     serializer_class = OrganizerEventSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.Organizer.get)
     def get_queryset(self):
@@ -32,7 +32,7 @@ class OrganizerEventListCreateView(generics.ListCreateAPIView):
 
 class OrganizerEventDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrganizerEventSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     def get_queryset(self):
         if not self.request.user.is_authenticated:
@@ -47,12 +47,12 @@ class OrganizerEventDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class InviteModeratorView(generics.GenericAPIView):
     serializer_class = OrganizationAccessSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     def post(self, request, *args, **kwargs):
         organization_id = request.data.get('organization_id')
         email = request.data.get('email')
-        message = request.data.get('message', '')
+        message = request.data.get('message', '')  # noqa: F841
 
         try:
             user = User.objects.get(email=email)
