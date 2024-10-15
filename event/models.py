@@ -29,7 +29,7 @@ class OrganizationAccess(models.Model):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
     class Meta:
-        unique_together = ('user', 'organization')  # Уникальное сочетание пользователя и организации
+        unique_together = ('user', 'organization')
 
     def __str__(self):
         return f"{self.user.email} - {self.get_role_display()} в {self.organization.name}"
