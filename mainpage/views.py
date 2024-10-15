@@ -37,6 +37,13 @@ def mainpage(request):
             'place': event.place,
             'competition_type': event.competition_type,
             'photos': event.photos.url if event.photos else None,
+            'distances': [
+                {
+                    'name': distance.name,
+                    'id': distance.id,
+                }
+                for distance in event.distances.all()
+            ],
         }
         for event in events
     ]
