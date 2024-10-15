@@ -8,13 +8,16 @@ from event.models import Event
 from event.serializers.events import EventSerializer
 
 from swagger_docs import SwaggerDocs
+from rest_framework import permissions
+from authentication.permissions import IsOrganizer
 
 
 class EventsListView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.Event.post)
     def post(self, request):
-        serializer = EventSerializer(data=request.data)
+        serializer = EventSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
