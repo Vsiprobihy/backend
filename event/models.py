@@ -64,6 +64,7 @@ class DistanceEvent(models.Model):
         return self.name
 
 
+
 class Event(models.Model):
     COMPETITION_TYPES = [
         ('running', 'Біг'),
@@ -75,6 +76,16 @@ class Event(models.Model):
         ('ocr', 'OCR'),
         ('swimming', 'Плавання'),
         ('triathlon', 'Тріатлон'),
+    ]
+
+    STATUS_PENDING = 'pending'
+    STATUS_UNPUBLISHED = 'unpublished'
+    STATUS_PUBLISHED = 'published'
+
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Очікує затвердження'),
+        (STATUS_UNPUBLISHED, 'Не опублікована'),
+        (STATUS_PUBLISHED, 'Опублікована'),
     ]
 
     name = models.CharField(max_length=255)
@@ -89,10 +100,21 @@ class Event(models.Model):
     extended_description = models.TextField(blank=True, null=True)
     schedule_pdf = models.FileField(upload_to='event_schedule/', blank=True, null=True)
     organizer = models.ForeignKey(OrganizerEvent, on_delete=models.CASCADE, related_name='events')
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default=STATUS_PENDING)  # Новое поле статуса
 
     def __str__(self):
         return self.name
 
+    def approve_event(self):
+        """Method for approving the event by the administrator."""
+        self.status = self.STATUS_UNPUBLISHED
+        self.save()
+
+    def publish_event(self):
+        """Method for publishing an event by the organizer."""
+        if self.status == self.STATUS_UNPUBLISHED:
+            self.status = self.STATUS_PUBLISHED
+            self.save()
 
 class EventRegistration(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='registrations')
