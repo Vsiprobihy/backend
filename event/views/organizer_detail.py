@@ -17,6 +17,8 @@ class OrganizerEventListCreateView(generics.ListCreateAPIView):
 
     @swagger_auto_schema(**SwaggerDocs.Organizer.get)
     def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return OrganizerEvent.objects.none()
         return OrganizerEvent.objects.filter(users_access__user=self.request.user)
 
     def perform_create(self, serializer):
@@ -33,6 +35,8 @@ class OrganizerEventDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return OrganizerEvent.objects.none()
         return OrganizerEvent.objects.filter(users_access__user=self.request.user)
 
     def delete(self, request, *args, **kwargs):
