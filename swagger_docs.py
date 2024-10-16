@@ -586,20 +586,22 @@ class SwaggerDocs:
                         items=openapi.Schema(
                             type=openapi.TYPE_OBJECT,
                             properties={
-                                'name': openapi.Schema(
-                                    type=openapi.TYPE_STRING,
-                                    description='Name of the distance (e.g., "5K Run")',
-                                ),
-                                'cost': openapi.Schema(
-                                    type=openapi.TYPE_NUMBER,
-                                    description='Cost of the distance in numeric format, or null if free.',
-                                    example=100.00,
-                                ),
-                                'is_free': openapi.Schema(
-                                    type=openapi.TYPE_BOOLEAN,
-                                    description='Indicates whether the distance is free or not. If True, cost is null.',
-                                    example=False,
-                                ),
+                                'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID of the distance."),
+                                'name': openapi.Schema(type=openapi.TYPE_STRING, description="Name of the distance."),
+                                'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description="Type of competition."),
+                                'category': openapi.Schema(type=openapi.TYPE_STRING, description="Category of participants."),
+                                'length': openapi.Schema(type=openapi.TYPE_NUMBER, description="Distance length."),
+                                'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Start number."),
+                                'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="End number."),
+                                'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Minimum age."),
+                                'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="Maximum age."),
+                                'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description="Participation cost."),
+                                'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Is event free."),
+                                'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Promo registration only."),
+                                'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Allow registration."),
+                                'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show name on number."),
+                                'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show start number."),
+                                'event': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID of the event."),
                             },
                         ),
                     ),
@@ -620,20 +622,28 @@ class SwaggerDocs:
             'request_body': openapi.Schema(
                 type=openapi.TYPE_OBJECT,
                 properties={
-                    'name': openapi.Schema(
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description="Name of the distance."),
+                    'competition_type': openapi.Schema(
                         type=openapi.TYPE_STRING,
-                        description='Name of the distance (e.g., "5K Run")',
+                        enum=['running', 'trail', 'ultramarathon', 'cycling', 'online', 'walking', 'ocr', 'swimming', 'triathlon'],
+                        description="Type of competition (e.g., running, cycling, etc.)."
                     ),
-                    'cost': openapi.Schema(
-                        type=openapi.TYPE_NUMBER,
-                        description='Cost of the distance in numeric format, leave null if free.',
-                        example=100.00,
+                    'category': openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        enum=['adults', 'children', 'men', 'women', 'disabled', 'veterans', 'pupils', 'boys', 'juniors', 'students', 'teachers'],
+                        description="Category of participants (e.g., adults, children, etc.)."
                     ),
-                    'is_free': openapi.Schema(
-                        type=openapi.TYPE_BOOLEAN,
-                        description='Indicates whether the distance is free or not. If True, cost should be null.',
-                        example=False,
-                    ),
+                    'length': openapi.Schema(type=openapi.TYPE_NUMBER, format=openapi.FORMAT_DECIMAL, description="Distance length (in km or meters)."),
+                    'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Starting number range."),
+                    'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="Ending number range."),
+                    'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Whether to show the start number."),
+                    'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Whether to show the name on the number."),
+                    'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Minimum age of participants."),
+                    'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="Maximum age of participants."),
+                    'cost': openapi.Schema(type=openapi.TYPE_NUMBER, format=openapi.FORMAT_DECIMAL, description="Cost of participation."),
+                    'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Indicates if the event is free."),
+                    'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Restrict registration to promo users only."),
+                    'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Allow participants to register."),
                 },
                 required=['name', 'is_free'],
             ),
@@ -652,30 +662,23 @@ class SwaggerDocs:
             """,
             'request_body': openapi.Schema(
                 type=openapi.TYPE_ARRAY,
-                items=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'id': openapi.Schema(
-                            type=openapi.TYPE_INTEGER,
-                            description='ID of the distance being updated',
-                        ),
-                        'name': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description='Name of the distance (e.g., "5K Run")',
-                        ),
-                        'cost': openapi.Schema(
-                            type=openapi.TYPE_NUMBER,
-                            description='Cost of the distance in numeric format, leave null if free.',
-                            example=100.00,
-                        ),
-                        'is_free': openapi.Schema(
-                            type=openapi.TYPE_BOOLEAN,
-                            description='Indicates whether the distance is free or not. If True, cost can be null.',
-                            example=False,
-                        ),
-                    },
-                    required=['id', 'name', 'is_free'],
-                ),
+                items=openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                    'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID of the distance to update."),
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description="Name of the distance."),
+                    'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description="Type of competition."),
+                    'category': openapi.Schema(type=openapi.TYPE_STRING, description="Category of participants."),
+                    'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Allow participants to register."),
+                    'length': openapi.Schema(type=openapi.TYPE_NUMBER, description="Distance length."),
+                    'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Start number."),
+                    'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="End number."),
+                    'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Minimum age."),
+                    'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="Maximum age."),
+                    'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description="Participation cost."),
+                    'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Is event free."),
+                    'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Promo registration only."),
+                    'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show name on number."),
+                    'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show start number."),
+                }),
             ),
             'responses': {
                 200: openapi.Response(
@@ -685,28 +688,22 @@ class SwaggerDocs:
                         items=openapi.Schema(
                             type=openapi.TYPE_OBJECT,
                             properties={
-                                'id': openapi.Schema(
-                                    type=openapi.TYPE_INTEGER,
-                                    description='ID of the updated distance',
-                                ),
-                                'name': openapi.Schema(
-                                    type=openapi.TYPE_STRING,
-                                    description='Name of the updated distance',
-                                ),
-                                'cost': openapi.Schema(
-                                    type=openapi.TYPE_NUMBER,
-                                    description='Cost of the updated distance',
-                                    example=100.00,
-                                ),
-                                'is_free': openapi.Schema(
-                                    type=openapi.TYPE_BOOLEAN,
-                                    description='Indicates if the updated distance is free',
-                                    example=False,
-                                ),
-                                'event': openapi.Schema(
-                                    type=openapi.TYPE_INTEGER,
-                                    description='ID of the event the distance is associated with',
-                                ),
+                                'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID of the created distance."),
+                                'name': openapi.Schema(type=openapi.TYPE_STRING, description="Name of the distance."),
+                                'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description="Type of competition."),
+                                'category': openapi.Schema(type=openapi.TYPE_STRING, description="Category of participants."),
+                                'length': openapi.Schema(type=openapi.TYPE_NUMBER, description="Distance length."),
+                                'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Start number."),
+                                'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="End number."),
+                                'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Minimum age."),
+                                'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="Maximum age."),
+                                'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description="Participation cost."),
+                                'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Is event free."),
+                                'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Promo registration only."),
+                                'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Allow registration."),
+                                'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show name on number."),
+                                'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show start number."),
+                                'event': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID of the event."),
                             },
                         ),
                     ),
@@ -738,30 +735,23 @@ class SwaggerDocs:
             """,
             'request_body': openapi.Schema(
                 type=openapi.TYPE_ARRAY,
-                items=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'id': openapi.Schema(
-                            type=openapi.TYPE_INTEGER,
-                            description='ID of the distance being updated',
-                        ),
-                        'name': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description='Name of the distance (optional)',
-                        ),
-                        'cost': openapi.Schema(
-                            type=openapi.TYPE_NUMBER,
-                            description='Cost of the distance (optional)',
-                            example=100.00,
-                        ),
-                        'is_free': openapi.Schema(
-                            type=openapi.TYPE_BOOLEAN,
-                            description='Indicates whether the distance is free (optional)',
-                            example=False,
-                        ),
-                    },
-                    required=['id'],
-                ),
+                items=openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                    'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID of the distance to update."),
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description="Name of the distance."),
+                    'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description="Type of competition."),
+                    'category': openapi.Schema(type=openapi.TYPE_STRING, description="Category of participants."),
+                    'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Allow participants to register."),
+                    'length': openapi.Schema(type=openapi.TYPE_NUMBER, description="Distance length."),
+                    'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Start number."),
+                    'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="End number."),
+                    'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Minimum age."),
+                    'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="Maximum age."),
+                    'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description="Participation cost."),
+                    'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Is event free."),
+                    'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Promo registration only."),
+                    'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show name on number."),
+                    'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show start number."),
+                }),
             ),
             'responses': {
                 200: openapi.Response(
@@ -771,28 +761,22 @@ class SwaggerDocs:
                         items=openapi.Schema(
                             type=openapi.TYPE_OBJECT,
                             properties={
-                                'id': openapi.Schema(
-                                    type=openapi.TYPE_INTEGER,
-                                    description='ID of the updated distance',
-                                ),
-                                'name': openapi.Schema(
-                                    type=openapi.TYPE_STRING,
-                                    description='Name of the updated distance',
-                                ),
-                                'cost': openapi.Schema(
-                                    type=openapi.TYPE_NUMBER,
-                                    description='Cost of the updated distance',
-                                    example=100.00,
-                                ),
-                                'is_free': openapi.Schema(
-                                    type=openapi.TYPE_BOOLEAN,
-                                    description='Indicates if the updated distance is free',
-                                    example=False,
-                                ),
-                                'event': openapi.Schema(
-                                    type=openapi.TYPE_INTEGER,
-                                    description='ID of the event the distance is associated with',
-                                ),
+                                'id': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID of the created distance."),
+                                'name': openapi.Schema(type=openapi.TYPE_STRING, description="Name of the distance."),
+                                'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description="Type of competition."),
+                                'category': openapi.Schema(type=openapi.TYPE_STRING, description="Category of participants."),
+                                'length': openapi.Schema(type=openapi.TYPE_NUMBER, description="Distance length."),
+                                'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Start number."),
+                                'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="End number."),
+                                'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description="Minimum age."),
+                                'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description="Maximum age."),
+                                'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description="Participation cost."),
+                                'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Is event free."),
+                                'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Promo registration only."),
+                                'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Allow registration."),
+                                'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show name on number."),
+                                'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description="Show start number."),
+                                'event': openapi.Schema(type=openapi.TYPE_INTEGER, description="ID of the event."),
                             },
                         ),
                     ),
