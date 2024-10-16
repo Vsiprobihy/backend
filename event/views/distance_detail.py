@@ -1,15 +1,30 @@
 from django.http import Http404
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.exceptions import PermissionDenied
 
-from event.models import DistanceEvent
+from event.models import DistanceEvent, Event, OrganizationAccess
 from event.serializers.distance_detail import DistanceEventSerializer
 from swagger_docs import SwaggerDocs
+from authentication.permissions import IsOrganizer
 
 
 class DistanceDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
+
+    def get_event(self, event_id):
+        try:
+            return Event.objects.get(pk=event_id)
+        except Event.DoesNotExist:
+            raise Http404
+
+    def check_user_permission(self, event):
+        user = self.request.user
+        if not OrganizationAccess.objects.filter(organization=event.organizer, user=user).exists():
+            raise PermissionDenied("You do not have permission to access this event.")
+
     def get_object(self, pk):
         try:
             return DistanceEvent.objects.get(pk=pk)
@@ -21,6 +36,9 @@ class DistanceDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Distance.post)
     def post(self, request, event_id):
+        event = self.get_event(event_id)
+        self.check_user_permission(event)
+        
         data = request.data.copy()
         data['event'] = event_id
         serializer = DistanceEventSerializer(data=data)
@@ -31,6 +49,9 @@ class DistanceDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Distance.get)
     def get(self, request, event_id):
+        event = self.get_event(event_id)
+        self.check_user_permission(event)
+        
         distances = self.get_objects_by_event(event_id)
         if not distances.exists():
             return Response({"detail": "No distances found for this event."}, status=404)
@@ -40,6 +61,9 @@ class DistanceDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Distance.put)
     def put(self, request, event_id):
+        event = self.get_event(event_id)
+        self.check_user_permission(event)
+        
         if isinstance(request.data, dict):
             data_list = [request.data]
         elif isinstance(request.data, list):
@@ -73,6 +97,9 @@ class DistanceDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Distance.patch)
     def patch(self, request, event_id):
+        event = self.get_event(event_id)
+        self.check_user_permission(event)
+        
         if isinstance(request.data, dict):
             data_list = [request.data]
         elif isinstance(request.data, list):
@@ -105,6 +132,9 @@ class DistanceDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Distance.delete)
     def delete(self, request, event_id):
+        event = self.get_event(event_id)
+        self.check_user_permission(event)
+        
         ids = request.data
         if not isinstance(ids, list):
             return Response({"detail": "Expected a list of IDs."}, status=status.HTTP_400_BAD_REQUEST)
