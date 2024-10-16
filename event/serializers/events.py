@@ -3,18 +3,19 @@ from rest_framework import serializers
 from .additional_items import AdditionalItemEventSerializer
 from .distance_detail import DistanceEventSerializer
 from .organizer_detail import OrganizerEventSerializer
-from ..models import Event, OrganizerEvent, AdditionalItemEvent, DistanceEvent
+from ..models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEvent, DistanceEvent
 
 
 class EventSerializer(serializers.ModelSerializer):
-    organizer = OrganizerEventSerializer(required=True)
+    organizer_id = serializers.IntegerField(write_only=True)
+    organizer = OrganizerEventSerializer(read_only=True)
     additional_items = AdditionalItemEventSerializer(many=True, required=False)
     distances = DistanceEventSerializer(many=True, required=True)
 
     class Meta:
         model = Event
         fields = ['name', 'competition_type', 'date_from', 'date_to', 'place', 'photos', 'description',
-                  'registration_link', 'hide_participants', 'schedule_pdf', 'organizer', 'additional_items',
+                  'registration_link', 'hide_participants', 'schedule_pdf', 'organizer', 'organizer_id', 'additional_items',
                   'distances', 'extended_description']
 
     def __init__(self, *args, **kwargs):
@@ -40,11 +41,20 @@ class EventSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        organizer_data = validated_data.pop('organizer')
+        organizer_id = validated_data.pop('organizer_id')
         additional_items_data = validated_data.pop('additional_items', [])
         distances_data = validated_data.pop('distances')
 
-        organizer, _ = OrganizerEvent.objects.get_or_create(**organizer_data)
+        user = self.context['request'].user
+        
+        if not OrganizationAccess.objects.filter(organization_id=organizer_id, user=user).exists():
+            raise serializers.ValidationError({"organizer_id": "You do not have access to the specified organization."})
+
+        try:
+            organizer = OrganizerEvent.objects.get(id=organizer_id)
+        except OrganizerEvent.DoesNotExist:
+            raise serializers.ValidationError({"organizer_id": "The organization with the specified ID was not found."})
+
         event = Event.objects.create(organizer=organizer, **validated_data)
 
         for item_data in additional_items_data:

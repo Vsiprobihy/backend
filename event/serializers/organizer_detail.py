@@ -1,9 +1,23 @@
 from rest_framework import serializers
 
-from event.models import OrganizerEvent
-
+from event.models import OrganizerEvent, OrganizationAccess
+from authentication.models import CustomUser
 
 class OrganizerEventSerializer(serializers.ModelSerializer):
+    users = serializers.SerializerMethodField()
+
     class Meta:
         model = OrganizerEvent
-        fields = ['name', 'site_url', 'phone_number', 'email', 'instagram_url', 'facebook_url', 'telegram_url']
+        fields = '__all__'
+
+    def get_users(self, obj):
+        access = OrganizationAccess.objects.filter(organization=obj)
+        return [{'user': access_item.user.email, 'role': access_item.role} for access_item in access]
+
+
+class OrganizationAccessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganizationAccess
+        fields = ['user', 'role']
+
+    user = serializers.SlugRelatedField(slug_field='email', queryset=CustomUser.objects.all())
