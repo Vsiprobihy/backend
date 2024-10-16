@@ -55,14 +55,50 @@ class AdditionalItemEvent(models.Model):
 
 
 class DistanceEvent(models.Model):
+    COMPETITION_TYPES = [
+        ('running', 'Біг'),
+        ('trail', 'Трейл'),
+        ('ultramarathon', 'Ультрамарафон'),
+        ('cycling', 'Велоспорт'),
+        ('online', 'Online'),
+        ('walking', 'Ходьба'),
+        ('ocr', 'OCR'),
+        ('swimming', 'Плавання'),
+        ('triathlon', 'Тріатлон'),
+    ]
+
+    CATEGORY_CHOICES = [
+        ('adults', 'Дорослі'),
+        ('children', 'Діти'),
+        ('men', 'Чоловіки'),
+        ('women', 'Жінки'),
+        ('disabled', 'Учасники з обмеженими можливостями'),
+        ('veterans', 'Ветерани'),
+        ('pupils', 'Школярі'),
+        ('boys', 'Юнаки'),
+        ('juniors', 'Юніори'),
+        ('students', 'Студенти'),
+        ('teachers', 'Викладачі'),
+    ]
+
     name = models.CharField(max_length=255)
-    cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    competition_type = models.CharField(max_length=50, choices=COMPETITION_TYPES, default='running')
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='adults')
+    length = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # In km or meters
+    start_number_from = models.PositiveIntegerField(blank=True, null=True)
+    start_number_to = models.PositiveIntegerField(blank=True, null=True)
+    show_start_number = models.BooleanField(default=False)
+    show_name_on_number = models.BooleanField(default=False)
+    age_from = models.PositiveIntegerField(blank=True, null=True)
+    age_to = models.PositiveIntegerField(blank=True, null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     is_free = models.BooleanField(default=False)
+    promo_only_registration = models.BooleanField(default=False)
+    allow_registration = models.BooleanField(default=True)
     event = models.ForeignKey('Event', related_name='distances', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
-
 
 
 class Event(models.Model):
