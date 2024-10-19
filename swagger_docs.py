@@ -19,10 +19,15 @@ class SwaggerDocs:
                     schema=openapi.Schema(
                         type=openapi.TYPE_OBJECT,
                         properties={
-                            'message': openapi.Schema(
+                            'access': openapi.Schema(
                                 type=openapi.TYPE_STRING,
-                                description='Confirmation message',
-                                example='User registered successfully'
+                                description='Access token for authentication',
+                                example='your_access_token_here'
+                            ),
+                            'refresh': openapi.Schema(
+                                type=openapi.TYPE_STRING,
+                                description='Refresh token for obtaining a new access token',
+                                example='your_refresh_token_here'
                             ),
                         },
                     )
