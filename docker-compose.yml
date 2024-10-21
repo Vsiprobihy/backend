@@ -11,7 +11,9 @@ services:
       POSTGRES_USER: "vsi_probihy_user"
       POSTGRES_PASSWORD: "probihy_password"
     volumes:
-     - app_db:/var/lib/postgresql/data
+      - app_db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
     networks:
       - app-network
 
