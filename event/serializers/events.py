@@ -7,7 +7,7 @@ from ..models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEv
 
 
 class EventSerializer(serializers.ModelSerializer):
-    organizer_id = serializers.IntegerField(write_only=True)
+    # organizer_id = serializers.IntegerField(write_only=True)
     organizer = OrganizerEventSerializer(read_only=True)
     additional_items = AdditionalItemEventSerializer(many=True, required=False)
     distances = DistanceEventSerializer(many=True, required=True)
@@ -15,7 +15,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ['name', 'competition_type', 'date_from', 'date_to', 'place', 'photos', 'description',
-                  'registration_link', 'hide_participants', 'schedule_pdf', 'organizer', 'organizer_id', 'additional_items',
+                  'registration_link', 'hide_participants', 'schedule_pdf', 'organizer', 'additional_items',
                   'distances', 'extended_description']
 
     def __init__(self, *args, **kwargs):
