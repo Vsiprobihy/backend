@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
     'event',
     'event_filters',
     'mainpage',
+    'user_info',
 ]
 
 MIDDLEWARE = [
@@ -152,7 +154,6 @@ LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'authentication.CustomUser'
 
-from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
@@ -161,5 +162,5 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-MAIN_PAGE_START_DATE_DAYS_AHEAD = 1  # Количество дней для начальной даты
-MAIN_PAGE_EVENT_DAYS_AHEAD = 5  # Количество дней, до которого отображаем события
+MAIN_PAGE_START_DATE_DAYS_AHEAD = 1  # Количество дней для начальной даты (для ендпоинта upcoming-events)
+MAIN_PAGE_EVENT_DAYS_AHEAD = 5  # Количество дней, до которого отображаем события (для ендпоинта upcoming-events)
