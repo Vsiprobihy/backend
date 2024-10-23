@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+
+  data-base:
+    image: postgres:16.4
+    container_name: probihy_db_container
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "probihy_db"
+      POSTGRES_USER: "vsi_probihy_user"
+      POSTGRES_PASSWORD: "probihy_password"
+    volumes:
+      - app_db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - app-network
+
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: probihy_back_container
+    restart: unless-stopped
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - data-base
+    ports:
+      - 8000:8000
+    # volumes:
+    #   - .:/app
+    volumes:
+      - app_data:/data
+      - static_volume:/usr/src/app/staticfiles:rw
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+
+volumes:
+  app_db:
+  app_build:
+  app_data:
+  static_volume:
+
+networks:
+  app-network:
+    driver: bridge
