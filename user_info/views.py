@@ -12,8 +12,14 @@ class UserInfoView(APIView):
         responses={
             200: openapi.Response(
                 description="Issuing a username, but if the user is not authorized, a stub is issued",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        "username": openapi.Schema(type=openapi.TYPE_STRING, description="User's full name or 'User' if not authenticated")
+                    }
+                ),
                 examples={
-                    "application/json": {"username": "Иван Иванов"}
+                    "application/json": {"username": "Alex Smith"}
                 }
             )
         }
