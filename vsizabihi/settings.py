@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'event_filters',
     'mainpage',
     'user_info',
+    'public_events',
 ]
 
 MIDDLEWARE = [
