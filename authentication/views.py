@@ -1,25 +1,44 @@
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from django.conf import settings
+from rest_framework import status, generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg import openapi
 
 from swagger_docs import SwaggerDocs
 from .serializers import RegisterSerializer, UserProfileSerializer
 
 
-class RegisterView(APIView):
-    @swagger_auto_schema(**SwaggerDocs.Register.post)
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class RegisterView(generics.CreateAPIView):
 
+    serializer_class = RegisterSerializer
+
+    @swagger_auto_schema(**SwaggerDocs.Register.post)
+    def create(self, request, *args, **kwargs) -> Response:
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            response = Response(status=status.HTTP_201_CREATED)
+
+            response.data = {
+                "access_token": {
+                    "value": str(refresh.access_token),
+                    "expires": settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
+                },
+                "refresh_token": {
+                    "value": str(refresh),
+                    "expires": settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+                },
+            }
+
+            return response
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
