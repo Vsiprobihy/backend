@@ -1,6 +1,7 @@
 from drf_yasg.utils import swagger_auto_schema
 from django.conf import settings
-from rest_framework import status, generics, viewsets
+from django.contrib.auth import authenticate
+from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,8 +11,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg import openapi
 
 from swagger_docs import SwaggerDocs
-from .serializers import RegisterSerializer, UserProfileSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer
 
+from utils.custom_exceptions import InvalidCredentialsError
 
 class RegisterView(generics.CreateAPIView):
     """
@@ -19,6 +21,9 @@ class RegisterView(generics.CreateAPIView):
 
     This view allows new users to register and generates access and refresh tokens
     upon successful registration.
+
+    Methods:
+        Handles POST requests to register a new user.
 
     """
 
@@ -87,7 +92,9 @@ class UserProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
+class LoginView(APIView):
+
+    serializer_class = LoginSerializer
     @swagger_auto_schema(
         operation_description="Login with JWT token",
         request_body=TokenObtainPairSerializer,
@@ -102,8 +109,46 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             )
         }
     )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs) -> Response:
+        email = request.data.get("email")
+        password = request.data.get("password")
+        user = authenticate(email=email, password=password)
+
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            response = Response()
+
+            response.data = {
+                "access_token": {
+                    "value": str(refresh.access_token),
+                    "expires": settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
+                },
+                "refresh_token": {
+                    "value": str(refresh),
+                    "expires": settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+                },
+            }
+            return response
+        raise InvalidCredentialsError
+    
+
+# class CustomTokenObtainPairView(TokenObtainPairView):
+#     @swagger_auto_schema(
+#         operation_description="Login with JWT token",
+#         request_body=TokenObtainPairSerializer,
+#         responses={
+#             200: openapi.Schema(
+#                 type=openapi.TYPE_OBJECT,
+#                 properties={
+#                     'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Refresh Token'),
+#                     'access': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Access Token'),
+#                 },
+#                 required=['refresh', 'access'],
+#             )
+#         }
+#     )
+#     def post(self, request, *args, **kwargs):
+#         return super().post(request, *args, **kwargs)
 
 # class AdminOnlyView(APIView):
 #     permission_classes = [IsAuthenticated, IsAdmin]
