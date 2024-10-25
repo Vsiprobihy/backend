@@ -14,11 +14,30 @@ from .serializers import RegisterSerializer, UserProfileSerializer
 
 
 class RegisterView(generics.CreateAPIView):
+    """
+    API view for user registration.
+
+    This view allows new users to register and generates access and refresh tokens
+    upon successful registration.
+
+    """
 
     serializer_class = RegisterSerializer
 
     @swagger_auto_schema(**SwaggerDocs.Register.post)
     def create(self, request, *args, **kwargs) -> Response:
+        """
+        Register a new user and return tokens.
+
+        Args:
+            request (Request): The request object with user data.
+
+        Returns:
+            Response: A response containing access and refresh tokens.
+
+        Raises:
+            ValidationError: If validation fails.
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
