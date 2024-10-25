@@ -5,14 +5,12 @@ from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from drf_yasg import openapi
-
 from swagger_docs import SwaggerDocs
-from .serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer
 
+from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer
 from utils.custom_exceptions import InvalidCredentialsError
+from authentication.swagger_schemas import LoginSchema
 
 class RegisterView(generics.CreateAPIView):
     """
@@ -92,23 +90,35 @@ class UserProfileView(APIView):
 
 
 class LoginView(APIView):
+    """
+    API view for user login.
+
+    Allows users to authenticate using their email and password, and returns
+    access and refresh tokens upon successful login.
+
+    Methods:
+        Handles POST requests to authenticate and issue JWT tokens.
+    """
 
     serializer_class = LoginSerializer
-    @swagger_auto_schema(
-        operation_description="Login with JWT token",
-        request_body=TokenObtainPairSerializer,
-        responses={
-            200: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Refresh Token'),
-                    'access': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Access Token'),
-                },
-                required=['refresh', 'access'],
-            )
-        }
-    )
+
+    @LoginSchema
     def post(self, request, *args, **kwargs) -> Response:
+        """
+        Authenticate user and return JWT tokens.
+
+        Validates user credentials and, if successful, returns access and refresh
+        tokens. Raises an error if authentication fails.
+
+        Args:
+            request (Request): The request object with login credentials.
+
+        Returns:
+            Response: A response containing access and refresh tokens.
+
+        Raises:
+            InvalidCredentialsError: If the authentication fails.
+        """
         email = request.data.get("email")
         password = request.data.get("password")
         user = authenticate(email=email, password=password)
