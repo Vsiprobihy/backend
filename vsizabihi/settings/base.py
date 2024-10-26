@@ -80,16 +80,6 @@ WSGI_APPLICATION = 'vsizabihi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'probihy_db',
-        'USER': 'vsi_probihy_user',
-        'PASSWORD': 'probihy_password',
-        'HOST': 'data-base',
-        'PORT': '5432',
-    }
-}
 
 
 # Password validation
