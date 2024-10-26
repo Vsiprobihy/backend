@@ -75,15 +75,6 @@ class SwaggerDocs:
             'operation_description': "Partial update of user profile data",
         }
 
-    class Token:
-        post = {
-            'request_body': TokenObtainPairSerializer,
-            'responses': {
-                200: openapi.Response('Token Response', TokenObtainPairSerializer),
-            },
-            'operation_description': "Login with JWT token",
-        }
-
     class Event:
         get = {
             'tags': ['Events'],
