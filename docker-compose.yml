@@ -6,6 +6,17 @@ services:
     image: postgres:16.4
     container_name: probihy_db_container
     restart: unless-stopped
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
     environment:
       POSTGRES_DB: "probihy_db"
       POSTGRES_USER: "vsi_probihy_user"
@@ -19,18 +30,28 @@ services:
 
 
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: ghcr.io/${{ github.repository }}/backend:latest
     container_name: probihy_back_container
     restart: unless-stopped
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
     depends_on:
       - data-base
     ports:
       - 8000:8000
-    # volumes:
-    #   - .:/app
     volumes:
       - app_data:/data
       - static_volume:/usr/src/app/staticfiles:rw
@@ -40,10 +61,22 @@ services:
       - app-network
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/${{ github.repository }}/frontend:latest
+    # build:
+    #   context: ./frontend
+    #   dockerfile: Dockerfile
     container_name: probihy_front_container
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure  
     restart: unless-stopped
     ports:
       - 3000:3000
