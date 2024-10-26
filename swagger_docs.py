@@ -1,6 +1,5 @@
 from drf_yasg import openapi
 from authentication.serializers import RegisterSerializer, UserProfileSerializer
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
