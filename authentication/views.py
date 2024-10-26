@@ -26,7 +26,6 @@ class RegisterView(generics.CreateAPIView):
 
     serializer_class = RegisterSerializer
 
-    @swagger_auto_schema(**SwaggerDocs.Register.post)
     def create(self, request, *args, **kwargs) -> Response:
         """
         Register a new user and return tokens.
