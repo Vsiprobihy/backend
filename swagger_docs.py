@@ -1,5 +1,5 @@
 from drf_yasg import openapi
-from authentication.serializers import RegisterSerializer, UserProfileSerializer
+from authentication.serializers import UserProfileSerializer
 
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
@@ -9,66 +9,23 @@ from event.serializers.organizer_detail import OrganizerEventSerializer
 
 
 class SwaggerDocs:
-    class Register:
-        post = {
-            'request_body': RegisterSerializer,
-            'responses': {
-                201: openapi.Response(
-                    description='User registered successfully',
-                    schema=openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'message': openapi.Schema(
-                                type=openapi.TYPE_STRING,
-                                description='Confirmation message',
-                                example='User registered successfully'
-                            ),
-                        },
-                    )
-                ),
-                400: openapi.Response(
-                    description='Bad request',
-                    schema=openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'email': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                                description="Error messages related to the email field",
-                                example=["This field is required."]
-                            ),
-                            'password': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                                description="Error messages related to the password field",
-                                example=["This field is required."]
-                            ),
-                            'password2': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                                description="Error messages related to the password confirmation field",
-                                example=["Passwords must match."]
-                            ),
-                        },
-                        required=['email', 'password', 'password2']
-                    )
-                ),
-            },
-            'operation_description': "User Registration Endpoint.",
-        }
 
     class Profile:
+
         get = {
+            'tags': ['Profile'],
             'responses': {200: UserProfileSerializer},
             'operation_description': "Get user profile data",
         }
         put = {
+            'tags': ['Profile'],
             'request_body': UserProfileSerializer,
             'responses': {200: UserProfileSerializer},
             'operation_description': "Update user profile data",
         }
 
         patch = {
+            'tags': ['Profile'],
             'request_body': UserProfileSerializer,
             'responses': {200: UserProfileSerializer},
             'operation_description': "Partial update of user profile data",
