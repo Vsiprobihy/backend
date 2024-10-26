@@ -1,25 +1,64 @@
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from django.conf import settings
+from django.contrib.auth import authenticate
+from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
-from drf_yasg import openapi
-
+from rest_framework_simplejwt.tokens import RefreshToken
 from swagger_docs import SwaggerDocs
-from .serializers import RegisterSerializer, UserProfileSerializer
 
+from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer
+from utils.custom_exceptions import InvalidCredentialsError
+from authentication.swagger_schemas import LoginSchema
 
-class RegisterView(APIView):
-    @swagger_auto_schema(**SwaggerDocs.Register.post)
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class RegisterView(generics.CreateAPIView):
+    """
+    API view for user registration.
 
+    This view allows new users to register and generates access and refresh tokens
+    upon successful registration.
+
+    Methods:
+        Handles POST requests to register a new user.
+
+    """
+
+    serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs) -> Response:
+        """
+        Register a new user and return tokens.
+
+        Args:
+            request (Request): The request object with user data.
+
+        Returns:
+            Response: A response containing access and refresh tokens.
+
+        Raises:
+            ValidationError: If validation fails.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            response = Response(status=status.HTTP_201_CREATED)
+
+            response.data = {
+                "access_token": {
+                    "value": str(refresh.access_token),
+                    "expires": settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
+                },
+                "refresh_token": {
+                    "value": str(refresh),
+                    "expires": settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+                },
+            }
+
+            return response
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -49,23 +88,57 @@ class UserProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    @swagger_auto_schema(
-        operation_description="Login with JWT token",
-        request_body=TokenObtainPairSerializer,
-        responses={
-            200: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Refresh Token'),
-                    'access': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Access Token'),
+class LoginView(APIView):
+    """
+    API view for user login.
+
+    Allows users to authenticate using their email and password, and returns
+    access and refresh tokens upon successful login.
+
+    Methods:
+        Handles POST requests to authenticate and issue JWT tokens.
+    """
+
+    serializer_class = LoginSerializer
+
+    @LoginSchema
+    def post(self, request, *args, **kwargs) -> Response:
+        """
+        Authenticate user and return JWT tokens.
+
+        Validates user credentials and, if successful, returns access and refresh
+        tokens. Raises an error if authentication fails.
+
+        Args:
+            request (Request): The request object with login credentials.
+
+        Returns:
+            Response: A response containing access and refresh tokens.
+
+        Raises:
+            InvalidCredentialsError: If the authentication fails.
+        """
+        email = request.data.get("email")
+        password = request.data.get("password")
+        user = authenticate(email=email, password=password)
+
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            response = Response()
+
+            response.data = {
+                "access_token": {
+                    "value": str(refresh.access_token),
+                    "expires": settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
                 },
-                required=['refresh', 'access'],
-            )
-        }
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+                "refresh_token": {
+                    "value": str(refresh),
+                    "expires": settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+                },
+            }
+            return response
+        raise InvalidCredentialsError
+    
 
 # class AdminOnlyView(APIView):
 #     permission_classes = [IsAuthenticated, IsAdmin]

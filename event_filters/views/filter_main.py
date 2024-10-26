@@ -44,6 +44,12 @@ class EventFilterView(APIView):
                 events = EventFilterService.filter_by_distance(events, distance_min, distance_max)
             except ValueError:
                 return Response({'error': 'Invalid distance range'}, status=status.HTTP_400_BAD_REQUEST)
+        elif distance_max:
+            try:
+                distance_max = float(distance_max)
+                events = EventFilterService.filter_by_distance(events, None, distance_max)
+            except ValueError:
+                return Response({'error': 'Invalid distance maximum'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create an instance of EventPaginationView and call its get method
         paginator_view = EventPaginationView()

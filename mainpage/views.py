@@ -1,24 +1,12 @@
+# event/views.py
 from django.utils import timezone
 from event.models import Event
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
 from rest_framework import status
+from mainpage.swagger_schemas import mainpage_schema
 
-@swagger_auto_schema(
-    method='get',
-    responses={200: 'Successful Response', 400: 'Invalid parameters'},
-    manual_parameters=[
-        openapi.Parameter(
-            name='count',
-            in_=openapi.IN_QUERY,
-            type=openapi.TYPE_INTEGER,
-            required=False,
-            description='Number of upcoming events to return (default is 3)',
-        )
-    ]
-)
+@mainpage_schema
 @api_view(['GET'])
 def mainpage(request):
     """

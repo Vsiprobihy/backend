@@ -1,6 +1,5 @@
 from drf_yasg import openapi
-from authentication.serializers import RegisterSerializer, UserProfileSerializer
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from authentication.serializers import UserProfileSerializer
 
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
@@ -10,78 +9,26 @@ from event.serializers.organizer_detail import OrganizerEventSerializer
 
 
 class SwaggerDocs:
-    class Register:
-        post = {
-            'request_body': RegisterSerializer,
-            'responses': {
-                201: openapi.Response(
-                    description='User registered successfully',
-                    schema=openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'message': openapi.Schema(
-                                type=openapi.TYPE_STRING,
-                                description='Confirmation message',
-                                example='User registered successfully'
-                            ),
-                        },
-                    )
-                ),
-                400: openapi.Response(
-                    description='Bad request',
-                    schema=openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'email': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                                description="Error messages related to the email field",
-                                example=["This field is required."]
-                            ),
-                            'password': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                                description="Error messages related to the password field",
-                                example=["This field is required."]
-                            ),
-                            'password2': openapi.Schema(
-                                type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(type=openapi.TYPE_STRING),
-                                description="Error messages related to the password confirmation field",
-                                example=["Passwords must match."]
-                            ),
-                        },
-                        required=['email', 'password', 'password2']
-                    )
-                ),
-            },
-            'operation_description': "User Registration Endpoint.",
-        }
 
     class Profile:
+
         get = {
+            'tags': ['Profile'],
             'responses': {200: UserProfileSerializer},
             'operation_description': "Get user profile data",
         }
         put = {
+            'tags': ['Profile'],
             'request_body': UserProfileSerializer,
             'responses': {200: UserProfileSerializer},
             'operation_description': "Update user profile data",
         }
 
         patch = {
+            'tags': ['Profile'],
             'request_body': UserProfileSerializer,
             'responses': {200: UserProfileSerializer},
             'operation_description': "Partial update of user profile data",
-        }
-
-    class Token:
-        post = {
-            'request_body': TokenObtainPairSerializer,
-            'responses': {
-                200: openapi.Response('Token Response', TokenObtainPairSerializer),
-            },
-            'operation_description': "Login with JWT token",
         }
 
     class Event:
@@ -98,37 +45,26 @@ class SwaggerDocs:
             'request_body': openapi.Schema(
                 type=openapi.TYPE_OBJECT,
                 properties={
-                    'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the event', default='string'),
+                    'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the event', default='Winter Wonderland Run 2024'),
                     'competition_type': openapi.Schema(
                         type=openapi.TYPE_STRING, 
                         description='Type of competition', 
-                        default='running'  # Дефолтное значение
+                        default='running'
                     ),
-                    'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date', default='2024-09-29'),
-                    'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date', default='2024-09-29'),
-                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='string'),
-                    'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description', default='string'),
-                    'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link', default='http://site.com/registation/'),
+                    'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date', default='2024-10-28'),
+                    'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date', default='2024-10-28'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='Snowy Hills, Boston'),
+                    'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description', default='Embrace the winter spirit with our Winter Wonderland Run!'),
+                    'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link', default='http://site.com/registration/winter-wonderland-run-2024'),
                     'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants', default=True),
-                    'organizer': openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={
-                            'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the organizer', default='string'),
-                            'site_url': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Website of the organizer', default='http://site.com/'),
-                            'phone_number': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number of the organizer', default='1230001'),
-                            'email': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_EMAIL, description='Email of the organizer', default='user@example.com'),
-                            'instagram_url': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Instagram link', default='http://instagramurl.com/'),
-                            'facebook_url': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Facebook link', default='http://facebookurl.com/'),
-                            'telegram_url': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Telegram link', default='http://telegramurl.com/'),
-                        }
-                    ),
+                    'organizer_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the organizer', default=1),
                     'additional_items': openapi.Schema(
                         type=openapi.TYPE_ARRAY,
                         items=openapi.Schema(
                             type=openapi.TYPE_OBJECT,
                             properties={
                                 'item_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of additional item', default='transfer'),
-                                'price': openapi.Schema(type=openapi.TYPE_STRING, description='Price of additional item', default='100'),
+                                'price': openapi.Schema(type=openapi.TYPE_STRING, description='Price of additional item', default='50'),
                             },
                         ),
                         description='List of additional items'
@@ -138,16 +74,31 @@ class SwaggerDocs:
                         items=openapi.Schema(
                             type=openapi.TYPE_OBJECT,
                             properties={
-                                'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the distance', default='10km'),
-                                'cost': openapi.Schema(type=openapi.TYPE_STRING, description='Cost of the distance', default='200'),
+                                'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the distance', default='5km Snow Run'),
+                                'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running'),
+                                'category': openapi.Schema(type=openapi.TYPE_STRING, description='Category of participants', default='adults'),
+                                'length': openapi.Schema(type=openapi.TYPE_NUMBER, description='Length of the distance in km', default=5.0),
+                                'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER, description='Starting number', default=1),
+                                'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER, description='Ending number', default=300),
+                                'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Show start number', default=True),
+                                'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Show name on the number', default=True),
+                                'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description='Minimum age', default=16),
+                                'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description='Maximum age', default=60),
+                                'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description='Cost of the distance', default=55),
                                 'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free', default=False),
+                                'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Promo-only registration', default=False),
+                                'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Allow registration', default=True),
                             }
                         ),
                         description='List of distances'
                     ),
-                    'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event', default='string'),
+                    'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event', default='Experience the beauty of winter while getting fit!'),
                 },
-                required=['name', 'competition_type', 'date_from', 'date_to', 'place', 'description', 'registration_link', 'hide_participants', 'organizer', 'additional_items', 'distances']
+                required=[
+                    'name', 'competition_type', 'date_from', 'date_to', 'place', 
+                    'description', 'registration_link', 'hide_participants', 
+                    'organizer_id', 'additional_items', 'distances'
+                ]
             ),
             'responses': {
                 201: openapi.Response('Event created successfully', EventSerializer),

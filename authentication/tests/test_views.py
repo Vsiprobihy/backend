@@ -16,7 +16,7 @@ def api_client():
 def user(db):
     return User.objects.create_user(
         email='user@example.com',
-        password='password123',
+        password='String1!',
         first_name='John',
         last_name='Doe'
     )
@@ -27,13 +27,20 @@ def test_register_success(api_client):
     url = reverse('register')
     data = {
         'email': 'newuser@example.com',
-        'password': 'password123',
-        'password2': 'password123',
+        'password': 'String1!',
+        'password2': 'String1!',
     }
     response = api_client.post(url, data)
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert response.data['message'] == 'User registered successfully'
+    assert 'access_token' in response.data
+    assert 'refresh_token' in response.data
+    assert isinstance(response.data['access_token'], dict)
+    assert 'value' in response.data['access_token']
+    assert 'expires' in response.data['access_token']
+    assert isinstance(response.data['refresh_token'], dict)
+    assert 'value' in response.data['refresh_token']
+    assert 'expires' in response.data['refresh_token']
 
 
 @pytest.mark.django_db
@@ -41,13 +48,14 @@ def test_register_failure(api_client):
     url = reverse('register')
     data = {
         'email': 'newuser@example.com',
-        'password': 'password123',
-        'password2': 'wrongpassword',
+        'password': 'String1!',
+        'password2': 'Example!2',
     }
     response = api_client.post(url, data)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert 'Passwords must match.' in str(response.data)
+    assert 'non_field_errors' in response.data
+    assert "Passwords must match" in response.data['non_field_errors']
 
 
 @pytest.mark.django_db

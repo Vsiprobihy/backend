@@ -21,7 +21,7 @@ def test_create_user():
 def test_create_user_no_email():
     with pytest.raises(ValueError) as excinfo:
         CustomUser.objects.create_user(email=None, password='testpass123')
-    assert str(excinfo.value) == 'Email is required'
+    assert str(excinfo.value) == 'The given email must be set'
 
 @pytest.mark.django_db
 def test_create_superuser():

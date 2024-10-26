@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 
@@ -35,6 +36,8 @@ INSTALLED_APPS = [
     'event',
     'event_filters',
     'mainpage',
+    'user_info',
+    'public_events',
 ]
 
 MIDDLEWARE = [
@@ -77,16 +80,6 @@ WSGI_APPLICATION = 'vsizabihi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'probihy_db',
-        'USER': 'vsi_probihy_user',
-        'PASSWORD': 'probihy_password',
-        'HOST': 'data-base',
-        'PORT': '5432',
-    }
-}
 
 
 # Password validation
@@ -152,14 +145,25 @@ LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'authentication.CustomUser'
 
-from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-MAIN_PAGE_START_DATE_DAYS_AHEAD = 1  # Количество дней для начальной даты
-MAIN_PAGE_EVENT_DAYS_AHEAD = 5  # Количество дней, до которого отображаем события
+MAIN_PAGE_START_DATE_DAYS_AHEAD = 1  # Количество дней для начальной даты (для ендпоинта upcoming-events)
+MAIN_PAGE_EVENT_DAYS_AHEAD = 5  # Количество дней, до которого отображаем события (для ендпоинта upcoming-events)
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {your JWT token}"'
+        }
+    },
+}
