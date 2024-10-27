@@ -72,6 +72,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         events = obj.events_registered.all()
         return EventSerializer(events, many=True).data
 
+    def get_avatar(self, obj):
+        request = self.context.get('request')
+        if obj.avatar and request:
+            return request.build_absolute_uri(obj.avatar.url)
+        return None
 
 class UserAvatarUploadSerializer(serializers.ModelSerializer):
     class Meta:

@@ -68,7 +68,7 @@ class UserProfileView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Profile.get)
     def get(self, request):
         user = request.user
-        serializer = UserProfileSerializer(user)
+        serializer = UserProfileSerializer(user, context={'request': request})
         return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.Profile.put)
