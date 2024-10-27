@@ -181,7 +181,6 @@ cython_debug/
 .env.dev
 .env.prod
 
-.jpg
 
-/media/
-/media/uploads/
+media/
+media/uploads/
