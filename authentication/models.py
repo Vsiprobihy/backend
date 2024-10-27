@@ -1,6 +1,14 @@
+import os
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from authentication.managers import CustomUserManager
+
+
+def customer_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename = f"user-{instance.id}{extension}"
+
+    return os.path.join("uploads/user/", filename)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -35,6 +43,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
+    avatar = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to=customer_image_file_path,
+        max_length=255,
+    )
 
     sports_club = models.CharField(max_length=100, null=True, blank=True)
     emergency_contact_name = models.CharField(max_length=100, null=True, blank=True)

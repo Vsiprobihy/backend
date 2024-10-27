@@ -1,4 +1,5 @@
 from drf_yasg.utils import swagger_auto_schema
+from django.core.files.storage import default_storage
 from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework import status, generics
@@ -8,7 +9,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from swagger_docs import SwaggerDocs
 
-from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer
+from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer, UserAvatarUploadSerializer
+from authentication.models import CustomUser
 from utils.custom_exceptions import InvalidCredentialsError
 from authentication.swagger_schemas import LoginSchema
 
@@ -87,6 +89,41 @@ class UserProfileView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class UserAvatarUploadView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserAvatarUploadSerializer
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        tags=['User Management'],
+        request_body=UserAvatarUploadSerializer,
+        responses={200: 'Avatar uploaded successfully.', 400: 'Bad Request - Invalid image file.'},
+        operation_description="Upload user avatar using PUT method."
+    )
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        tags=['User Management'],
+        request_body=UserAvatarUploadSerializer,
+        responses={200: 'Avatar uploaded successfully.', 400: 'Bad Request - Invalid image file.'},
+        operation_description="Upload user avatar using PATCH method."
+    )
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
+
+    def get_object(self):
+        return self.request.user
+
+    def perform_update(self, serializer):
+        user = self.get_object()
+        
+        if user.avatar:
+            old_avatar_path = user.avatar.path
+            if default_storage.exists(old_avatar_path):
+                default_storage.delete(old_avatar_path)
+        serializer.save(avatar=self.request.data.get('avatar'))
 
 class LoginView(APIView):
     """

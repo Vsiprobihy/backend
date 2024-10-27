@@ -64,10 +64,16 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = [
             'first_name', 'last_name', 'gender', 'date_of_birth', 't_shirt_size',
             'country', 'city', 'phone_number', 'sports_club', 'emergency_contact_name',
-            'emergency_contact_phone', 'registered_events'
+            'emergency_contact_phone', 'registered_events', 'avatar'
         ]
 
     def get_registered_events(self, obj):
         from event.serializers.events import EventSerializer
         events = obj.events_registered.all()
         return EventSerializer(events, many=True).data
+
+
+class UserAvatarUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['avatar']
