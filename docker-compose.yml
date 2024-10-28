@@ -33,7 +33,7 @@ services:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    image: ghcr.io/${{ github.repository }}/backend:latest
+    image: ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
     container_name: probihy_back_container
     restart: unless-stopped
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -63,7 +63,7 @@ services:
       - app-network
 
   frontend:
-    image: ghcr.io/${{ github.repository }}/frontend:latest
+    image: ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
     # build:
     #   context: ./frontend
     #   dockerfile: Dockerfile
