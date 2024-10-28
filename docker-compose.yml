@@ -83,7 +83,8 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - app_build:/var/www/app/.next 
+#      - app_build:/var/www/app/.next
+      - ./frontend/src:/var/www/app/.next
     networks:
       - app-network
     depends_on:
