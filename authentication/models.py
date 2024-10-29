@@ -2,6 +2,8 @@ import os
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+
 from authentication.managers import CustomUserManager
 from utils.data_validatiors import validate_phone_number
 
@@ -73,3 +75,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class AdditionalProfile(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='additional_profiles', on_delete=models.CASCADE)
+    email = models.EmailField()
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.email})"

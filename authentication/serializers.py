@@ -3,7 +3,7 @@ import re
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import CustomUser
+from authentication.models import AdditionalProfile, CustomUser
 from django.contrib.auth import get_user_model
 
 
@@ -82,3 +82,13 @@ class UserAvatarUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['avatar']
+
+class AdditionalProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdditionalProfile
+        fields = ['id', 'email', 'first_name', 'last_name']
+
+class AdditionalProfileDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdditionalProfile
+        fields = ['id', 'email', 'first_name', 'last_name']
