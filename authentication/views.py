@@ -13,14 +13,14 @@ from authentication.serializers import RegisterSerializer, LoginSerializer, User
 from authentication.models import CustomUser, AdditionalProfile
 from utils.custom_exceptions import InvalidCredentialsError
 from authentication.swagger_schemas import (  # Import swager schemes from a separate directory
-    LoginSchema,
-    AdditionalProfileListViewGet,
-    AdditionalProfileListViewPost,
-    AdditionalProfileDetailViewGet,
-    AdditionalProfileDetailViewPut,
-    AdditionalProfileDetailViewDelete,
-    UserAvatarUploadViewPut,
-    UserAvatarUploadViewPatch
+    SwaggerLoginSchema,
+    SwaggerAdditionalProfileListViewGet,
+    SwaggerAdditionalProfileListViewPost,
+    SwaggerAdditionalProfileDetailViewGet,
+    SwaggerAdditionalProfileDetailViewPut,
+    SwaggerAdditionalProfileDetailViewDelete,
+    SwaggerUserAvatarUploadViewPut,
+    SwaggerUserAvatarUploadViewPatch
 )
 
 
@@ -105,11 +105,11 @@ class UserAvatarUploadView(generics.UpdateAPIView):
     serializer_class = UserAvatarUploadSerializer
     permission_classes = [IsAuthenticated]
 
-    @UserAvatarUploadViewPut
+    @SwaggerUserAvatarUploadViewPut
     def put(self, request, *args, **kwargs):
         return super().put(request, *args, **kwargs)
 
-    @UserAvatarUploadViewPatch
+    @SwaggerUserAvatarUploadViewPatch
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
 
@@ -138,7 +138,7 @@ class LoginView(APIView):
 
     serializer_class = LoginSerializer
 
-    @LoginSchema
+    @SwaggerLoginSchema
     def post(self, request, *args, **kwargs) -> Response:
         """
         Authenticate user and return JWT tokens.
@@ -180,13 +180,13 @@ class LoginView(APIView):
 class AdditionalProfileListView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @AdditionalProfileListViewGet
+    @SwaggerAdditionalProfileListViewGet
     def get(self, request):
         profiles = request.user.additional_profiles.all()
         serializer = AdditionalProfileSerializer(profiles, many=True)
         return Response(serializer.data)
 
-    @AdditionalProfileListViewPost
+    @SwaggerAdditionalProfileListViewPost
     def post(self, request):
         serializer = AdditionalProfileSerializer(data=request.data)
         if serializer.is_valid():
@@ -198,7 +198,7 @@ class AdditionalProfileListView(APIView):
 class AdditionalProfileDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @AdditionalProfileDetailViewGet
+    @SwaggerAdditionalProfileDetailViewGet
     def get(self, request, profile_id):
         try:
             profile = request.user.additional_profiles.get(id=profile_id)
@@ -207,7 +207,7 @@ class AdditionalProfileDetailView(APIView):
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @AdditionalProfileDetailViewPut
+    @SwaggerAdditionalProfileDetailViewPut
     def put(self, request, profile_id):
         try:
             profile = request.user.additional_profiles.get(id=profile_id)
@@ -219,7 +219,7 @@ class AdditionalProfileDetailView(APIView):
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @AdditionalProfileDetailViewDelete
+    @SwaggerAdditionalProfileDetailViewDelete
     def delete(self, request, profile_id):
         try:
             profile = request.user.additional_profiles.get(id=profile_id)
