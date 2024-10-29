@@ -18,7 +18,9 @@ from authentication.swagger_schemas import (  # Import swager schemes from a sep
     AdditionalProfileListViewPost,
     AdditionalProfileDetailViewGet,
     AdditionalProfileDetailViewPut,
-    AdditionalProfileDetailViewDelete
+    AdditionalProfileDetailViewDelete,
+    UserAvatarUploadViewPut,
+    UserAvatarUploadViewPatch
 )
 
 
@@ -103,21 +105,11 @@ class UserAvatarUploadView(generics.UpdateAPIView):
     serializer_class = UserAvatarUploadSerializer
     permission_classes = [IsAuthenticated]
 
-    @swagger_auto_schema(
-        tags=['User Management'],
-        request_body=UserAvatarUploadSerializer,
-        responses={200: 'Avatar uploaded successfully.', 400: 'Bad Request - Invalid image file.'},
-        operation_description="Upload user avatar using PUT method."
-    )
+    @UserAvatarUploadViewPut
     def put(self, request, *args, **kwargs):
         return super().put(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        tags=['User Management'],
-        request_body=UserAvatarUploadSerializer,
-        responses={200: 'Avatar uploaded successfully.', 400: 'Bad Request - Invalid image file.'},
-        operation_description="Upload user avatar using PATCH method."
-    )
+    @UserAvatarUploadViewPatch
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
 

@@ -13,6 +13,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('profile/', UserProfileView.as_view(), name='user_profile'),
     path('profile/upload-avatar/', UserAvatarUploadView.as_view(), name='upload-avatar'),
-    path('additional_profiles/', AdditionalProfileListView.as_view(), name='additional_profiles_list'),
-    path('additional_profiles/<int:profile_id>/', AdditionalProfileDetailView.as_view(), name='additional_profile_detail'),
+    path('profile/additional_profiles/', AdditionalProfileListView.as_view(), name='additional_profiles_list'),
+    path('profile/additional_profiles/<int:profile_id>/', AdditionalProfileDetailView.as_view(), name='additional_profile_detail'),
 ]
