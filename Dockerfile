@@ -10,10 +10,8 @@ RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
 COPY . ./
-RUN chmod +x /app/scripts/wait-for-it.sh
 
 EXPOSE 8000
 
-CMD ["/app/scripts/wait-for-it.sh", "probihy_db_container:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-# CMD ["npm", "start"]

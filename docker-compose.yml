@@ -33,8 +33,8 @@ services:
     volumes:
       - app_data:/data
       - static_volume:/usr/src/app/staticfiles:rw
-#    env_file:
-#      - .env
+    env_file:
+     - .env
     environment:
       - DJANGO_SETTINGS_MODULE=vsizabihi.settings.production
     networks:
