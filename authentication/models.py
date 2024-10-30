@@ -1,6 +1,17 @@
+import os
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+
 from authentication.managers import CustomUserManager
+from utils.data_validatiors import validate_phone_number
+
+def customer_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename = f"user-{instance.id}{extension}"
+
+    return os.path.join("uploads/user/", filename)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -34,7 +45,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     country = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    phone_number = models.CharField(
+        _("phone number"),
+        max_length=20,
+        null=True,
+        unique=True,
+        validators=[validate_phone_number],
+    )
+    avatar = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to=customer_image_file_path,
+        max_length=255,
+    )
 
     sports_club = models.CharField(max_length=100, null=True, blank=True)
     emergency_contact_name = models.CharField(max_length=100, null=True, blank=True)
@@ -52,3 +75,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class AdditionalProfile(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='additional_profiles', on_delete=models.CASCADE)
+    email = models.EmailField()
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.email})"

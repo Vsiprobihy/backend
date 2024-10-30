@@ -3,7 +3,7 @@ import re
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import CustomUser
+from authentication.models import AdditionalProfile, CustomUser
 from django.contrib.auth import get_user_model
 
 
@@ -62,12 +62,33 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'first_name', 'last_name', 'gender', 'date_of_birth', 't_shirt_size',
+            'id', 'first_name', 'last_name', 'gender', 'date_of_birth', 't_shirt_size',
             'country', 'city', 'phone_number', 'sports_club', 'emergency_contact_name',
-            'emergency_contact_phone', 'registered_events'
+            'emergency_contact_phone', 'registered_events', 'avatar'
         ]
 
     def get_registered_events(self, obj):
         from event.serializers.events import EventSerializer
         events = obj.events_registered.all()
         return EventSerializer(events, many=True).data
+
+    def get_avatar(self, obj):
+        request = self.context.get('request')
+        if obj.avatar and request:
+            return request.build_absolute_uri(obj.avatar.url)
+        return None
+
+class UserAvatarUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['avatar']
+
+class AdditionalProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdditionalProfile
+        fields = ['id', 'email', 'first_name', 'last_name']
+
+class AdditionalProfileDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdditionalProfile
+        fields = ['id', 'email', 'first_name', 'last_name']

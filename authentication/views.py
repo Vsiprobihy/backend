@@ -1,4 +1,5 @@
 from drf_yasg.utils import swagger_auto_schema
+from django.core.files.storage import default_storage
 from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework import status, generics
@@ -8,9 +9,20 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from swagger_docs import SwaggerDocs
 
-from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer
+from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer, UserAvatarUploadSerializer, AdditionalProfileSerializer, AdditionalProfileDetailSerializer
+from authentication.models import CustomUser, AdditionalProfile
 from utils.custom_exceptions import InvalidCredentialsError
-from authentication.swagger_schemas import LoginSchema
+from authentication.swagger_schemas import (  # Import swager schemes from a separate directory
+    SwaggerLoginSchema,
+    SwaggerAdditionalProfileListViewGet,
+    SwaggerAdditionalProfileListViewPost,
+    SwaggerAdditionalProfileDetailViewGet,
+    SwaggerAdditionalProfileDetailViewPut,
+    SwaggerAdditionalProfileDetailViewDelete,
+    SwaggerUserAvatarUploadViewPut,
+    SwaggerUserAvatarUploadViewPatch
+)
+
 
 class RegisterView(generics.CreateAPIView):
     """
@@ -66,7 +78,7 @@ class UserProfileView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Profile.get)
     def get(self, request):
         user = request.user
-        serializer = UserProfileSerializer(user)
+        serializer = UserProfileSerializer(user, context={'request': request})
         return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.Profile.put)
@@ -88,6 +100,31 @@ class UserProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserAvatarUploadView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserAvatarUploadSerializer
+    permission_classes = [IsAuthenticated]
+
+    @SwaggerUserAvatarUploadViewPut
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
+    @SwaggerUserAvatarUploadViewPatch
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
+
+    def get_object(self):
+        return self.request.user
+
+    def perform_update(self, serializer):
+        user = self.get_object()
+        
+        if user.avatar:
+            old_avatar_path = user.avatar.path
+            if default_storage.exists(old_avatar_path):
+                default_storage.delete(old_avatar_path)
+        serializer.save(avatar=self.request.data.get('avatar'))
+
 class LoginView(APIView):
     """
     API view for user login.
@@ -101,7 +138,7 @@ class LoginView(APIView):
 
     serializer_class = LoginSerializer
 
-    @LoginSchema
+    @SwaggerLoginSchema
     def post(self, request, *args, **kwargs) -> Response:
         """
         Authenticate user and return JWT tokens.
@@ -138,7 +175,58 @@ class LoginView(APIView):
             }
             return response
         raise InvalidCredentialsError
-    
+
+
+class AdditionalProfileListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @SwaggerAdditionalProfileListViewGet
+    def get(self, request):
+        profiles = request.user.additional_profiles.all()
+        serializer = AdditionalProfileSerializer(profiles, many=True)
+        return Response(serializer.data)
+
+    @SwaggerAdditionalProfileListViewPost
+    def post(self, request):
+        serializer = AdditionalProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdditionalProfileDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @SwaggerAdditionalProfileDetailViewGet
+    def get(self, request, profile_id):
+        try:
+            profile = request.user.additional_profiles.get(id=profile_id)
+            serializer = AdditionalProfileDetailSerializer(profile)
+            return Response(serializer.data)
+        except AdditionalProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @SwaggerAdditionalProfileDetailViewPut
+    def put(self, request, profile_id):
+        try:
+            profile = request.user.additional_profiles.get(id=profile_id)
+            serializer = AdditionalProfileDetailSerializer(profile, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except AdditionalProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @SwaggerAdditionalProfileDetailViewDelete
+    def delete(self, request, profile_id):
+        try:
+            profile = request.user.additional_profiles.get(id=profile_id)
+            profile.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except AdditionalProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 # class AdminOnlyView(APIView):
 #     permission_classes = [IsAuthenticated, IsAdmin]

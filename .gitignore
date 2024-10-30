@@ -180,3 +180,7 @@ cython_debug/
 #.idea/
 .env.dev
 .env.prod
+
+
+media/
+media/uploads/
