@@ -6,17 +6,6 @@ services:
     image: postgres:16.4
     container_name: probihy_db_container
     restart: unless-stopped
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-      restart_policy:
-        condition: on-failure
     environment:
       POSTGRES_DB: "probihy_db"
       POSTGRES_USER: "vsi_probihy_user"
@@ -33,21 +22,10 @@ services:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    image: ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+    image: ghcr.io/${BACKEND_REPOSITORY}/backend:${BACKEND_SHA}
     container_name: probihy_back_container
     restart: unless-stopped
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-      restart_policy:
-        condition: on-failure
     depends_on:
       - data-base
     ports:
@@ -56,47 +34,18 @@ services:
       - app_data:/data
       - static_volume:/usr/src/app/staticfiles:rw
     env_file:
-      - .env
+     - .env
     environment:
       - DJANGO_SETTINGS_MODULE=vsizabihi.settings.production
     networks:
       - app-network
 
-  frontend:
-    image: ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
-    # build:
-    #   context: ./frontend
-    #   dockerfile: Dockerfile
-    container_name: probihy_front_container
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-      restart_policy:
-        condition: on-failure  
-    restart: unless-stopped
-    ports:
-      - 3000:3000
-    volumes:
-#      - app_build:/var/www/app/.next
-      - ./frontend/src:/var/www/app/.next
-    networks:
-      - app-network
-    depends_on:
-      - backend
-
-
 volumes:
   app_db:
-  app_build:
   app_data:
   static_volume:
 
 networks:
   app-network:
+    name: app-network
     driver: bridge

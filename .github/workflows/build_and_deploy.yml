@@ -1,0 +1,45 @@
+name: Deploy Backend to Server
+
+on:
+  push:
+    branches:
+      - main
+      - devops
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-22.04
+
+    env:
+      SERVICE_NAME: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Clean cache
+        run: docker builder prune -f
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
+
+      - name: Push Docker image to GitHub Container Registry
+        run: |
+          docker push ghcr.io/${{ github.repository }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+
+      - name: Deploy to Remote Server with Rolling Update
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            export BACKEND_REPOSITORY=${{ github.repository }}
+            export BACKEND_SHA=${{ github.sha }}
+            
+            docker-compose -f /home/azureuser/probihy/backend/docker-compose.yml up -d
