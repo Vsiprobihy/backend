@@ -62,7 +62,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'id', 'first_name', 'last_name', 'first_name_eng', 'last_name_eng',  # додані нові поля
+            'id', 'first_name', 'last_name', 'first_name_eng', 'last_name_eng',
             'gender', 'date_of_birth', 't_shirt_size', 'country', 'city',
             'phone_number', 'sports_club', 'emergency_contact_name',
             'emergency_contact_phone', 'registered_events', 'avatar'
