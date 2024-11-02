@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from event.models import Event
 from event_filters.views.filter_service import EventFilterService
 from event_filters.swagger_schemas import event_filter_schema
-from event_filters.views.pagination import EventPaginationView 
+from utils.pagination import EventPaginationView 
 from event.constants.constants_event import REGIONS, COMPETITION_TYPES
 
 

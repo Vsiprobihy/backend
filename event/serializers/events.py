@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
-from .additional_items import AdditionalItemEventSerializer
-from .distance_detail import DistanceEventSerializer
-from .organizer_detail import OrganizerEventSerializer
-from ..models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEvent, DistanceEvent
+from event.serializers.additional_items import AdditionalItemEventSerializer
+from event.serializers.distance_detail import DistanceEventSerializer
+from event.serializers.organizer_detail import OrganizerEventSerializer
+from event.models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEvent, DistanceEvent
+from utils.event_utils import get_region_name
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -11,12 +12,16 @@ class EventSerializer(serializers.ModelSerializer):
     organizer = OrganizerEventSerializer(read_only=True)
     additional_items = AdditionalItemEventSerializer(many=True, required=False)
     distances = DistanceEventSerializer(many=True, required=True)
+    place = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = ['name', 'competition_type', 'date_from', 'date_to', 'place', 'photos', 'description',
                   'registration_link', 'hide_participants', 'schedule_pdf', 'organizer', 'organizer_id', 'additional_items',
                   'distances', 'extended_description']
+
+    def get_place(self, obj):
+        return get_region_name(obj.place)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
