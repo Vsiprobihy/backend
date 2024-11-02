@@ -7,7 +7,7 @@ from event.models import Event
 from event_filters.views.filter_service import EventFilterService
 from event_filters.swagger_schemas import event_filter_schema
 from event_filters.views.pagination import EventPaginationView 
-from event.constants.constants_event import REGIONS
+from event.constants.constants_event import REGIONS, COMPETITION_TYPES
 
 
 class EventFilterView(APIView):
@@ -24,7 +24,10 @@ class EventFilterView(APIView):
         # Sorting by date
         events = Event.objects.all().order_by('-date_from')
 
-        if competition_type:
+        
+        if competition_type is not None:
+            if competition_type not in dict(COMPETITION_TYPES).keys():
+                return Response({'error': 'Invalid competiton type'}, status=status.HTTP_400_BAD_REQUEST)
             events = events.filter(competition_type=competition_type)
 
         if name:
@@ -36,9 +39,10 @@ class EventFilterView(APIView):
         if year:
             events = events.filter(Q(date_from__year=year) | Q(date_to__year=year))
 
-        valid_region_codes = [code for code, name in REGIONS]
-        if place and place not in valid_region_codes:
-            return Response({'error': 'Invalid region'}, status=status.HTTP_400_BAD_REQUEST)
+        if place is not None:
+            if place not in dict(REGIONS).keys():
+                return Response({'error': 'Invalid region'}, status=status.HTTP_400_BAD_REQUEST)
+            events = events.filter(place__icontains=place)
 
         if distance_min and distance_max:
             try:
