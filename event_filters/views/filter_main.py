@@ -7,6 +7,8 @@ from event.models import Event
 from event_filters.views.filter_service import EventFilterService
 from event_filters.swagger_schemas import event_filter_schema
 from event_filters.views.pagination import EventPaginationView 
+from event.constants.constants_event import REGIONS
+
 
 class EventFilterView(APIView):
     @event_filter_schema
@@ -34,8 +36,9 @@ class EventFilterView(APIView):
         if year:
             events = events.filter(Q(date_from__year=year) | Q(date_to__year=year))
 
-        if place:
-            events = events.filter(place__icontains=place)
+        valid_region_codes = [code for code, name in REGIONS]
+        if place and place not in valid_region_codes:
+            return Response({'error': 'Invalid region'}, status=status.HTTP_400_BAD_REQUEST)
 
         if distance_min and distance_max:
             try:

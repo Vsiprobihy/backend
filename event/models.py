@@ -1,7 +1,8 @@
 from django.db import models
 
 from authentication.models import CustomUser
-
+from event.constants.constants_event import STATUS_CHOICES, COMPETITION_TYPES, STATUS_PENDING
+from event.constants.constants_distance import CATEGORY_CHOICES
 
 class OrganizerEvent(models.Model):
     name = models.CharField(max_length=255)
@@ -55,36 +56,11 @@ class AdditionalItemEvent(models.Model):
 
 
 class DistanceEvent(models.Model):
-    COMPETITION_TYPES = [
-        ('running', 'Біг'),
-        ('trail', 'Трейл'),
-        ('ultramarathon', 'Ультрамарафон'),
-        ('cycling', 'Велоспорт'),
-        ('online', 'Online'),
-        ('walking', 'Ходьба'),
-        ('ocr', 'OCR'),
-        ('swimming', 'Плавання'),
-        ('triathlon', 'Тріатлон'),
-    ]
-
-    CATEGORY_CHOICES = [
-        ('adults', 'Дорослі'),
-        ('children', 'Діти'),
-        ('men', 'Чоловіки'),
-        ('women', 'Жінки'),
-        ('disabled', 'Учасники з обмеженими можливостями'),
-        ('veterans', 'Ветерани'),
-        ('pupils', 'Школярі'),
-        ('boys', 'Юнаки'),
-        ('juniors', 'Юніори'),
-        ('students', 'Студенти'),
-        ('teachers', 'Викладачі'),
-    ]
 
     name = models.CharField(max_length=255)
     competition_type = models.CharField(max_length=50, choices=COMPETITION_TYPES, default='running')
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='adults')
-    length = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # In km or meters
+    length = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # Distance in km or meters
     start_number_from = models.PositiveIntegerField(blank=True, null=True)
     start_number_to = models.PositiveIntegerField(blank=True, null=True)
     show_start_number = models.BooleanField(default=False)
@@ -102,27 +78,6 @@ class DistanceEvent(models.Model):
 
 
 class Event(models.Model):
-    COMPETITION_TYPES = [
-        ('running', 'Біг'),
-        ('trail', 'Трейл'),
-        ('ultramarathon', 'Ультрамарафон'),
-        ('cycling', 'Велоспорт'),
-        ('online', 'Online'),
-        ('walking', 'Ходьба'),
-        ('ocr', 'OCR'),
-        ('swimming', 'Плавання'),
-        ('triathlon', 'Тріатлон'),
-    ]
-
-    STATUS_PENDING = 'pending'
-    STATUS_UNPUBLISHED = 'unpublished'
-    STATUS_PUBLISHED = 'published'
-
-    STATUS_CHOICES = [
-        (STATUS_PENDING, 'Очікує затвердження'),
-        (STATUS_UNPUBLISHED, 'Не опублікована'),
-        (STATUS_PUBLISHED, 'Опублікована'),
-    ]
 
     name = models.CharField(max_length=255)
     competition_type = models.CharField(max_length=50, choices=COMPETITION_TYPES)
