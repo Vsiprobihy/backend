@@ -2,6 +2,7 @@ from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from datetime import datetime
 
 from event.models import Event
 from event_filters.views.filter_service import EventFilterService
@@ -34,10 +35,23 @@ class EventFilterView(APIView):
             events = events.filter(name__icontains=name)
 
         if month:
-            events = events.filter(Q(date_from__month=month) | Q(date_to__month=month))
+            try:
+                month = int(month)
+                if month < 1 or month > 12:
+                    return Response({'error': 'Month must be between 1 and 12'}, status=status.HTTP_400_BAD_REQUEST)
+                events = events.filter(Q(date_from__month=month) | Q(date_to__month=month))
+            except ValueError:
+                return Response({'error': 'Invalid month format'}, status=status.HTTP_400_BAD_REQUEST)
 
         if year:
-            events = events.filter(Q(date_from__year=year) | Q(date_to__year=year))
+            try:
+                year = int(year)
+                current_year = datetime.now().year
+                if year < 2000 or year > current_year + 1:
+                    return Response({'error': 'Year must be between 2000 and no more than 1 year from the current year'}, status=status.HTTP_400_BAD_REQUEST)
+                events = events.filter(Q(date_from__year=year) | Q(date_to__year=year))
+            except ValueError:
+                return Response({'error': 'Invalid year format'}, status=status.HTTP_400_BAD_REQUEST)
 
         if place is not None:
             if place not in dict(REGIONS).keys():
