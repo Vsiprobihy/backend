@@ -42,7 +42,7 @@ class EventFilterView(APIView):
         if place is not None:
             if place not in dict(REGIONS).keys():
                 return Response({'error': 'Invalid region'}, status=status.HTTP_400_BAD_REQUEST)
-            events = events.filter(place__icontains=place)
+            events = events.filter(place_region__icontains=place)
 
         if distance_min and distance_max:
             try:

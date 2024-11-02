@@ -55,6 +55,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=20,
         null=True,
         unique=True,
+        blank=True,
         validators=[validate_phone_number],
     )
     avatar = models.ImageField(

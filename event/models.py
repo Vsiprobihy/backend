@@ -83,6 +83,7 @@ class Event(models.Model):
     competition_type = models.CharField(max_length=50, choices=COMPETITION_TYPES)
     date_from = models.DateField()
     date_to = models.DateField()
+    place_region = models.CharField(max_length=255, null=True)
     place = models.CharField(max_length=255)
     photos = models.ImageField(upload_to='event_photos/', blank=True, null=True)
     description = models.TextField()
