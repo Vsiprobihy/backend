@@ -23,15 +23,15 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('', api_root_view, name='api-root'),
-    path('admin/', admin.site.urls),
-    path('auth/', include('authentication.urls')),
-    path('user/', include('user_info.urls')), 
+    path('api/admin/', admin.site.urls),
+    path('api/auth/', include('authentication.urls')),
+    path('api/user/', include('user_info.urls')), 
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('organizer/', include('event.urls')),
-    path('event/', include('public_events.urls')),
-    path('calendar/', include('event_filters.urls')),
-    path('upcoming-events/', include('mainpage.urls')),
+    path('api/organizer/', include('event.urls')),
+    path('api/event/', include('public_events.urls')),
+    path('api/calendar/', include('event_filters.urls')),
+    path('api/upcoming-events/', include('mainpage.urls')),
 ]
 
 if settings.DEBUG:
