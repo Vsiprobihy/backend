@@ -1,7 +1,7 @@
 from django.db import models
 
 from authentication.models import CustomUser
-from event.constants.constants_event import STATUS_CHOICES, COMPETITION_TYPES, STATUS_PENDING
+from event.constants.constants_event import STATUS_CHOICES, COMPETITION_TYPES, STATUS_PENDING, REGIONS
 from event.constants.constants_distance import CATEGORY_CHOICES
 
 class OrganizerEvent(models.Model):
@@ -83,7 +83,7 @@ class Event(models.Model):
     competition_type = models.CharField(max_length=50, choices=COMPETITION_TYPES)
     date_from = models.DateField()
     date_to = models.DateField()
-    place_region = models.CharField(max_length=255, null=True)
+    place_region = models.CharField(max_length=255,choices=REGIONS, null=True)
     place = models.CharField(max_length=255)
     photos = models.ImageField(upload_to='event_photos/', blank=True, null=True)
     description = models.TextField()
