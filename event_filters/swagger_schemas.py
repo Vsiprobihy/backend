@@ -3,15 +3,18 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from event.serializers.events import EventSerializer
 from event.constants.constants_event import REGIONS
+from event.constants.constants_event import COMPETITION_TYPES
 
 # List of region codes for the place parameter
 region_codes = [code for code, name in REGIONS]
+
+competition_types = [competition for competition, name in COMPETITION_TYPES]
 
 event_filter_schema = swagger_auto_schema(
     operation_description="Filtering events by competition type, name, month, year, location, and distance",
     manual_parameters=[
         openapi.Parameter('page', openapi.IN_QUERY, description="Type number of page (Pagination)", type=openapi.TYPE_STRING),
-        openapi.Parameter('competition_type', openapi.IN_QUERY, description="Type of competition (running, trail, cycling)", type=openapi.TYPE_STRING),
+        openapi.Parameter('competition_type', openapi.IN_QUERY, description="Type of competition (running, trail, cycling)", type=openapi.TYPE_STRING, enum=competition_types),
         openapi.Parameter('name', openapi.IN_QUERY, description="Event name", type=openapi.TYPE_STRING),
         openapi.Parameter('month', openapi.IN_QUERY, description="Event month (1-12)", type=openapi.TYPE_INTEGER),
         openapi.Parameter('year', openapi.IN_QUERY, description="Event year", type=openapi.TYPE_INTEGER),
