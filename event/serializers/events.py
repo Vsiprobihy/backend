@@ -4,7 +4,6 @@ from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
 from event.serializers.organizer_detail import OrganizerEventSerializer
 from event.models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEvent, DistanceEvent
-from utils.event_utils import get_region_name
 
 
 class EventSerializer(serializers.ModelSerializer):
