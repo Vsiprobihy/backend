@@ -53,7 +53,8 @@ class SwaggerDocs:
                     ),
                     'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date', default='2024-10-28'),
                     'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date', default='2024-10-28'),
-                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='Snowy Hills, Boston'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='Lviv'),
+                    'place_region': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='lviv_region'),
                     'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description', default='Embrace the winter spirit with our Winter Wonderland Run!'),
                     'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link', default='http://site.com/registration/winter-wonderland-run-2024'),
                     'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants', default=True),
@@ -95,7 +96,7 @@ class SwaggerDocs:
                     'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event', default='Experience the beauty of winter while getting fit!'),
                 },
                 required=[
-                    'name', 'competition_type', 'date_from', 'date_to', 'place', 
+                    'name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region', 
                     'description', 'registration_link', 'hide_participants', 
                     'organizer_id', 'additional_items', 'distances'
                 ]
@@ -115,13 +116,14 @@ class SwaggerDocs:
                     'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running'),
                     'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date'),
                     'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date'),
-                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='Lviv'),
+                    'place_region': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='lviv_region'),
                     'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description'),
                     'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link'),
                     'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants'),
                     'extended_description': openapi.Schema(type=openapi.TYPE_STRING, description='Extended description of the event'),
                 },
-                required=['name', 'competition_type', 'date_from', 'date_to', 'place', 'description', 'registration_link', 'hide_participants']
+                required=['name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region', 'description', 'registration_link', 'hide_participants']
             ),
             'responses': {
                 200: openapi.Response('Success', EventSerializer),
@@ -138,7 +140,8 @@ class SwaggerDocs:
                     'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running'),
                     'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date'),
                     'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date'),
-                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event'),
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='Lviv'),
+                    'place_region': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='lviv_region'),
                     'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description'),
                     'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link'),
                     'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants'),

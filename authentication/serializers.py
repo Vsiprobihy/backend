@@ -58,6 +58,7 @@ class LoginSerializer(serializers.Serializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     registered_events = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -65,7 +66,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'id', 'first_name', 'last_name', 'first_name_eng', 'last_name_eng',
             'gender', 'date_of_birth', 't_shirt_size', 'country', 'city',
             'phone_number', 'sports_club', 'emergency_contact_name',
-            'emergency_contact_phone', 'registered_events', 'avatar'
+            'emergency_contact_phone', 'registered_events', 'avatar', 'email'  # добавлено поле email
         ]
 
     def get_registered_events(self, obj):
@@ -78,6 +79,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if obj.avatar and request:
             return request.build_absolute_uri(obj.avatar.url)
         return None
+
+    def get_email(self, obj):
+        return obj.email
+
 
 class UserAvatarUploadSerializer(serializers.ModelSerializer):
     class Meta:

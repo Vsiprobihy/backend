@@ -42,7 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name_eng = models.CharField(max_length=50, null=True, blank=True)
     last_name_eng = models.CharField(max_length=50, null=True, blank=True)
 
-    
+
     gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female')], null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     t_shirt_size = models.CharField(max_length=5, choices=T_SHIRT_SIZE_CHOICES, null=True, blank=True)
@@ -55,6 +55,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=20,
         null=True,
         unique=True,
+        blank=True,
         validators=[validate_phone_number],
     )
     avatar = models.ImageField(

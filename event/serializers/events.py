@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from .additional_items import AdditionalItemEventSerializer
-from .distance_detail import DistanceEventSerializer
-from .organizer_detail import OrganizerEventSerializer
-from ..models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEvent, DistanceEvent
+from event.serializers.additional_items import AdditionalItemEventSerializer
+from event.serializers.distance_detail import DistanceEventSerializer
+from event.serializers.organizer_detail import OrganizerEventSerializer
+from event.models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEvent, DistanceEvent
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -12,11 +12,14 @@ class EventSerializer(serializers.ModelSerializer):
     additional_items = AdditionalItemEventSerializer(many=True, required=False)
     distances = DistanceEventSerializer(many=True, required=True)
 
+    
     class Meta:
         model = Event
-        fields = ['name', 'competition_type', 'date_from', 'date_to', 'place', 'photos', 'description',
+        fields = ['name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region', 'photos', 'description',
                   'registration_link', 'hide_participants', 'schedule_pdf', 'organizer', 'organizer_id', 'additional_items',
                   'distances', 'extended_description']
+
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -26,6 +29,7 @@ class EventSerializer(serializers.ModelSerializer):
         self.fields['date_from'].required = True
         self.fields['date_to'].required = True
         self.fields['place'].required = True
+        self.fields['place_region'].required = True
         # Fields that are optional
         self.fields['description'].required = False
         self.fields['registration_link'].required = False
@@ -75,6 +79,7 @@ class EventSerializer(serializers.ModelSerializer):
         instance.date_from = validated_data.get('date_from', instance.date_from)
         instance.date_to = validated_data.get('date_to', instance.date_to)
         instance.place = validated_data.get('place', instance.place)
+        instance.place_region = validated_data.get('place_region', instance.place_region)
         instance.photos = validated_data.get('photos', instance.photos)
         instance.description = validated_data.get('description', instance.description)
         instance.registration_link = validated_data.get('registration_link', instance.registration_link)
