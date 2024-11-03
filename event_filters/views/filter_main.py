@@ -25,10 +25,9 @@ class EventFilterView(APIView):
         # Sorting by date
         events = Event.objects.all().order_by('-date_from')
 
-        
         if competition_type is not None:
             if competition_type not in dict(COMPETITION_TYPES).keys():
-                return Response({'error': 'Invalid competiton type'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid competition type'}, status=status.HTTP_400_BAD_REQUEST)
             events = events.filter(competition_type=competition_type)
 
         if name:
@@ -47,8 +46,8 @@ class EventFilterView(APIView):
             try:
                 year = int(year)
                 current_year = datetime.now().year
-                if year < 2000 or year > current_year + 1:
-                    return Response({'error': 'Year must be between 2000 and no more than 1 year from the current year'}, status=status.HTTP_400_BAD_REQUEST)
+                if year < 1900 or year > current_year + 10:
+                    return Response({'error': 'Year must be between 1900 and the next 10 years'}, status=status.HTTP_400_BAD_REQUEST)
                 events = events.filter(Q(date_from__year=year) | Q(date_to__year=year))
             except ValueError:
                 return Response({'error': 'Invalid year format'}, status=status.HTTP_400_BAD_REQUEST)
@@ -60,17 +59,23 @@ class EventFilterView(APIView):
 
         if distance_min and distance_max:
             try:
-                distance_min = float(distance_min)
-                distance_max = float(distance_max)
+                if distance_min is not None:
+                    distance_min = float(distance_min)
+                    if distance_min < 0 or distance_min > 1000:
+                        return Response({'error': 'distance_min must be between 0 and 1000'}, status=status.HTTP_400_BAD_REQUEST)
+
+                if distance_max is not None:
+                    distance_max = float(distance_max)
+                    if distance_max < 0 or distance_max > 1000:
+                        return Response({'error': 'distance_max must be between 0 and 1000'}, status=status.HTTP_400_BAD_REQUEST)
+
+                # Ensure distance_min is less than or equal to distance_max
+                if distance_min is not None and distance_max is not None and distance_min > distance_max:
+                    return Response({'error': 'distance_min must be less than or equal to distance_max'}, status=status.HTTP_400_BAD_REQUEST)
+
                 events = EventFilterService.filter_by_distance(events, distance_min, distance_max)
             except ValueError:
-                return Response({'error': 'Invalid distance range'}, status=status.HTTP_400_BAD_REQUEST)
-        elif distance_max:
-            try:
-                distance_max = float(distance_max)
-                events = EventFilterService.filter_by_distance(events, None, distance_max)
-            except ValueError:
-                return Response({'error': 'Invalid distance maximum'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid distance format'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create an instance of EventPaginationView and call its get method
         paginator_view = EventPaginationView()
