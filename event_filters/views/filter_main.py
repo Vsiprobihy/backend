@@ -57,7 +57,7 @@ class EventFilterView(APIView):
                 return Response({'error': 'Invalid region'}, status=status.HTTP_400_BAD_REQUEST)
             events = events.filter(place_region=place)
 
-        if distance_min and distance_max:
+        if distance_min or distance_max:
             try:
                 if distance_min is not None:
                     distance_min = float(distance_min)
