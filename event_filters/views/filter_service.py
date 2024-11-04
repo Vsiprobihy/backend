@@ -14,7 +14,7 @@ class EventFilterService:
                     if unit in ['м', 'm']:
                         distance_value /= 1000
 
-                    if (distance_min is None or distance_value >= distance_min) and distance_value <= distance_max:
+                    if (distance_min is None or distance_value >= distance_min) and (distance_max is None or distance_value <= distance_max):
                         filtered_events.append(event)
                         break
         return filtered_events
