@@ -14,7 +14,6 @@ def customer_image_file_path(instance, filename):
     return os.path.join("uploads/user/", filename)
 
 
-
 class BaseProfile(models.Model):
     T_SHIRT_SIZE_CHOICES = [
         ('XXS', 'Very Extra Small'),
@@ -71,6 +70,7 @@ class BaseProfile(models.Model):
     class Meta:
         abstract = True
 
+
 class CustomUser(BaseProfile, AbstractBaseUser, PermissionsMixin):
     USER = 'user'
     ORGANIZER = 'organizer'
@@ -100,6 +100,7 @@ class CustomUser(BaseProfile, AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
 
 class AdditionalProfile(BaseProfile):
     user = models.ForeignKey(

@@ -1,6 +1,7 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
+
 event_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
@@ -22,7 +23,8 @@ event_schema = openapi.Schema(
             ),
             description='List of event distances'
         ),
-    }
+    },
+    required=['id', 'name', 'date_from', 'date_to', 'place', 'competition_type', 'photos', 'distances']
 )
 
 mainpage_response_schema = openapi.Schema(
