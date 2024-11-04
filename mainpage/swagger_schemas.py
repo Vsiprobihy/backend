@@ -24,7 +24,7 @@ event_schema = openapi.Schema(
             description='List of event distances'
         ),
     },
-    required=['id', 'name', 'date_from', 'date_to', 'place', 'competition_type', 'photos', 'distances']
+    required=['id', 'name', 'date_from', 'date_to', 'place', 'competition_type', 'distances']
 )
 
 mainpage_response_schema = openapi.Schema(
