@@ -1,3 +1,4 @@
+from drf_yasg.utils import swagger_auto_schema
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
@@ -6,13 +7,13 @@ from datetime import datetime
 
 from event.models import Event
 from event_filters.views.filter_service import EventFilterService
-from event_filters.swagger_schemas import event_filter_schema
+from event_filters.swagger_schemas import SwaggerDocs
 from utils.pagination import EventPaginationView 
 from event.constants.constants_event import REGIONS, COMPETITION_TYPES
 
 
 class EventFilterView(APIView):
-    @event_filter_schema
+    @swagger_auto_schema(**SwaggerDocs.EventFilter.get)
     def get(self, request):
         competition_type = request.GET.get('competition_type', None)
         name = request.GET.get('name', None)

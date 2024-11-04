@@ -1,12 +1,13 @@
-# event/views.py
 from django.utils import timezone
-from event.models import Event
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from mainpage.swagger_schemas import mainpage_schema
+from drf_yasg.utils import swagger_auto_schema
 
-@mainpage_schema
+from event.models import Event
+from mainpage.swagger_schemas import SwaggerDocs
+
+@swagger_auto_schema(method='get', **SwaggerDocs.MainPage.get)
 @api_view(['GET'])
 def mainpage(request):
     """
