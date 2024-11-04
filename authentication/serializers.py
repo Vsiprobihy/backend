@@ -92,9 +92,9 @@ class UserAvatarUploadSerializer(serializers.ModelSerializer):
 class AdditionalProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdditionalProfile
-        fields = ['id', 'email', 'first_name', 'last_name']
+        fields = '__all__'
 
 class AdditionalProfileDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdditionalProfile
-        fields = ['id', 'email', 'first_name', 'last_name']
+        fields = '__all__'
