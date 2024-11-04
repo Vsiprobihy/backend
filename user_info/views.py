@@ -1,12 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .swagger_schemas import user_info_response
+from drf_yasg.utils import swagger_auto_schema
+
+from user_info.swagger_schemas import SwaggerDocs
+
 
 class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @user_info_response
+    @swagger_auto_schema(**SwaggerDocs.UserInfo.get)
     def get(self, request):
         if request.user.is_authenticated:
             if request.user.first_name or request.user.last_name:
