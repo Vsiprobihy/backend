@@ -7,21 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from swagger_docs import SwaggerDocs
+from authentication.swagger_schemas import SwaggerDocs
 
 from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer, UserAvatarUploadSerializer, AdditionalProfileSerializer, AdditionalProfileDetailSerializer
 from authentication.models import CustomUser, AdditionalProfile
 from utils.custom_exceptions import InvalidCredentialsError
-from authentication.swagger_schemas import (  # Import swager schemes from a separate directory
-    SwaggerLoginSchema,
-    SwaggerAdditionalProfileListViewGet,
-    SwaggerAdditionalProfileListViewPost,
-    SwaggerAdditionalProfileDetailViewGet,
-    SwaggerAdditionalProfileDetailViewPut,
-    SwaggerAdditionalProfileDetailViewDelete,
-    SwaggerUserAvatarUploadViewPut,
-    SwaggerUserAvatarUploadViewPatch
-)
 
 
 class RegisterView(generics.CreateAPIView):
@@ -105,11 +95,12 @@ class UserAvatarUploadView(generics.UpdateAPIView):
     serializer_class = UserAvatarUploadSerializer
     permission_classes = [IsAuthenticated]
 
-    @SwaggerUserAvatarUploadViewPut
+    @swagger_auto_schema(**SwaggerDocs.UserAvatarUpload.put)
     def put(self, request, *args, **kwargs):
         return super().put(request, *args, **kwargs)
 
-    @SwaggerUserAvatarUploadViewPatch
+
+    @swagger_auto_schema(**SwaggerDocs.UserAvatarUpload.patch)
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
 
@@ -138,7 +129,7 @@ class LoginView(APIView):
 
     serializer_class = LoginSerializer
 
-    @SwaggerLoginSchema
+    @swagger_auto_schema(**SwaggerDocs.UserAuth.post)
     def post(self, request, *args, **kwargs) -> Response:
         """
         Authenticate user and return JWT tokens.
@@ -180,13 +171,13 @@ class LoginView(APIView):
 class AdditionalProfileListView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @SwaggerAdditionalProfileListViewGet
+    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileList.get)
     def get(self, request):
         profiles = request.user.additional_profiles.all()
         serializer = AdditionalProfileSerializer(profiles, many=True)
         return Response(serializer.data)
 
-    @SwaggerAdditionalProfileListViewPost
+    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileList.post)
     def post(self, request):
         serializer = AdditionalProfileSerializer(data=request.data)
         if serializer.is_valid():
@@ -198,7 +189,7 @@ class AdditionalProfileListView(APIView):
 class AdditionalProfileDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @SwaggerAdditionalProfileDetailViewGet
+    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.get)
     def get(self, request, profile_id):
         try:
             profile = request.user.additional_profiles.get(id=profile_id)
@@ -207,7 +198,7 @@ class AdditionalProfileDetailView(APIView):
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @SwaggerAdditionalProfileDetailViewPut
+    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.put)
     def put(self, request, profile_id):
         try:
             profile = request.user.additional_profiles.get(id=profile_id)
@@ -219,7 +210,7 @@ class AdditionalProfileDetailView(APIView):
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @SwaggerAdditionalProfileDetailViewDelete
+    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.delete)
     def delete(self, request, profile_id):
         try:
             profile = request.user.additional_profiles.get(id=profile_id)

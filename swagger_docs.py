@@ -1,5 +1,4 @@
 from drf_yasg import openapi
-from authentication.serializers import UserProfileSerializer
 
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
@@ -9,27 +8,6 @@ from event.serializers.organizer_detail import OrganizerEventSerializer
 
 
 class SwaggerDocs:
-
-    class Profile:
-
-        get = {
-            'tags': ['Profile'],
-            'responses': {200: UserProfileSerializer},
-            'operation_description': "Get user profile data",
-        }
-        put = {
-            'tags': ['Profile'],
-            'request_body': UserProfileSerializer,
-            'responses': {200: UserProfileSerializer},
-            'operation_description': "Update user profile data",
-        }
-
-        patch = {
-            'tags': ['Profile'],
-            'request_body': UserProfileSerializer,
-            'responses': {200: UserProfileSerializer},
-            'operation_description': "Partial update of user profile data",
-        }
 
     class Event:
         get = {
