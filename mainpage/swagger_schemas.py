@@ -33,7 +33,8 @@ mainpage_response_schema = openapi.Schema(
             items=event_schema,
             description='List of upcoming events'
         )
-    }
+    },
+    required=['events']
 )
 
 mainpage_schema = swagger_auto_schema(

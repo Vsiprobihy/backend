@@ -14,7 +14,8 @@ def customer_image_file_path(instance, filename):
     return os.path.join("uploads/user/", filename)
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+
+class BaseProfile(models.Model):
     T_SHIRT_SIZE_CHOICES = [
         ('XXS', 'Very Extra Small'),
         ('XS', 'Extra Small'),
@@ -26,6 +27,51 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('XXXL', 'Very Extra Extra Large'),
     ]
 
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+    
+    first_name_eng = models.CharField(max_length=50, null=True, blank=True)
+    last_name_eng = models.CharField(max_length=50, null=True, blank=True)
+
+    gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female')], null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    t_shirt_size = models.CharField(max_length=5, choices=T_SHIRT_SIZE_CHOICES, null=True, blank=True)
+
+    country = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+
+    phone_number = models.CharField(
+        _("phone number"),
+        max_length=20,
+        null=True,
+        unique=True,
+        blank=True,
+        validators=[validate_phone_number],
+    )
+
+    avatar = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to=customer_image_file_path,
+        max_length=255,
+    )
+
+    sports_club = models.CharField(max_length=100, null=True, blank=True)
+
+    emergency_contact_name = models.CharField(max_length=100, null=True, blank=True)
+    emergency_contact_phone = models.CharField(
+        _("phone number"),
+        max_length=20,
+        null=True,
+        unique=True,
+        blank=True,
+        validators=[validate_phone_number],
+    )
+
+    class Meta:
+        abstract = True
+
+class CustomUser(BaseProfile, AbstractBaseUser, PermissionsMixin):
     USER = 'user'
     ORGANIZER = 'organizer'
     ADMIN = 'admin'
@@ -36,50 +82,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         (ADMIN, 'Administrator'),
     ]
 
-    first_name = models.CharField(max_length=50, null=True, blank=True)
-    last_name = models.CharField(max_length=50, null=True, blank=True)
-    
-    first_name_eng = models.CharField(max_length=50, null=True, blank=True)
-    last_name_eng = models.CharField(max_length=50, null=True, blank=True)
-
-
-    gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female')], null=True, blank=True)
-    date_of_birth = models.DateField(null=True, blank=True)
-    t_shirt_size = models.CharField(max_length=5, choices=T_SHIRT_SIZE_CHOICES, null=True, blank=True)
-
-    country = models.CharField(max_length=100, null=True, blank=True)
-    city = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(
-        _("phone number"),
-        max_length=20,
-        null=True,
-        unique=True,
-        blank=True,
-        validators=[validate_phone_number],
-    )
-    avatar = models.ImageField(
-        null=True,
-        blank=True,
-        upload_to=customer_image_file_path,
-        max_length=255,
-    )
-
-    sports_club = models.CharField(max_length=100, null=True, blank=True)
-    emergency_contact_name = models.CharField(max_length=100, null=True, blank=True)
-    emergency_contact_phone = models.CharField(
-        _("phone number"),
-        max_length=20,
-        null=True,
-        unique=True,
-        blank=True,
-        validators=[validate_phone_number],
-    )
-    events_registered = models.ManyToManyField('event.Event', through='event.EventRegistration', related_name='registered_users')
-
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=USER)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+
+    events_registered = models.ManyToManyField(
+        'event.Event', 
+        through='event.EventRegistration', 
+        related_name='registered_users'
+    )
 
     objects = CustomUserManager()
 
@@ -89,12 +101,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
-
-class AdditionalProfile(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='additional_profiles', on_delete=models.CASCADE)
+class AdditionalProfile(BaseProfile):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        related_name='additional_profiles', 
+        on_delete=models.CASCADE
+    )
     email = models.EmailField()
-    first_name = models.CharField(max_length=50, null=True, blank=True)
-    last_name = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
