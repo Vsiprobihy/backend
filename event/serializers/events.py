@@ -3,7 +3,12 @@ from rest_framework import serializers
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
 from event.serializers.organizer_detail import OrganizerEventSerializer
-from event.models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEvent, DistanceEvent
+from event.models import Event, OrganizationAccess, OrganizerEvent, AdditionalItemEvent, DistanceEvent, CompetitionType
+
+class CompetitionTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompetitionType
+        fields = ['name']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -11,8 +16,8 @@ class EventSerializer(serializers.ModelSerializer):
     organizer = OrganizerEventSerializer(read_only=True)
     additional_items = AdditionalItemEventSerializer(many=True, required=False)
     distances = DistanceEventSerializer(many=True, required=True)
+    competition_type = CompetitionTypeSerializer(many=True)
 
-    
     class Meta:
         model = Event
         fields = ['name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region', 'photos', 'description',
@@ -48,6 +53,7 @@ class EventSerializer(serializers.ModelSerializer):
         organizer_id = validated_data.pop('organizer_id')
         additional_items_data = validated_data.pop('additional_items', [])
         distances_data = validated_data.pop('distances')
+        competition_type_data = validated_data.pop('competition_type', [])
 
         user = self.context['request'].user
         
@@ -61,6 +67,13 @@ class EventSerializer(serializers.ModelSerializer):
 
         event = Event.objects.create(organizer=organizer, **validated_data)
 
+        for comp in competition_type_data:
+            competition_type_obj = CompetitionType.objects.filter(name=comp['name']).first()
+            if competition_type_obj:
+                event.competition_type.add(competition_type_obj)
+            else:
+                raise serializers.ValidationError({"competition_type": f"Competition type '{comp['name']}' does not exist."})
+
         for item_data in additional_items_data:
             AdditionalItemEvent.objects.create(event=event, **item_data)
 
@@ -73,9 +86,18 @@ class EventSerializer(serializers.ModelSerializer):
         validated_data.pop('organizer', None)
         validated_data.pop('additional_items', None)
         validated_data.pop('distances', None)
+        competition_type_data = validated_data.pop('competition_type', None)
+
+        if competition_type_data is not None:
+            instance.competition_type.clear()
+            for comp in competition_type_data:
+                competition_type_obj = CompetitionType.objects.filter(name=comp['name']).first()
+                if competition_type_obj:
+                    instance.competition_type.add(competition_type_obj)
+                else:
+                    raise serializers.ValidationError({"competition_type": f"Competition type '{comp['name']}' does not exist."})
 
         instance.name = validated_data.get('name', instance.name)
-        instance.competition_type = validated_data.get('competition_type', instance.competition_type)
         instance.date_from = validated_data.get('date_from', instance.date_from)
         instance.date_to = validated_data.get('date_to', instance.date_to)
         instance.place = validated_data.get('place', instance.place)
