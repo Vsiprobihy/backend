@@ -25,9 +25,11 @@ class SwaggerDocs:
                 properties={
                     'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the event', default='Winter Wonderland Run 2024'),
                     'competition_type': openapi.Schema(
-                        type=openapi.TYPE_STRING, 
-                        description='Type of competition', 
-                        default='running'
+                        type=openapi.TYPE_ARRAY, 
+                        items=openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                            'name': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running')
+                        }),
+                        description='List of competition types'
                     ),
                     'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date', default='2024-10-28'),
                     'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date', default='2024-10-28'),

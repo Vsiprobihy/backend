@@ -77,10 +77,17 @@ class DistanceEvent(models.Model):
         return self.name
 
 
+class CompetitionType(models.Model):
+    name = models.CharField(max_length=50, unique=False)
+
+    def __str__(self):
+        return self.name
+
+
 class Event(models.Model):
 
     name = models.CharField(max_length=255)
-    competition_type = models.CharField(max_length=50, choices=COMPETITION_TYPES)
+    competition_type = models.ManyToManyField(CompetitionType, related_name='events')
     date_from = models.DateField()
     date_to = models.DateField()
     place_region = models.CharField(max_length=255,choices=REGIONS, null=True)
