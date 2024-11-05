@@ -43,7 +43,7 @@ class BaseProfile(models.Model):
         _("phone number"),
         max_length=20,
         null=True,
-        unique=True,
+        unique=False,
         blank=True,
         validators=[validate_phone_number],
     )
@@ -62,7 +62,7 @@ class BaseProfile(models.Model):
         _("phone number"),
         max_length=20,
         null=True,
-        unique=True,
+        unique=False,
         blank=True,
         validators=[validate_phone_number],
     )
