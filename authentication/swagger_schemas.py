@@ -20,7 +20,13 @@ class SwaggerDocs:
                         'access': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Access Token'),
                     },
                     required=['refresh', 'access'],
-                )
+                ),
+                401: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                    }
+                ),
             }
         }
 
