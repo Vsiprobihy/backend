@@ -27,16 +27,16 @@ class EventFilterView(APIView):
         events = Event.objects.all().order_by('-date_from')
 
         if competition_type:
-            # Get the IDs of competition types that are passed in the request
+            # Получаем ID типов соревнований, которые переданы в запросе
             competition_types = CompetitionType.objects.filter(name__in=competition_type).values_list('id', flat=True)
             if not competition_types:
                 return Response({'error': 'No valid competition types found'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Filter events that have at least one of the specified types
+            # Фильтруем события, которые имеют хотя бы один из указанных типов
             events = events.filter(competition_type__id__in=competition_types)
-            
-            # Ensure that the number of unique types for the event matches the number of types provided
-            events = events.annotate(num_types=Count('competition_type')).filter(num_types=len(competition_type)).distinct()
+
+            # Убедитесь, что событие содержит все указанные типы
+            events = events.annotate(num_types=Count('competition_type')).filter(num_types__gte=len(competition_type)).distinct()
 
         if name:
             events = events.filter(name__icontains=name)
