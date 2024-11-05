@@ -25,7 +25,8 @@ class SwaggerDocs:
                     type=openapi.TYPE_OBJECT,
                     properties={
                         'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
-                    }
+                    },
+                    required=['detail'],
                 ),
             }
         }
