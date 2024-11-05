@@ -5,17 +5,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from datetime import datetime
 
-from event.models import Event
+from event.models import Event, CompetitionType
 from event_filters.views.filter_service import EventFilterService
 from event_filters.swagger_schemas import SwaggerDocs
 from utils.pagination import EventPaginationView 
-from event.constants.constants_event import REGIONS, COMPETITION_TYPES
+from event.constants.constants_event import REGIONS
 
 
 class EventFilterView(APIView):
     @swagger_auto_schema(**SwaggerDocs.EventFilter.get)
     def get(self, request):
-        competition_type = request.GET.get('competition_type', None)
+        competition_type = request.GET.getlist('competition_type')
         name = request.GET.get('name', None)
         month = request.GET.get('month', None)
         year = request.GET.get('year', None)
@@ -26,10 +26,11 @@ class EventFilterView(APIView):
         # Sorting by date
         events = Event.objects.all().order_by('-date_from')
 
-        if competition_type is not None:
-            if competition_type not in dict(COMPETITION_TYPES).keys():
-                return Response({'error': 'Invalid competition type'}, status=status.HTTP_400_BAD_REQUEST)
-            events = events.filter(competition_type=competition_type)
+        if competition_type:
+            competition_types = CompetitionType.objects.filter(name__in=competition_type).values_list('id', flat=True)
+            if not competition_types:
+                return Response({'error': 'No valid competition types found'}, status=status.HTTP_400_BAD_REQUEST)
+            events = events.filter(competition_type__id__in=competition_types).distinct()
 
         if name:
             events = events.filter(name__icontains=name)
