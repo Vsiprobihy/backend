@@ -149,6 +149,9 @@ class SwaggerDocs:
                     },
                     required=['detail'],
                 ),
+                404: openapi.Response(
+                    description="Profile not found"
+                ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
@@ -186,6 +189,9 @@ class SwaggerDocs:
                     },
                     required=['detail'],
                 ),
+                404: openapi.Response(
+                    description="Profile not found"
+                ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
@@ -222,6 +228,9 @@ class SwaggerDocs:
                     },
                     required=['detail'],
                 ),
+                404: openapi.Response(
+                    description="Profile not found"
+                ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
@@ -231,6 +240,7 @@ class SwaggerDocs:
                 ),
             },
         }
+
 
     class UserAvatarUpload:
 
@@ -341,6 +351,13 @@ class SwaggerDocs:
                     },
                     required=['detail'],
                 ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='The requested resource does not exist.')
+                    },
+                    required=['detail'],
+                ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
@@ -378,6 +395,13 @@ class SwaggerDocs:
                     },
                     required=['detail'],
                 ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='The resource to update does not exist.')
+                    },
+                    required=['detail'],
+                ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
@@ -412,6 +436,13 @@ class SwaggerDocs:
                     type=openapi.TYPE_OBJECT,
                     properties={
                         'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to partially update this resource.')
+                    },
+                    required=['detail'],
+                ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='The resource to partially update does not exist.')
                     },
                     required=['detail'],
                 ),

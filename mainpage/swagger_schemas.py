@@ -45,7 +45,20 @@ class SwaggerDocs:
             'operation_description': "Get upcoming events for the main page",
             'responses': {
                 200: mainpage_response_schema,
-                400: 'Invalid parameters',
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid parameters (e.g. non-integer "count" value)')
+                    },
+                    required=['detail'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected server error occurred')
+                    },
+                    required=['detail'],
+                ),
             },
             'manual_parameters': [
                 openapi.Parameter(

@@ -18,3 +18,5 @@ class PublicEventDetailView(APIView):
             return Response(serializer.data)
         except Event.DoesNotExist:
             return Response({"detail": "Event not found."}, status=404)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=500)
