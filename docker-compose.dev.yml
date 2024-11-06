@@ -30,7 +30,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      # - .:/app
+      - .:/app
       - app_data:/data
       - static_volume:/usr/src/app/staticfiles:rw
       - ./media:/app/media
