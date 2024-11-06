@@ -1,5 +1,6 @@
 from drf_yasg.utils import swagger_auto_schema
 from django.core.files.storage import default_storage
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework import status, generics
@@ -99,7 +100,6 @@ class UserAvatarUploadView(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         return super().put(request, *args, **kwargs)
 
-
     @swagger_auto_schema(**SwaggerDocs.UserAvatarUpload.patch)
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
@@ -109,11 +109,15 @@ class UserAvatarUploadView(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         user = self.get_object()
-        
+
         if user.avatar:
             old_avatar_path = user.avatar.path
-            if default_storage.exists(old_avatar_path):
-                default_storage.delete(old_avatar_path)
+            try:
+                if default_storage.exists(old_avatar_path):
+                    default_storage.delete(old_avatar_path)
+            except ObjectDoesNotExist:
+                pass
+
         serializer.save(avatar=self.request.data.get('avatar'))
 
 class LoginView(APIView):

@@ -2,9 +2,12 @@ import re
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth import get_user_model
+from PIL import Image
+from io import BytesIO
 
 from authentication.models import AdditionalProfile, CustomUser
-from django.contrib.auth import get_user_model
+
 
 
 def validate_password_confirm(password, password2):
@@ -85,6 +88,30 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class UserAvatarUploadSerializer(serializers.ModelSerializer):
+    def validate_avatar(self, value):
+        if value:
+            if not value.name.endswith(('.png', '.jpg', '.jpeg')):
+                raise ValidationError("Invalid file format. Only PNG, JPG, and JPEG are allowed.")
+
+            if value.size > 3 * 1024 * 1024:
+                raise ValidationError("File size exceeds the 3 MB limit.")
+
+            image = Image.open(value)
+
+             # If the image is in RGBA, convert it to RGB (remove alpha channel)
+            if image.mode == 'RGBA':
+                image = image.convert('RGB')
+
+            image.thumbnail((300, 300))
+
+            thumb_io = BytesIO()
+            image.save(thumb_io, format='JPEG')
+            thumb_io.seek(0)
+
+            value = thumb_io
+
+        return value
+
     class Meta:
         model = CustomUser
         fields = ['avatar']
