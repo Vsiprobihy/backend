@@ -33,6 +33,7 @@ services:
     volumes:
       - app_data:/data
       - static_volume:/usr/src/app/staticfiles:rw
+      - ./media:/app/media
     env_file:
      - .env
     environment:
@@ -43,6 +44,7 @@ services:
 volumes:
   app_db:
   app_data:
+  media_volume:
   static_volume:
 
 networks:
