@@ -33,7 +33,7 @@ services:
       - .:/app
       - app_data:/data
       - static_volume:/usr/src/app/staticfiles:rw
-      - media_volume:/app/media
+      - ./media:/app/media
     env_file:
       - .env
     environment:
