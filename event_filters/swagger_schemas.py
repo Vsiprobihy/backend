@@ -33,6 +33,19 @@ class SwaggerDocs:
             ],
             'responses': {
                 200: EventSerializer(many=True),
-                400: 'Invalid distance range',
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'error': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid filter parameters. Possible errors include invalid month, year, region, or distance range. For example, distance_min must be less than or equal to distance_max.')
+                    },
+                    required=['error'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'error': openapi.Schema(type=openapi.TYPE_STRING, description='Internal server error while processing the request.')
+                    },
+                    required=['error'],
+                ),
             }
         }
