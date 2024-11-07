@@ -4,6 +4,7 @@ from authentication.models import CustomUser
 from event.constants.constants_event import STATUS_CHOICES, COMPETITION_TYPES, STATUS_PENDING, REGIONS
 from event.constants.constants_distance import CATEGORY_CHOICES
 
+
 class OrganizerEvent(models.Model):
     name = models.CharField(max_length=255)
     site_url = models.URLField(blank=True, null=True)
@@ -16,10 +17,11 @@ class OrganizerEvent(models.Model):
     def __str__(self):
         return self.name
 
+
 class OrganizationAccess(models.Model):
     OWNER = 'owner'
     MODERATOR = 'organizer'
-    
+
     ROLE_CHOICES = [
         (OWNER, 'Owner'),
         (MODERATOR, 'Organizer'),
@@ -56,11 +58,10 @@ class AdditionalItemEvent(models.Model):
 
 
 class DistanceEvent(models.Model):
-
     name = models.CharField(max_length=255)
     competition_type = models.CharField(max_length=50, choices=COMPETITION_TYPES, default='running')
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='adults')
-    length = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # Distance in km or meters
+    length = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     start_number_from = models.PositiveIntegerField(blank=True, null=True)
     start_number_to = models.PositiveIntegerField(blank=True, null=True)
     show_start_number = models.BooleanField(default=False)
@@ -85,12 +86,11 @@ class CompetitionType(models.Model):
 
 
 class Event(models.Model):
-
     name = models.CharField(max_length=255)
     competition_type = models.ManyToManyField(CompetitionType, related_name='events')
     date_from = models.DateField()
     date_to = models.DateField()
-    place_region = models.CharField(max_length=255,choices=REGIONS, null=True)
+    place_region = models.CharField(max_length=255, choices=REGIONS, null=True)
     place = models.CharField(max_length=255)
     photos = models.ImageField(upload_to='event_photos/', blank=True, null=True)
     description = models.TextField()
@@ -115,6 +115,7 @@ class Event(models.Model):
             self.status = self.STATUS_PUBLISHED
             self.save()
 
+
 class EventRegistration(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='registrations')
     event = models.ForeignKey('Event', on_delete=models.CASCADE, related_name='registrations')
@@ -125,4 +126,3 @@ class EventRegistration(models.Model):
 
     def __str__(self):
         return f"{self.user.email} registered for {self.event.name} on {self.registration_date}"
-

@@ -6,6 +6,8 @@ from drf_yasg.utils import swagger_auto_schema
 
 from event.models import Event, OrganizationAccess
 from event.serializers.events import EventSerializer
+from event.utils.data_filter import DataFilter
+from event.utils.data_loader import DataLoader
 
 from swagger_docs import SwaggerDocs
 from rest_framework import permissions
@@ -66,3 +68,21 @@ class EventDetailView(APIView):
         event = self.get_object(pk)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CityDataAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(**SwaggerDocs.CityData.get)
+    def get(self, request):
+        region_query = request.query_params.get('region', '').strip()
+        city_query = request.query_params.get('city', '').strip()
+
+        try:
+            data = DataLoader.load_city_data()
+            data = DataFilter.filter_by_region(data, region_query)
+            data = DataFilter.filter_by_city(data, city_query)
+            return Response(data, status=status.HTTP_200_OK)
+
+        except FileNotFoundError:
+            return Response({'error': 'Data file not found.'}, status=status.HTTP_404_NOT_FOUND)
