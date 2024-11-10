@@ -1,5 +1,4 @@
 from drf_yasg import openapi
-from event.serializers.events import EventSerializer
 from event.constants.constants_event import REGIONS, COMPETITION_TYPES
 
 class SwaggerDocs:
@@ -15,7 +14,7 @@ class SwaggerDocs:
                     openapi.IN_QUERY,
                     description="Type of competition (e.g., running, trail, cycling)",
                     type=openapi.TYPE_ARRAY,
-                    items=openapi.Items(type=openapi.TYPE_STRING, enum=[competition for competition, name in COMPETITION_TYPES]),
+                    items=openapi.Items(type=openapi.TYPE_INTEGER, enum=[competition for competition, name in COMPETITION_TYPES]),
                     collectionFormat='multi'
                 ),
                 openapi.Parameter('name', openapi.IN_QUERY, description="Event name", type=openapi.TYPE_STRING),
@@ -42,7 +41,45 @@ class SwaggerDocs:
                 openapi.Parameter('distance_max', openapi.IN_QUERY, description="Maximum distance (km)", type=openapi.TYPE_NUMBER),
             ],
             'responses': {
-                200: EventSerializer(many=True),
+                200: openapi.Response(
+                    description="List of events with count",
+                    schema=openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            'count': openapi.Schema(type=openapi.TYPE_INTEGER, description='Total number of events matching the filters'),
+                            'events': openapi.Schema(
+                                type=openapi.TYPE_ARRAY,
+                                items=openapi.Items(
+                                    type=openapi.TYPE_OBJECT,
+                                    properties={
+                                        'name': openapi.Schema(type=openapi.TYPE_STRING),
+                                        'competition_type': openapi.Schema(
+                                            type=openapi.TYPE_ARRAY,
+                                            items=openapi.Items(type=openapi.TYPE_INTEGER),
+                                        ),
+                                        'date_from': openapi.Schema(type=openapi.TYPE_STRING),
+                                        'date_to': openapi.Schema(type=openapi.TYPE_STRING),
+                                        'place_region': openapi.Schema(type=openapi.TYPE_STRING),
+                                        'place': openapi.Schema(type=openapi.TYPE_STRING),
+                                        'photos': openapi.Schema(type=openapi.TYPE_OBJECT, nullable=True),
+                                        'distances': openapi.Schema(
+                                            type=openapi.TYPE_ARRAY,
+                                            items=openapi.Items(
+                                                type=openapi.TYPE_OBJECT,
+                                                properties={
+                                                    'name': openapi.Schema(type=openapi.TYPE_STRING),
+                                                },
+                                                required=['name'],  # Обязательное поле name в distances
+                                            ),
+                                        ),
+                                    },
+                                    required=['name', 'competition_type', 'date_from', 'date_to', 'place_region', 'place', 'distances'],  # Обязательные поля
+                                ),
+                            ),
+                        },
+                        required=['count', 'events'],
+                    )
+                ),
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
