@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from event.serializers.events import EventSerializer
+from event_filters.serializers import EventSerializer
 
 class EventPaginationView(APIView):
     def get(self, request, events):
