@@ -16,7 +16,7 @@ jobs:
     steps:
     
       - name: Clean up Docker resources
-      run: docker system prune -af
+        run: docker system prune -af
 
       - name: Checkout code
         uses: actions/checkout@v2
