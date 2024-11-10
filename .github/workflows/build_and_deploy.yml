@@ -42,7 +42,7 @@ jobs:
           docker push ghcr.io/${{ github.repository }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
 
       - name: Deploy to Remote Server with Rolling Update
-        uses: appleboy/ssh-action@v0.1.5
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
