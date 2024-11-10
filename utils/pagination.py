@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from event.serializers.events import EventSerializer
+from event_filters.serializers import EventSerializer
 
 
 class EventPaginationView(APIView):
@@ -28,7 +28,6 @@ class EventPaginationView(APIView):
 
         paginator = Paginator(events, page_size)
 
-        # Check if the requested page exists
         if page > paginator.num_pages:
             return Response(
                 {"error": "Requested page exceeds available pages"},
