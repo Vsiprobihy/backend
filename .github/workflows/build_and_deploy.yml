@@ -41,5 +41,8 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             export BACKEND_REPOSITORY=${{ github.repository }}
             export BACKEND_SHA=${{ github.sha }}
-            
+
+            docker container prune -f
+            docker image prune -f
+
             docker-compose -f /home/azureuser/probihy/backend/docker-compose.yml up -d
