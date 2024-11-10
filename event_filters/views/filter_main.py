@@ -1,5 +1,5 @@
 from drf_yasg.utils import swagger_auto_schema
-from django.db.models import Q, Count
+from django.db.models import Count
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,8 +17,8 @@ class EventFilterView(APIView):
     def get(self, request):
         competition_type = request.GET.getlist('competition_type')
         name = request.GET.get('name', None)
-        month = request.GET.get('month', None)
-        year = request.GET.get('year', None)
+        date_from = request.GET.get('date_from', None)
+        date_to = request.GET.get('date_to', None)
         place = request.GET.get('place', None)
         distance_min = request.GET.get('distance_min', None)
         distance_max = request.GET.get('distance_max', None)
@@ -41,24 +41,19 @@ class EventFilterView(APIView):
         if name:
             events = events.filter(name__icontains=name)
 
-        if month:
+        if date_from:
             try:
-                month = int(month)
-                if month < 1 or month > 12:
-                    return Response({'error': 'Month must be between 1 and 12'}, status=status.HTTP_400_BAD_REQUEST)
-                events = events.filter(Q(date_from__month=month) | Q(date_to__month=month))
+                date_from = datetime.strptime(date_from, '%Y-%m-%d').date()
+                events = events.filter(date_to__gte=date_from)
             except ValueError:
-                return Response({'error': 'Invalid month format'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid date_from format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if year:
+        if date_to:
             try:
-                year = int(year)
-                current_year = datetime.now().year
-                if year < 1900 or year > current_year + 10:
-                    return Response({'error': 'Year must be between 1900 and the next 10 years'}, status=status.HTTP_400_BAD_REQUEST)
-                events = events.filter(Q(date_from__year=year) | Q(date_to__year=year))
+                date_to = datetime.strptime(date_to, '%Y-%m-%d').date()
+                events = events.filter(date_from__lte=date_to)
             except ValueError:
-                return Response({'error': 'Invalid year format'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid date_to format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if place is not None:
             if place not in dict(REGIONS).keys():
