@@ -14,6 +14,16 @@ jobs:
       SERVICE_NAME: backend
 
     steps:
+    
+      - name: Clean up Docker resources
+        run: docker system prune -af
+
+      - name: Remove all Docker volumes
+        run: docker volume rm $(docker volume ls -q) || true
+
+      - name: Remove all dangling images
+        run: docker image prune -af
+
       - name: Checkout code
         uses: actions/checkout@v2
 
