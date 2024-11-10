@@ -9,7 +9,6 @@ from io import BytesIO
 from authentication.models import AdditionalProfile, CustomUser
 
 
-
 def validate_password_confirm(password, password2):
     if password != password2:
         raise serializers.ValidationError("Passwords must match")
@@ -22,7 +21,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['email', 'password', 'password2']
+        fields = ["email", "password", "password2"]
 
     @staticmethod
     def validate_password(value):
@@ -32,26 +31,25 @@ class RegisterSerializer(serializers.ModelSerializer):
         - 1 special character
         - 1 number
         """
-        if not re.search(r'[A-Z]', value):
+        if not re.search(r"[A-Z]", value):
             raise ValidationError("Password must contain at least 1 uppercase letter.")
 
         if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
             raise ValidationError("Password must contain at least 1 special character.")
 
-        if not re.search(r'\d', value):
+        if not re.search(r"\d", value):
             raise ValidationError("Password must contain at least 1 number.")
 
         return value
 
     def validate(self, data):
-        validate_password_confirm(data['password'], data['password2'])
+        validate_password_confirm(data["password"], data["password2"])
         return data
 
     def create(self, validated_data):
-        validated_data.pop('password2')
+        validated_data.pop("password2")
         user = get_user_model().objects.create_user(**validated_data)
         return user
-
 
 
 class LoginSerializer(serializers.Serializer):
@@ -66,19 +64,33 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'id', 'first_name', 'last_name', 'first_name_eng', 'last_name_eng',
-            'gender', 'date_of_birth', 't_shirt_size', 'country', 'city',
-            'phone_number', 'sports_club', 'emergency_contact_name',
-            'emergency_contact_phone', 'registered_events', 'avatar', 'email'
+            "id",
+            "first_name",
+            "last_name",
+            "first_name_eng",
+            "last_name_eng",
+            "gender",
+            "date_of_birth",
+            "t_shirt_size",
+            "country",
+            "city",
+            "phone_number",
+            "sports_club",
+            "emergency_contact_name",
+            "emergency_contact_phone",
+            "registered_events",
+            "avatar",
+            "email",
         ]
 
     def get_registered_events(self, obj):
         from event.serializers.events import EventSerializer
+
         events = obj.events_registered.all()
         return EventSerializer(events, many=True).data
 
     def get_avatar(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if obj.avatar and request:
             return request.build_absolute_uri(obj.avatar.url)
         return None
@@ -90,22 +102,24 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserAvatarUploadSerializer(serializers.ModelSerializer):
     def validate_avatar(self, value):
         if value:
-            if not value.name.endswith(('.png', '.jpg', '.jpeg')):
-                raise ValidationError("Invalid file format. Only PNG, JPG, and JPEG are allowed.")
+            if not value.name.endswith((".png", ".jpg", ".jpeg")):
+                raise ValidationError(
+                    "Invalid file format. Only PNG, JPG, and JPEG are allowed."
+                )
 
             if value.size > 3 * 1024 * 1024:
                 raise ValidationError("File size exceeds the 3 MB limit.")
 
             image = Image.open(value)
 
-             # If the image is in RGBA, convert it to RGB (remove alpha channel)
-            if image.mode == 'RGBA':
-                image = image.convert('RGB')
+            # If the image is in RGBA, convert it to RGB (remove alpha channel)
+            if image.mode == "RGBA":
+                image = image.convert("RGB")
 
             image.thumbnail((300, 300))
 
             thumb_io = BytesIO()
-            image.save(thumb_io, format='JPEG')
+            image.save(thumb_io, format="JPEG")
             thumb_io.seek(0)
 
             value = thumb_io
@@ -114,14 +128,16 @@ class UserAvatarUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['avatar']
+        fields = ["avatar"]
+
 
 class AdditionalProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdditionalProfile
-        fields = '__all__'
+        fields = "__all__"
+
 
 class AdditionalProfileDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdditionalProfile
-        fields = '__all__'
+        fields = "__all__"

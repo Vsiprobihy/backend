@@ -7,18 +7,26 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0003_remove_organizerevent_event'),
+        ("event", "0003_remove_organizerevent_event"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='eventregistration',
-            name='additional_items',
-            field=models.ManyToManyField(blank=True, related_name='registrations', to='event.additionalitemevent'),
+            model_name="eventregistration",
+            name="additional_items",
+            field=models.ManyToManyField(
+                blank=True, related_name="registrations", to="event.additionalitemevent"
+            ),
         ),
         migrations.AddField(
-            model_name='eventregistration',
-            name='distance',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='registrations', to='event.distanceevent'),
+            model_name="eventregistration",
+            name="distance",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="registrations",
+                to="event.distanceevent",
+            ),
         ),
     ]

@@ -6,19 +6,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0001_initial'),
-        ('authentication', '0002_alter_customuser_options_and_more'),
+        ("event", "0001_initial"),
+        ("authentication", "0002_alter_customuser_options_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='events_registered',
-            field=models.ManyToManyField(related_name='registered_users', through='event.EventRegistration', to='event.event'),
+            model_name="customuser",
+            name="events_registered",
+            field=models.ManyToManyField(
+                related_name="registered_users",
+                through="event.EventRegistration",
+                to="event.event",
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='t_shirt_size',
-            field=models.CharField(blank=True, choices=[('XXS', 'Very Extra Small'), ('XS', 'Extra Small'), ('S', 'Small'), ('M', 'Medium'), ('L', 'Large'), ('XL', 'Extra Large'), ('XXL', 'Extra Extra Large'), ('XXXL', 'Very Extra Extra Large')], max_length=5, null=True),
+            model_name="customuser",
+            name="t_shirt_size",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("XXS", "Very Extra Small"),
+                    ("XS", "Extra Small"),
+                    ("S", "Small"),
+                    ("M", "Medium"),
+                    ("L", "Large"),
+                    ("XL", "Extra Large"),
+                    ("XXL", "Extra Extra Large"),
+                    ("XXXL", "Very Extra Extra Large"),
+                ],
+                max_length=5,
+                null=True,
+            ),
         ),
     ]

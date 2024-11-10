@@ -7,14 +7,14 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentication', '0004_customuser_role'),
+        ("authentication", "0004_customuser_role"),
     ]
 
     operations = [
         migrations.AlterModelManagers(
-            name='customuser',
+            name="customuser",
             managers=[
-                ('objects', authentication.managers.CustomUserManager()),
+                ("objects", authentication.managers.CustomUserManager()),
             ],
         ),
     ]

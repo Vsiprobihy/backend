@@ -6,24 +6,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('event', '0008_event_place_region_and_more'),
+        ("event", "0008_event_place_region_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CompetitionType',
+            name="CompetitionType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.RemoveField(
-            model_name='event',
-            name='competition_type',
+            model_name="event",
+            name="competition_type",
         ),
         migrations.AddField(
-            model_name='event',
-            name='competition_type',
-            field=models.ManyToManyField(related_name='events', to='event.competitiontype'),
+            model_name="event",
+            name="competition_type",
+            field=models.ManyToManyField(
+                related_name="events", to="event.competitiontype"
+            ),
         ),
     ]

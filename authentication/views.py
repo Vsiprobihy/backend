@@ -1,3 +1,4 @@
+import requests
 from drf_yasg.utils import swagger_auto_schema
 from django.core.files.storage import default_storage
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,7 +11,14 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from authentication.swagger_schemas import SwaggerDocs
 
-from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer, UserAvatarUploadSerializer, AdditionalProfileSerializer, AdditionalProfileDetailSerializer
+from authentication.serializers import (
+    RegisterSerializer,
+    LoginSerializer,
+    UserProfileSerializer,
+    UserAvatarUploadSerializer,
+    AdditionalProfileSerializer,
+    AdditionalProfileDetailSerializer,
+)
 from authentication.models import CustomUser, AdditionalProfile
 from utils.custom_exceptions import InvalidCredentialsError
 
@@ -53,15 +61,20 @@ class RegisterView(generics.CreateAPIView):
             response.data = {
                 "access_token": {
                     "value": str(refresh.access_token),
-                    "expires": settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
+                    "expires": settings.SIMPLE_JWT[
+                        "ACCESS_TOKEN_LIFETIME"
+                    ].total_seconds(),
                 },
                 "refresh_token": {
                     "value": str(refresh),
-                    "expires": settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+                    "expires": settings.SIMPLE_JWT[
+                        "REFRESH_TOKEN_LIFETIME"
+                    ].total_seconds(),
                 },
             }
 
             return response
+
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -69,7 +82,7 @@ class UserProfileView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Profile.get)
     def get(self, request):
         user = request.user
-        serializer = UserProfileSerializer(user, context={'request': request})
+        serializer = UserProfileSerializer(user, context={"request": request})
         return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.Profile.put)
@@ -118,7 +131,8 @@ class UserAvatarUploadView(generics.UpdateAPIView):
             except ObjectDoesNotExist:
                 pass
 
-        serializer.save(avatar=self.request.data.get('avatar'))
+        serializer.save(avatar=self.request.data.get("avatar"))
+
 
 class LoginView(APIView):
     """
@@ -161,11 +175,15 @@ class LoginView(APIView):
             response.data = {
                 "access_token": {
                     "value": str(refresh.access_token),
-                    "expires": settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
+                    "expires": settings.SIMPLE_JWT[
+                        "ACCESS_TOKEN_LIFETIME"
+                    ].total_seconds(),
                 },
                 "refresh_token": {
                     "value": str(refresh),
-                    "expires": settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+                    "expires": settings.SIMPLE_JWT[
+                        "REFRESH_TOKEN_LIFETIME"
+                    ].total_seconds(),
                 },
             }
             return response
@@ -222,6 +240,7 @@ class AdditionalProfileDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 # class AdminOnlyView(APIView):
 #     permission_classes = [IsAuthenticated, IsAdmin]

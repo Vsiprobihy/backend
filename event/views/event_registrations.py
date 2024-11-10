@@ -7,7 +7,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from event.models import Event, EventRegistration, DistanceEvent, AdditionalItemEvent
-from event.serializers.event_registrations import EventRegistrationSerializer, EventRegistrationDetailSerializer
+from event.serializers.event_registrations import (
+    EventRegistrationSerializer,
+    EventRegistrationDetailSerializer,
+)
 from swagger_docs import SwaggerDocs
 
 
@@ -18,33 +21,43 @@ class EventRegistrationsListView(APIView):
     @swagger_auto_schema(**SwaggerDocs.EventRegistration.post)
     def post(self, request):
         user = request.user
-        event_id = request.data.get('event')
-        distances_ids = request.data.get('distances', [])
-        additional_items_ids = request.data.get('additional_items', [])
+        event_id = request.data.get("event")
+        distances_ids = request.data.get("distances", [])
+        additional_items_ids = request.data.get("additional_items", [])
 
         try:
             event = Event.objects.get(id=event_id)
         except Event.DoesNotExist:
-            return Response({"detail": "Event not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Event not found."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if EventRegistration.objects.filter(user=user, event=event).exists():
-            return Response({"detail": "User is already registered for this event."},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "User is already registered for this event."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         distances = DistanceEvent.objects.filter(id__in=distances_ids, event=event)
         if not distances.exists():
-            return Response({"detail": "At least one valid distance must be selected."},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "At least one valid distance must be selected."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        additional_items = AdditionalItemEvent.objects.filter(id__in=additional_items_ids, event=event)
+        additional_items = AdditionalItemEvent.objects.filter(
+            id__in=additional_items_ids, event=event
+        )
 
         registration_data = {
-            'event': event.id,
-            'distances': [distance.id for distance in distances],
-            'additional_items': [item.id for item in additional_items]
+            "event": event.id,
+            "distances": [distance.id for distance in distances],
+            "additional_items": [item.id for item in additional_items],
         }
 
-        serializer = EventRegistrationSerializer(data=registration_data, context={'request': request})
+        serializer = EventRegistrationSerializer(
+            data=registration_data, context={"request": request}
+        )
 
         if serializer.is_valid():
             serializer.save()
@@ -83,7 +96,9 @@ class EventRegistrationDetailView(APIView):
     @swagger_auto_schema(**SwaggerDocs.EventRegistration.patch)
     def patch(self, request, pk=None):
         registration = self.get_object(pk)
-        serializer = EventRegistrationDetailSerializer(registration, data=request.data, partial=True)
+        serializer = EventRegistrationDetailSerializer(
+            registration, data=request.data, partial=True
+        )
 
         if serializer.is_valid():
             serializer.save()

@@ -15,67 +15,183 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('competition_type', models.CharField(choices=[('running', 'Біг'), ('trail', 'Трейл'), ('ultramarathon', 'Ультрамарафон'), ('cycling', 'Велоспорт'), ('online', 'Online'), ('walking', 'Ходьба'), ('ocr', 'OCR'), ('swimming', 'Плавання'), ('triathlon', 'Тріатлон')], max_length=50)),
-                ('date_from', models.DateField()),
-                ('date_to', models.DateField()),
-                ('place', models.CharField(max_length=255)),
-                ('photos', models.ImageField(blank=True, null=True, upload_to='event_photos/')),
-                ('description', models.TextField()),
-                ('registration_link', models.URLField(blank=True, null=True)),
-                ('hide_participants', models.BooleanField(default=False)),
-                ('extended_description', models.TextField(blank=True, null=True)),
-                ('schedule_pdf', models.FileField(blank=True, null=True, upload_to='event_schedule/')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "competition_type",
+                    models.CharField(
+                        choices=[
+                            ("running", "Біг"),
+                            ("trail", "Трейл"),
+                            ("ultramarathon", "Ультрамарафон"),
+                            ("cycling", "Велоспорт"),
+                            ("online", "Online"),
+                            ("walking", "Ходьба"),
+                            ("ocr", "OCR"),
+                            ("swimming", "Плавання"),
+                            ("triathlon", "Тріатлон"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("date_from", models.DateField()),
+                ("date_to", models.DateField()),
+                ("place", models.CharField(max_length=255)),
+                (
+                    "photos",
+                    models.ImageField(blank=True, null=True, upload_to="event_photos/"),
+                ),
+                ("description", models.TextField()),
+                ("registration_link", models.URLField(blank=True, null=True)),
+                ("hide_participants", models.BooleanField(default=False)),
+                ("extended_description", models.TextField(blank=True, null=True)),
+                (
+                    "schedule_pdf",
+                    models.FileField(
+                        blank=True, null=True, upload_to="event_schedule/"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='OrganizerEvent',
+            name="OrganizerEvent",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('site_url', models.URLField(blank=True, null=True)),
-                ('phone_number', models.CharField(max_length=20)),
-                ('email', models.EmailField(max_length=254)),
-                ('instagram_url', models.URLField(blank=True, null=True)),
-                ('facebook_url', models.URLField(blank=True, null=True)),
-                ('telegram_url', models.URLField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("site_url", models.URLField(blank=True, null=True)),
+                ("phone_number", models.CharField(max_length=20)),
+                ("email", models.EmailField(max_length=254)),
+                ("instagram_url", models.URLField(blank=True, null=True)),
+                ("facebook_url", models.URLField(blank=True, null=True)),
+                ("telegram_url", models.URLField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='EventRegistration',
+            name="EventRegistration",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('registration_date', models.DateTimeField(auto_now_add=True)),
-                ('is_confirmed', models.BooleanField(default=False)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='registrations', to='event.event')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='registrations', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("registration_date", models.DateTimeField(auto_now_add=True)),
+                ("is_confirmed", models.BooleanField(default=False)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="registrations",
+                        to="event.event",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="registrations",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='event',
-            name='organizer',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', to='event.organizerevent'),
+            model_name="event",
+            name="organizer",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="events",
+                to="event.organizerevent",
+            ),
         ),
         migrations.CreateModel(
-            name='DistanceEvent',
+            name="DistanceEvent",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('cost', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
-                ('is_free', models.BooleanField(default=False)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='distances', to='event.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "cost",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=10, null=True
+                    ),
+                ),
+                ("is_free", models.BooleanField(default=False)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="distances",
+                        to="event.event",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='AdditionalItemEvent',
+            name="AdditionalItemEvent",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('item_type', models.CharField(choices=[('transfer', 'Трансфер'), ('medal', 'Медаль'), ('t_shirt', 'Футболка')], max_length=50)),
-                ('price', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='additional_items', to='event.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "item_type",
+                    models.CharField(
+                        choices=[
+                            ("transfer", "Трансфер"),
+                            ("medal", "Медаль"),
+                            ("t_shirt", "Футболка"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "price",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=10, null=True
+                    ),
+                ),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="additional_items",
+                        to="event.event",
+                    ),
+                ),
             ],
         ),
     ]

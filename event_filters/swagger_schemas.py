@@ -2,60 +2,90 @@ from drf_yasg import openapi
 from event.serializers.events import EventSerializer
 from event.constants.constants_event import REGIONS, COMPETITION_TYPES
 
+
 class SwaggerDocs:
 
     class EventFilter:
 
         get = {
-            'operation_description': "Filtering events by competition type, name, location, distance, and date range",
-            'manual_parameters': [
-                openapi.Parameter('page', openapi.IN_QUERY, description="Page number for pagination", type=openapi.TYPE_STRING),
+            "operation_description": "Filtering events by competition type, name, location, distance, and date range",
+            "manual_parameters": [
                 openapi.Parameter(
-                    'competition_type',
+                    "page",
+                    openapi.IN_QUERY,
+                    description="Page number for pagination",
+                    type=openapi.TYPE_STRING,
+                ),
+                openapi.Parameter(
+                    "competition_type",
                     openapi.IN_QUERY,
                     description="Type of competition (e.g., running, trail, cycling)",
                     type=openapi.TYPE_ARRAY,
-                    items=openapi.Items(type=openapi.TYPE_STRING, enum=[competition for competition, name in COMPETITION_TYPES]),
-                    collectionFormat='multi'
+                    items=openapi.Items(
+                        type=openapi.TYPE_STRING,
+                        enum=[competition for competition, name in COMPETITION_TYPES],
+                    ),
+                    collectionFormat="multi",
                 ),
-                openapi.Parameter('name', openapi.IN_QUERY, description="Event name", type=openapi.TYPE_STRING),
                 openapi.Parameter(
-                    'date_from',
+                    "name",
+                    openapi.IN_QUERY,
+                    description="Event name",
+                    type=openapi.TYPE_STRING,
+                ),
+                openapi.Parameter(
+                    "date_from",
                     openapi.IN_QUERY,
                     description="Start date of the event (YYYY-MM-DD)",
-                    type=openapi.TYPE_STRING
+                    type=openapi.TYPE_STRING,
                 ),
                 openapi.Parameter(
-                    'date_to',
+                    "date_to",
                     openapi.IN_QUERY,
                     description="End date of the event (YYYY-MM-DD)",
-                    type=openapi.TYPE_STRING
+                    type=openapi.TYPE_STRING,
                 ),
                 openapi.Parameter(
-                    'place',
+                    "place",
                     openapi.IN_QUERY,
                     description="Event location (select from available regions)",
                     type=openapi.TYPE_STRING,
-                    enum=[code for code, name in REGIONS]
+                    enum=[code for code, name in REGIONS],
                 ),
-                openapi.Parameter('distance_min', openapi.IN_QUERY, description="Minimum distance (km)", type=openapi.TYPE_NUMBER),
-                openapi.Parameter('distance_max', openapi.IN_QUERY, description="Maximum distance (km)", type=openapi.TYPE_NUMBER),
+                openapi.Parameter(
+                    "distance_min",
+                    openapi.IN_QUERY,
+                    description="Minimum distance (km)",
+                    type=openapi.TYPE_NUMBER,
+                ),
+                openapi.Parameter(
+                    "distance_max",
+                    openapi.IN_QUERY,
+                    description="Maximum distance (km)",
+                    type=openapi.TYPE_NUMBER,
+                ),
             ],
-            'responses': {
+            "responses": {
                 200: EventSerializer(many=True),
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'error': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid filter parameters. Possible errors include invalid date format, region, or distance range. For example, distance_min must be less than or equal to distance_max.')
+                        "error": openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description="Invalid filter parameters. Possible errors include invalid date format, region, or distance range. For example, distance_min must be less than or equal to distance_max.",
+                        )
                     },
-                    required=['error'],
+                    required=["error"],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'error': openapi.Schema(type=openapi.TYPE_STRING, description='Internal server error while processing the request.')
+                        "error": openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description="Internal server error while processing the request.",
+                        )
                     },
-                    required=['error'],
+                    required=["error"],
                 ),
-            }
+            },
         }

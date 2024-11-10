@@ -7,6 +7,7 @@ from event.models import Event
 from event.serializers.events import EventSerializer
 from public_events.swagger_schemas import SwaggerDocs
 
+
 class PublicEventDetailView(APIView):
     permission_classes = [AllowAny]
 

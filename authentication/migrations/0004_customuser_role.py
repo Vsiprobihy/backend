@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentication', '0003_customuser_events_registered_and_more'),
+        ("authentication", "0003_customuser_events_registered_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='role',
-            field=models.CharField(choices=[('user', 'User'), ('organizer', 'Organizer'), ('admin', 'Administrator')], default='user', max_length=10),
+            model_name="customuser",
+            name="role",
+            field=models.CharField(
+                choices=[
+                    ("user", "User"),
+                    ("organizer", "Organizer"),
+                    ("admin", "Administrator"),
+                ],
+                default="user",
+                max_length=10,
+            ),
         ),
     ]

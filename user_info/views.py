@@ -13,11 +13,17 @@ class UserInfoView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
             if request.user.first_name or request.user.last_name:
-                user_name = f"{request.user.first_name} {request.user.last_name}".strip()
+                user_name = (
+                    f"{request.user.first_name} {request.user.last_name}".strip()
+                )
             else:
                 user_name = None
-            
-            avatar_url = request.build_absolute_uri(request.user.avatar.url) if request.user.avatar else None
+
+            avatar_url = (
+                request.build_absolute_uri(request.user.avatar.url)
+                if request.user.avatar
+                else None
+            )
         else:
             user_name = None
             avatar_url = None

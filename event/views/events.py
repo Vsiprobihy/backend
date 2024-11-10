@@ -18,7 +18,7 @@ class EventsListView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Event.post)
     def post(self, request):
-        serializer = EventSerializer(data=request.data, context={'request': request})
+        serializer = EventSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -32,7 +32,9 @@ class EventDetailView(APIView):
         event = Event.objects.get(pk=pk)
         user = self.request.user
 
-        if not OrganizationAccess.objects.filter(organization=event.organizer, user=user).exists():
+        if not OrganizationAccess.objects.filter(
+            organization=event.organizer, user=user
+        ).exists():
             raise PermissionDenied("You do not have permission to access this event.")
 
         return event
@@ -46,7 +48,9 @@ class EventDetailView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Event.put)
     def put(self, request, pk):
         event = self.get_object(pk)
-        serializer = EventSerializer(event, data=request.data, context={'request': request})
+        serializer = EventSerializer(
+            event, data=request.data, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -55,7 +59,9 @@ class EventDetailView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Event.patch)
     def patch(self, request, pk):
         event = self.get_object(pk)
-        serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
+        serializer = EventSerializer(
+            event, data=request.data, partial=True, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

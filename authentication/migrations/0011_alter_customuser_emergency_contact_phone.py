@@ -7,13 +7,20 @@ import utils.data_validatiors
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentication', '0010_alter_customuser_phone_number'),
+        ("authentication", "0010_alter_customuser_phone_number"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customuser',
-            name='emergency_contact_phone',
-            field=models.CharField(blank=True, max_length=20, null=True, unique=True, validators=[utils.data_validatiors.validate_phone_number], verbose_name='phone number'),
+            model_name="customuser",
+            name="emergency_contact_phone",
+            field=models.CharField(
+                blank=True,
+                max_length=20,
+                null=True,
+                unique=True,
+                validators=[utils.data_validatiors.validate_phone_number],
+                verbose_name="phone number",
+            ),
         ),
     ]

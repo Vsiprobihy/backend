@@ -7,13 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentication', '0005_alter_customuser_managers'),
+        ("authentication", "0005_alter_customuser_managers"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='avatar',
-            field=models.ImageField(blank=True, max_length=255, null=True, upload_to=authentication.models.customer_image_file_path),
+            model_name="customuser",
+            name="avatar",
+            field=models.ImageField(
+                blank=True,
+                max_length=255,
+                null=True,
+                upload_to=authentication.models.customer_image_file_path,
+            ),
         ),
     ]
