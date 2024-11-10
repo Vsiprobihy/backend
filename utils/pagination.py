@@ -21,7 +21,7 @@ class EventPaginationView(APIView):
 
         paginator = Paginator(events, page_size)
         
-        # Check if the requested page exist
+        # Check if the requested page exists
         if page > paginator.num_pages:
             return Response({'error': 'Requested page exceeds available pages'}, status=status.HTTP_400_BAD_REQUEST)
 
