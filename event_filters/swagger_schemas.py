@@ -14,7 +14,7 @@ class SwaggerDocs:
                     openapi.IN_QUERY,
                     description="Type of competition (e.g., running, trail, cycling)",
                     type=openapi.TYPE_ARRAY,
-                    items=openapi.Items(type=openapi.TYPE_INTEGER, enum=[competition for competition, name in COMPETITION_TYPES]),
+                    items=openapi.Items(type=openapi.TYPE_STRING, enum=[competition for competition, name in COMPETITION_TYPES]),
                     collectionFormat='multi'
                 ),
                 openapi.Parameter('name', openapi.IN_QUERY, description="Event name", type=openapi.TYPE_STRING),
