@@ -14,16 +14,6 @@ jobs:
       SERVICE_NAME: backend
 
     steps:
-    
-      - name: Clean up Docker resources
-        run: docker system prune -af
-
-      - name: Remove all Docker volumes
-        run: docker volume rm $(docker volume ls -q) || true
-
-      - name: Remove all dangling images
-        run: docker image prune -af
-
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -42,7 +32,7 @@ jobs:
           docker push ghcr.io/${{ github.repository }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
 
       - name: Deploy to Remote Server with Rolling Update
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
