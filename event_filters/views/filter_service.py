@@ -8,13 +8,13 @@ class EventFilterService:
         for event in events:
             for distance in event.distances.all():
                 match = re.search(
-                    r"(\d+)(\s?км|\s?km|\s?м|\s?m)", distance.name, re.IGNORECASE
+                    r'(\d+)(\s?км|\s?km|\s?м|\s?m)', distance.name, re.IGNORECASE
                 )
                 if match:
                     distance_value = float(match.group(1))
                     unit = match.group(2).strip().lower()
 
-                    if unit in ["м", "m"]:
+                    if unit in ['м', 'm']:
                         distance_value /= 1000
 
                     if (distance_min is None or distance_value >= distance_min) and (

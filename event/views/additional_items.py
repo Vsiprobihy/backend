@@ -22,7 +22,7 @@ class AdditionalItemsDetailView(APIView):
     @swagger_auto_schema(**SwaggerDocs.AdditionalItem.post)
     def post(self, request, event_id):
         data = request.data.copy()
-        data["event"] = event_id
+        data['event'] = event_id
 
         serializer = AdditionalItemEventSerializer(data=data)
 
@@ -37,7 +37,7 @@ class AdditionalItemsDetailView(APIView):
         items = AdditionalItemEvent.objects.filter(event_id=event_id)
         if not items.exists():
             return Response(
-                {"detail": "No additional items found for this event."}, status=404
+                {'detail': 'No additional items found for this event.'}, status=404
             )
 
         serializer = AdditionalItemEventSerializer(items, many=True)
@@ -51,22 +51,22 @@ class AdditionalItemsDetailView(APIView):
             data_list = request.data
         else:
             return Response(
-                {"detail": "Expected a dictionary or a list of items."},
+                {'detail': 'Expected a dictionary or a list of items.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         items = self.get_objects_by_event(event_id)
         if not items.exists():
             return Response(
-                {"detail": "No additional items found for this event."}, status=404
+                {'detail': 'No additional items found for this event.'}, status=404
             )
 
         updated_data = []
         for data in data_list:
-            item = items.filter(id=data.get("id")).first()
+            item = items.filter(id=data.get('id')).first()
             if not item:
                 return Response(
-                    {"detail": f"Item with id {data.get('id')} not found."}, status=404
+                    {'detail': f"Item with id {data.get('id')} not found."}, status=404
                 )
 
             serializer = AdditionalItemEventSerializer(item, data=data)
@@ -86,29 +86,29 @@ class AdditionalItemsDetailView(APIView):
             data_list = request.data
         else:
             return Response(
-                {"detail": "Expected a dictionary or a list of items."},
+                {'detail': 'Expected a dictionary or a list of items.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         items = AdditionalItemEvent.objects.filter(event_id=event_id)
         if not items.exists():
             return Response(
-                {"detail": "No additional items found for this event."}, status=404
+                {'detail': 'No additional items found for this event.'}, status=404
             )
 
         updated_data = []
         for data in data_list:
-            item_id = data.get("id")
+            item_id = data.get('id')
             if not item_id:
                 return Response(
-                    {"detail": "Each item must include an 'id' field."},
+                    {'detail': "Each item must include an 'id' field."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
             item = items.filter(id=item_id).first()
             if not item:
                 return Response(
-                    {"detail": f"Item with id {item_id} not found."},
+                    {'detail': f'Item with id {item_id} not found.'},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
@@ -126,16 +126,16 @@ class AdditionalItemsDetailView(APIView):
         ids = request.data
         if not isinstance(ids, list):
             return Response(
-                {"detail": "Expected a list of IDs."},
+                {'detail': 'Expected a list of IDs.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         deleted_ids = []
         for data in ids:
-            item_id = data.get("id")
+            item_id = data.get('id')
             if not item_id:
                 return Response(
-                    {"detail": "Each item must include an 'id' field."},
+                    {'detail': "Each item must include an 'id' field."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -144,11 +144,11 @@ class AdditionalItemsDetailView(APIView):
             ).first()
             if not item:
                 return Response(
-                    {"detail": f"Item with id {item_id} not found for this event."},
+                    {'detail': f'Item with id {item_id} not found for this event.'},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
             item.delete()
             deleted_ids.append(item_id)
 
-        return Response({"deleted_ids": deleted_ids}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'deleted_ids': deleted_ids}, status=status.HTTP_204_NO_CONTENT)

@@ -6,19 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("event", "0004_eventregistration_additional_items_and_more"),
+        ('event', '0004_eventregistration_additional_items_and_more'),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name="eventregistration",
-            name="distance",
+            model_name='eventregistration',
+            name='distance',
         ),
         migrations.AddField(
-            model_name="eventregistration",
-            name="distances",
+            model_name='eventregistration',
+            name='distances',
             field=models.ManyToManyField(
-                blank=True, related_name="registrations", to="event.distanceevent"
+                blank=True, related_name='registrations', to='event.distanceevent'
             ),
         ),
     ]

@@ -1,7 +1,7 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from user_info.swagger_schemas import SwaggerDocs
 
@@ -14,7 +14,7 @@ class UserInfoView(APIView):
         if request.user.is_authenticated:
             if request.user.first_name or request.user.last_name:
                 user_name = (
-                    f"{request.user.first_name} {request.user.last_name}".strip()
+                    f'{request.user.first_name} {request.user.last_name}'.strip()
                 )
             else:
                 user_name = None
@@ -28,4 +28,4 @@ class UserInfoView(APIView):
             user_name = None
             avatar_url = None
 
-        return Response({"username": user_name, "avatar": avatar_url})
+        return Response({'username': user_name, 'avatar': avatar_url})

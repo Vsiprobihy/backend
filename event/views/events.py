@@ -1,16 +1,13 @@
-from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from drf_yasg.utils import swagger_auto_schema
-
+from authentication.permissions import IsOrganizer
 from event.models import Event, OrganizationAccess
 from event.serializers.events import EventSerializer
-
 from swagger_docs import SwaggerDocs
-from rest_framework import permissions
-from rest_framework.exceptions import PermissionDenied
-from authentication.permissions import IsOrganizer
 
 
 class EventsListView(APIView):
@@ -18,7 +15,7 @@ class EventsListView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Event.post)
     def post(self, request):
-        serializer = EventSerializer(data=request.data, context={"request": request})
+        serializer = EventSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -35,7 +32,7 @@ class EventDetailView(APIView):
         if not OrganizationAccess.objects.filter(
             organization=event.organizer, user=user
         ).exists():
-            raise PermissionDenied("You do not have permission to access this event.")
+            raise PermissionDenied('You do not have permission to access this event.')
 
         return event
 
@@ -49,7 +46,7 @@ class EventDetailView(APIView):
     def put(self, request, pk):
         event = self.get_object(pk)
         serializer = EventSerializer(
-            event, data=request.data, context={"request": request}
+            event, data=request.data, context={'request': request}
         )
         if serializer.is_valid():
             serializer.save()
@@ -60,7 +57,7 @@ class EventDetailView(APIView):
     def patch(self, request, pk):
         event = self.get_object(pk)
         serializer = EventSerializer(
-            event, data=request.data, partial=True, context={"request": request}
+            event, data=request.data, partial=True, context={'request': request}
         )
         if serializer.is_valid():
             serializer.save()
