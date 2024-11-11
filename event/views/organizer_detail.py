@@ -1,12 +1,16 @@
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework import generics, permissions
-from authentication.permissions import IsOrganizer
-from event.models import OrganizerEvent, OrganizationAccess
-from event.serializers.organizer_detail import OrganizerEventSerializer, OrganizationAccessSerializer
-from swagger_docs import SwaggerDocs
 from django.contrib.auth import get_user_model
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+
+from authentication.permissions import IsOrganizer
+from event.models import OrganizationAccess, OrganizerEvent
+from event.serializers.organizer_detail import (
+    OrganizationAccessSerializer,
+    OrganizerEventSerializer,
+)
+from swagger_docs import SwaggerDocs
+
 
 User = get_user_model()
 
@@ -26,7 +30,7 @@ class OrganizerEventListCreateView(generics.ListCreateAPIView):
         OrganizationAccess.objects.create(
             user=self.request.user,
             organization=organization,
-            role=OrganizationAccess.OWNER
+            role=OrganizationAccess.OWNER,
         )
 
 
@@ -57,23 +61,33 @@ class InviteModeratorView(generics.GenericAPIView):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return Response({'error': 'User with this email not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {'error': 'User with this email not found'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         try:
             organization = OrganizerEvent.objects.get(id=organization_id)
         except OrganizerEvent.DoesNotExist:
-            return Response({'error': 'Organization not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {'error': 'Organization not found'}, status=status.HTTP_404_NOT_FOUND
+            )
 
         # Check that the current user is the owner of the organization
-        owner_access = OrganizationAccess.objects.filter(organization=organization, user=request.user, role=OrganizationAccess.OWNER).exists()
+        owner_access = OrganizationAccess.objects.filter(
+            organization=organization, user=request.user, role=OrganizationAccess.OWNER
+        ).exists()
         if not owner_access:
-            return Response({'error': 'You are not the owner of this organization'}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {'error': 'You are not the owner of this organization'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         # Adding a new moderator
         OrganizationAccess.objects.create(
-            user=user,
-            organization=organization,
-            role=OrganizationAccess.MODERATOR
+            user=user, organization=organization, role=OrganizationAccess.MODERATOR
         )
 
-        return Response({'success': 'Moderator invited successfully'}, status=status.HTTP_200_OK)
+        return Response(
+            {'success': 'Moderator invited successfully'}, status=status.HTTP_200_OK
+        )

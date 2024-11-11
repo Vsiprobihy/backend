@@ -1,7 +1,9 @@
 import os
-from pathlib import Path
-from dotenv import load_dotenv
 from datetime import timedelta
+from pathlib import Path
+
+from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -29,6 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djoser',
+    'rest_framework',
     'corsheaders',
     'drf_yasg',
     'social_django',
@@ -55,14 +59,12 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-
 ROOT_URLCONF = 'vsizabihi.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,7 +81,6 @@ WSGI_APPLICATION = 'vsizabihi.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 
 
 # Password validation
@@ -148,6 +149,27 @@ LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'authentication.CustomUser'
 
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# For Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_ADMIN = os.getenv('GMAIL_ADMIN')
+EMAIL_SERVER = os.getenv('GMAIL_SERVER')
+EMAIL_HOST = os.getenv('GMAIL_HOST')
+EMAIL_PORT = os.getenv('GMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('GMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('GMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_STARTTLS = True
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': 'api/auth/reset_password_confirm/{uid}/{token}',
+    'EMAIL': {
+        'password_reset': 'authentication.emails.CustomPasswordResetEmail',
+    },
+}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
@@ -156,8 +178,12 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-MAIN_PAGE_START_DATE_DAYS_AHEAD = 1  # Количество дней для начальной даты (для ендпоинта upcoming-events)
-MAIN_PAGE_EVENT_DAYS_AHEAD = 5  # Количество дней, до которого отображаем события (для ендпоинта upcoming-events)
+MAIN_PAGE_START_DATE_DAYS_AHEAD = (
+    1  # Количество дней для начальной даты (для ендпоинта upcoming-events)
+)
+MAIN_PAGE_EVENT_DAYS_AHEAD = (
+    5  # Количество дней, до которого отображаем события (для ендпоинта upcoming-events)
+)
 
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
@@ -166,7 +192,7 @@ SWAGGER_SETTINGS = {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header',
-            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {your JWT token}"'
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {your JWT token}"',
         }
     },
 }

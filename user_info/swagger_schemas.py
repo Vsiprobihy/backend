@@ -1,5 +1,6 @@
 from drf_yasg import openapi
 
+
 class SwaggerDocs:
 
     class UserInfo:
@@ -10,40 +11,40 @@ class SwaggerDocs:
                 200: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        "username": openapi.Schema(
+                        'username': openapi.Schema(
                             type=openapi.TYPE_STRING,
-                            description="User's full name or 'User' if not authenticated"
+                            description="User's full name or 'User' if not authenticated",
                         ),
-                        "avatar": openapi.Schema(
+                        'avatar': openapi.Schema(
                             type=openapi.TYPE_STRING,
-                            description="Full URL of the user's avatar, or null if not authenticated or no avatar set"
+                            description="Full URL of the user's avatar, or null if not authenticated or no avatar set",
                         ),
                     },
-                    required=["username", "avatar"],
+                    required=['username', 'avatar'],
                     example={
-                        "username": "Alex Morni",
-                        "avatar": "http://example.com/media/uploads/user/user-1.jpg"
-                    }
+                        'username': 'Alex Morni',
+                        'avatar': 'http://example.com/media/uploads/user/user-1.jpg',
+                    },
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        "detail": openapi.Schema(
-                            type=openapi.TYPE_STRING, 
-                            description="Authentication credentials were not provided or are invalid"
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Authentication credentials were not provided or are invalid',
                         )
                     },
-                    required=["detail"]
+                    required=['detail'],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        "detail": openapi.Schema(
-                            type=openapi.TYPE_STRING, 
-                            description="An unexpected error occurred on the server"
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server',
                         )
                     },
-                    required=["detail"]
-                )
-            }
+                    required=['detail'],
+                ),
+            },
         }

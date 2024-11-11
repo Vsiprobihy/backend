@@ -14,11 +14,29 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='customuser',
             name='events_registered',
-            field=models.ManyToManyField(related_name='registered_users', through='event.EventRegistration', to='event.event'),
+            field=models.ManyToManyField(
+                related_name='registered_users',
+                through='event.EventRegistration',
+                to='event.event',
+            ),
         ),
         migrations.AlterField(
             model_name='customuser',
             name='t_shirt_size',
-            field=models.CharField(blank=True, choices=[('XXS', 'Very Extra Small'), ('XS', 'Extra Small'), ('S', 'Small'), ('M', 'Medium'), ('L', 'Large'), ('XL', 'Extra Large'), ('XXL', 'Extra Extra Large'), ('XXXL', 'Very Extra Extra Large')], max_length=5, null=True),
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ('XXS', 'Very Extra Small'),
+                    ('XS', 'Extra Small'),
+                    ('S', 'Small'),
+                    ('M', 'Medium'),
+                    ('L', 'Large'),
+                    ('XL', 'Extra Large'),
+                    ('XXL', 'Extra Extra Large'),
+                    ('XXXL', 'Very Extra Extra Large'),
+                ],
+                max_length=5,
+                null=True,
+            ),
         ),
     ]

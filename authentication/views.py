@@ -1,17 +1,24 @@
-from drf_yasg.utils import swagger_auto_schema
-from django.core.files.storage import default_storage
-from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import authenticate
-from rest_framework import status, generics
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import default_storage
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from authentication.swagger_schemas import SwaggerDocs
 
-from authentication.serializers import RegisterSerializer, LoginSerializer, UserProfileSerializer, UserAvatarUploadSerializer, AdditionalProfileSerializer, AdditionalProfileDetailSerializer
-from authentication.models import CustomUser, AdditionalProfile
+from authentication.models import AdditionalProfile, CustomUser
+from authentication.serializers import (
+    AdditionalProfileDetailSerializer,
+    AdditionalProfileSerializer,
+    LoginSerializer,
+    RegisterSerializer,
+    UserAvatarUploadSerializer,
+    UserProfileSerializer,
+)
+from authentication.swagger_schemas import SwaggerDocs
 from utils.custom_exceptions import InvalidCredentialsError
 
 
@@ -51,17 +58,22 @@ class RegisterView(generics.CreateAPIView):
             response = Response(status=status.HTTP_201_CREATED)
 
             response.data = {
-                "access_token": {
-                    "value": str(refresh.access_token),
-                    "expires": settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
+                'access_token': {
+                    'value': str(refresh.access_token),
+                    'expires': settings.SIMPLE_JWT[
+                        'ACCESS_TOKEN_LIFETIME'
+                    ].total_seconds(),
                 },
-                "refresh_token": {
-                    "value": str(refresh),
-                    "expires": settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+                'refresh_token': {
+                    'value': str(refresh),
+                    'expires': settings.SIMPLE_JWT[
+                        'REFRESH_TOKEN_LIFETIME'
+                    ].total_seconds(),
                 },
             }
 
             return response
+
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -120,6 +132,7 @@ class UserAvatarUploadView(generics.UpdateAPIView):
 
         serializer.save(avatar=self.request.data.get('avatar'))
 
+
 class LoginView(APIView):
     """
     API view for user login.
@@ -150,8 +163,8 @@ class LoginView(APIView):
         Raises:
             InvalidCredentialsError: If the authentication fails.
         """
-        email = request.data.get("email")
-        password = request.data.get("password")
+        email = request.data.get('email')
+        password = request.data.get('password')
         user = authenticate(email=email, password=password)
 
         if user is not None:
@@ -159,13 +172,17 @@ class LoginView(APIView):
             response = Response()
 
             response.data = {
-                "access_token": {
-                    "value": str(refresh.access_token),
-                    "expires": settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds(),
+                'access_token': {
+                    'value': str(refresh.access_token),
+                    'expires': settings.SIMPLE_JWT[
+                        'ACCESS_TOKEN_LIFETIME'
+                    ].total_seconds(),
                 },
-                "refresh_token": {
-                    "value": str(refresh),
-                    "expires": settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds(),
+                'refresh_token': {
+                    'value': str(refresh),
+                    'expires': settings.SIMPLE_JWT[
+                        'REFRESH_TOKEN_LIFETIME'
+                    ].total_seconds(),
                 },
             }
             return response
@@ -222,6 +239,7 @@ class AdditionalProfileDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 # class AdminOnlyView(APIView):
 #     permission_classes = [IsAuthenticated, IsAdmin]

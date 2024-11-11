@@ -1,14 +1,14 @@
 from django.http import Http404
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status, permissions
+from rest_framework import permissions, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.exceptions import PermissionDenied
 
+from authentication.permissions import IsOrganizer
 from event.models import DistanceEvent, Event, OrganizationAccess
 from event.serializers.distance_detail import DistanceEventSerializer
 from swagger_docs import SwaggerDocs
-from authentication.permissions import IsOrganizer
 
 
 class DistanceDetailView(APIView):
@@ -22,8 +22,10 @@ class DistanceDetailView(APIView):
 
     def check_user_permission(self, event):
         user = self.request.user
-        if not OrganizationAccess.objects.filter(organization=event.organizer, user=user).exists():
-            raise PermissionDenied("You do not have permission to access this event.")
+        if not OrganizationAccess.objects.filter(
+            organization=event.organizer, user=user
+        ).exists():
+            raise PermissionDenied('You do not have permission to access this event.')
 
     def get_object(self, pk):
         try:
@@ -38,7 +40,7 @@ class DistanceDetailView(APIView):
     def post(self, request, event_id):
         event = self.get_event(event_id)
         self.check_user_permission(event)
-        
+
         data = request.data.copy()
         data['event'] = event_id
         serializer = DistanceEventSerializer(data=data)
@@ -51,10 +53,12 @@ class DistanceDetailView(APIView):
     def get(self, request, event_id):
         event = self.get_event(event_id)
         self.check_user_permission(event)
-        
+
         distances = self.get_objects_by_event(event_id)
         if not distances.exists():
-            return Response({"detail": "No distances found for this event."}, status=404)
+            return Response(
+                {'detail': 'No distances found for this event.'}, status=404
+            )
 
         serializer = DistanceEventSerializer(distances, many=True)
         return Response(serializer.data)
@@ -63,17 +67,22 @@ class DistanceDetailView(APIView):
     def put(self, request, event_id):
         event = self.get_event(event_id)
         self.check_user_permission(event)
-        
+
         if isinstance(request.data, dict):
             data_list = [request.data]
         elif isinstance(request.data, list):
             data_list = request.data
         else:
-            return Response({"detail": "Expected a dictionary or a list of items."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': 'Expected a dictionary or a list of items.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         distances = self.get_objects_by_event(event_id)
         if not distances.exists():
-            return Response({"detail": "No distances found for this event."}, status=404)
+            return Response(
+                {'detail': 'No distances found for this event.'}, status=404
+            )
 
         updated_data = []
         for data in data_list:
@@ -82,7 +91,10 @@ class DistanceDetailView(APIView):
 
             item = distances.filter(id=data.get('id')).first()
             if not item:
-                return Response({"detail": f"Distance with id {data.get('id')} not found."}, status=404)
+                return Response(
+                    {'detail': f"Distance with id {data.get('id')} not found."},
+                    status=404,
+                )
 
             data['event'] = event_id
 
@@ -99,27 +111,38 @@ class DistanceDetailView(APIView):
     def patch(self, request, event_id):
         event = self.get_event(event_id)
         self.check_user_permission(event)
-        
+
         if isinstance(request.data, dict):
             data_list = [request.data]
         elif isinstance(request.data, list):
             data_list = request.data
         else:
-            return Response({"detail": "Expected a dictionary or a list of items."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': 'Expected a dictionary or a list of items.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         distances = self.get_objects_by_event(event_id)
         if not distances.exists():
-            return Response({"detail": "No distances found for this event."}, status=404)
+            return Response(
+                {'detail': 'No distances found for this event.'}, status=404
+            )
 
         updated_data = []
         for data in data_list:
             item_id = data.get('id')
             if not item_id:
-                return Response({"detail": "Each item must include an 'id' field."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'detail': "Each item must include an 'id' field."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             item = distances.filter(id=item_id).first()
             if not item:
-                return Response({"detail": f"Distance with id {item_id} not found."}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {'detail': f'Distance with id {item_id} not found.'},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             serializer = DistanceEventSerializer(item, data=data, partial=True)
             if serializer.is_valid():
@@ -134,22 +157,33 @@ class DistanceDetailView(APIView):
     def delete(self, request, event_id):
         event = self.get_event(event_id)
         self.check_user_permission(event)
-        
+
         ids = request.data
         if not isinstance(ids, list):
-            return Response({"detail": "Expected a list of IDs."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': 'Expected a list of IDs.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         deleted_ids = []
         for data in ids:
             item_id = data.get('id')
             if not item_id:
-                return Response({"detail": "Each item must include an 'id' field."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'detail': "Each item must include an 'id' field."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-            distance = DistanceEvent.objects.filter(id=item_id, event_id=event_id).first()
+            distance = DistanceEvent.objects.filter(
+                id=item_id, event_id=event_id
+            ).first()
             if not distance:
-                return Response({"detail": f"Distance with id {item_id} not found."}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {'detail': f'Distance with id {item_id} not found.'},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             distance.delete()
             deleted_ids.append(item_id)
 
-        return Response({"deleted_ids": deleted_ids}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'deleted_ids': deleted_ids}, status=status.HTTP_204_NO_CONTENT)

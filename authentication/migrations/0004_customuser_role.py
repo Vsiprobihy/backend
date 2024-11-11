@@ -13,6 +13,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='customuser',
             name='role',
-            field=models.CharField(choices=[('user', 'User'), ('organizer', 'Organizer'), ('admin', 'Administrator')], default='user', max_length=10),
+            field=models.CharField(
+                choices=[
+                    ('user', 'User'),
+                    ('organizer', 'Organizer'),
+                    ('admin', 'Administrator'),
+                ],
+                default='user',
+                max_length=10,
+            ),
         ),
     ]

@@ -1,48 +1,50 @@
 from drf_yasg import openapi
-from event.constants.constants_event import REGIONS, COMPETITION_TYPES
+
+from event.constants.constants_event import COMPETITION_TYPES, REGIONS
+
 
 class SwaggerDocs:
 
     class EventFilter:
 
         get = {
-            'operation_description': "Filtering events by competition type, name, location, distance, and date range",
+            'operation_description': 'Filtering events by competition type, name, location, distance, and date range',
             'manual_parameters': [
-                openapi.Parameter('page', openapi.IN_QUERY, description="Page number for pagination", type=openapi.TYPE_STRING),
+                openapi.Parameter('page', openapi.IN_QUERY, description='Page number for pagination', type=openapi.TYPE_STRING),
                 openapi.Parameter(
                     'competition_type',
                     openapi.IN_QUERY,
-                    description="Type of competition (e.g., running, trail, cycling)",
+                    description='Type of competition (e.g., running, trail, cycling)',
                     type=openapi.TYPE_ARRAY,
                     items=openapi.Items(type=openapi.TYPE_STRING, enum=[competition for competition, name in COMPETITION_TYPES]),
                     collectionFormat='multi'
                 ),
-                openapi.Parameter('name', openapi.IN_QUERY, description="Event name", type=openapi.TYPE_STRING),
+                openapi.Parameter('name', openapi.IN_QUERY, description='Event name', type=openapi.TYPE_STRING),
                 openapi.Parameter(
                     'date_from',
                     openapi.IN_QUERY,
-                    description="Start date of the event (YYYY-MM-DD)",
+                    description='Start date of the event (YYYY-MM-DD)',
                     type=openapi.TYPE_STRING
                 ),
                 openapi.Parameter(
                     'date_to',
                     openapi.IN_QUERY,
-                    description="End date of the event (YYYY-MM-DD)",
+                    description='End date of the event (YYYY-MM-DD)',
                     type=openapi.TYPE_STRING
                 ),
                 openapi.Parameter(
                     'place',
                     openapi.IN_QUERY,
-                    description="Event location (select from available regions)",
+                    description='Event location (select from available regions)',
                     type=openapi.TYPE_STRING,
                     enum=[code for code, name in REGIONS]
                 ),
-                openapi.Parameter('distance_min', openapi.IN_QUERY, description="Minimum distance (km)", type=openapi.TYPE_NUMBER),
-                openapi.Parameter('distance_max', openapi.IN_QUERY, description="Maximum distance (km)", type=openapi.TYPE_NUMBER),
+                openapi.Parameter('distance_min', openapi.IN_QUERY, description='Minimum distance (km)', type=openapi.TYPE_NUMBER),
+                openapi.Parameter('distance_max', openapi.IN_QUERY, description='Maximum distance (km)', type=openapi.TYPE_NUMBER),
             ],
             'responses': {
                 200: openapi.Response(
-                    description="List of events with count",
+                    description='List of events with count',
                     schema=openapi.Schema(
                         type=openapi.TYPE_OBJECT,
                         properties={

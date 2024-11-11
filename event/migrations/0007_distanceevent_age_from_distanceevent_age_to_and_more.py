@@ -28,17 +28,49 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='distanceevent',
             name='category',
-            field=models.CharField(choices=[('adults', 'Дорослі'), ('children', 'Діти'), ('men', 'Чоловіки'), ('women', 'Жінки'), ('disabled', 'Учасники з обмеженими можливостями'), ('veterans', 'Ветерани'), ('pupils', 'Школярі'), ('boys', 'Юнаки'), ('juniors', 'Юніори'), ('students', 'Студенти'), ('teachers', 'Викладачі')], default='adults', max_length=50),
+            field=models.CharField(
+                choices=[
+                    ('adults', 'Дорослі'),
+                    ('children', 'Діти'),
+                    ('men', 'Чоловіки'),
+                    ('women', 'Жінки'),
+                    ('disabled', 'Учасники з обмеженими можливостями'),
+                    ('veterans', 'Ветерани'),
+                    ('pupils', 'Школярі'),
+                    ('boys', 'Юнаки'),
+                    ('juniors', 'Юніори'),
+                    ('students', 'Студенти'),
+                    ('teachers', 'Викладачі'),
+                ],
+                default='adults',
+                max_length=50,
+            ),
         ),
         migrations.AddField(
             model_name='distanceevent',
             name='competition_type',
-            field=models.CharField(choices=[('running', 'Біг'), ('trail', 'Трейл'), ('ultramarathon', 'Ультрамарафон'), ('cycling', 'Велоспорт'), ('online', 'Online'), ('walking', 'Ходьба'), ('ocr', 'OCR'), ('swimming', 'Плавання'), ('triathlon', 'Тріатлон')], default='running', max_length=50),
+            field=models.CharField(
+                choices=[
+                    ('running', 'Біг'),
+                    ('trail', 'Трейл'),
+                    ('ultramarathon', 'Ультрамарафон'),
+                    ('cycling', 'Велоспорт'),
+                    ('online', 'Online'),
+                    ('walking', 'Ходьба'),
+                    ('ocr', 'OCR'),
+                    ('swimming', 'Плавання'),
+                    ('triathlon', 'Тріатлон'),
+                ],
+                default='running',
+                max_length=50,
+            ),
         ),
         migrations.AddField(
             model_name='distanceevent',
             name='length',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True),
+            field=models.DecimalField(
+                blank=True, decimal_places=2, max_digits=10, null=True
+            ),
         ),
         migrations.AddField(
             model_name='distanceevent',
