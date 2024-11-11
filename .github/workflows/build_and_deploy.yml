@@ -42,12 +42,27 @@ jobs:
             export BACKEND_REPOSITORY=${{ github.repository }}
             export BACKEND_SHA=${{ github.sha }}
 
-            df -h
+            # Создать .env файл на сервере с нужными переменными
+            echo "GOOGLE_OAUTH_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" > /home/azureuser/probihy/backend/.env
+            echo "GOOGLE_OAUTH_CLIENT_SECRET=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" >> /home/azureuser/probihy/backend/.env
+
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /home/azureuser/probihy/backend/.env
+
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> /home/azureuser/probihy/backend/.env
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> /home/azureuser/probihy/backend/.env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> /home/azureuser/probihy/backend/.env
+            echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> /home/azureuser/probihy/backend/.env
+            echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> /home/azureuser/probihy/backend/.env
+
+            echo "GMAIL_SERVER=${{ secrets.GMAIL_SERVER }}" >> /home/azureuser/probihy/backend/.env
+            echo "GMAIL_HOST=${{ secrets.GMAIL_HOST }}" >> /home/azureuser/probihy/backend/.env
+            echo "GMAIL_PORT=${{ secrets.GMAIL_PORT }}" >> /home/azureuser/probihy/backend/.env
+            echo "GMAIL_HOST_USER=${{ secrets.GMAIL_HOST_USER }}" >> /home/azureuser/probihy/backend/.env
+            echo "GMAIL_HOST_PASSWORD=${{ secrets.GMAIL_HOST_PASSWORD }}" >> /home/azureuser/probihy/backend/.env
+            echo "GMAIL_ADMIN=${{ secrets.GMAIL_ADMIN }}" >> /home/azureuser/probihy/backend/.env
+
             docker container prune -f
             docker image prune -f
             docker volume prune -f
-            docker ps -a
-            docker images
-            docker image prune -a -f
 
             docker-compose -f /home/azureuser/probihy/backend/docker-compose.yml up -d
