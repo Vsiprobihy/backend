@@ -39,17 +39,6 @@ class SwaggerDocs:
                     'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link', default='http://site.com/registration/winter-wonderland-run-2024'),
                     'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants', default=True),
                     'organizer_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the organizer', default=1),
-                    'additional_items': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(
-                            type=openapi.TYPE_OBJECT,
-                            properties={
-                                'item_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of additional item', default='transfer'),
-                                'price': openapi.Schema(type=openapi.TYPE_STRING, description='Price of additional item', default='50'),
-                            },
-                        ),
-                        description='List of additional items'
-                    ),
                     'distances': openapi.Schema(
                         type=openapi.TYPE_ARRAY,
                         items=openapi.Schema(
@@ -69,6 +58,17 @@ class SwaggerDocs:
                                 'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free', default=False),
                                 'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Promo-only registration', default=False),
                                 'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Allow registration', default=True),
+                                'additional_options': openapi.Schema(
+                                    type=openapi.TYPE_ARRAY,
+                                    items=openapi.Schema(
+                                        type=openapi.TYPE_OBJECT,
+                                        properties={
+                                            'item_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of additional option', default='t_shirt'),
+                                            'price': openapi.Schema(type=openapi.TYPE_NUMBER, description='Price of additional option', default=250),
+                                        }
+                                    ),
+                                    description='Additional options for the distance'
+                                ),
                             }
                         ),
                         description='List of distances'
