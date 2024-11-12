@@ -92,9 +92,13 @@ class EventSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         validated_data.pop('organizer', None)
-        validated_data.pop('additional_items', None)
-        distances_data = validated_data.pop('distances', None)
         competition_type_data = validated_data.pop('competition_type', None)
+
+        user = self.context['request'].user
+        organizer_id = validated_data.get('organizer_id', instance.organizer.id)
+
+        if not OrganizationAccess.objects.filter(organization_id=organizer_id, user=user).exists():
+            raise serializers.ValidationError({"organizer_id": "You do not have access to the specified organization."})
 
         if competition_type_data is not None:
             instance.competition_type.clear()
@@ -116,16 +120,6 @@ class EventSerializer(serializers.ModelSerializer):
         instance.hide_participants = validated_data.get('hide_participants', instance.hide_participants)
         instance.schedule_pdf = validated_data.get('schedule_pdf', instance.schedule_pdf)
         instance.extended_description = validated_data.get('extended_description', instance.extended_description)
-
-        if distances_data:
-            instance.distances.all().delete()
-            for distance_data in distances_data:
-                additional_options_data = distance_data.pop('additional_options', [])
-                distance = DistanceEvent.objects.create(event=instance, **distance_data)
-
-                for option_data in additional_options_data:
-                    option_data['distance'] = distance
-                    AdditionalItemEvent.objects.create(**option_data)
 
         instance.save()
         return instance
