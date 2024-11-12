@@ -55,7 +55,7 @@ class SwaggerDocs:
                                         'name': openapi.Schema(type=openapi.TYPE_STRING),
                                         'competition_type': openapi.Schema(
                                             type=openapi.TYPE_ARRAY,
-                                            items=openapi.Items(type=openapi.TYPE_INTEGER),
+                                            items=openapi.Items(type=openapi.TYPE_STRING),
                                         ),
                                         'date_from': openapi.Schema(type=openapi.TYPE_STRING),
                                         'date_to': openapi.Schema(type=openapi.TYPE_STRING),
