@@ -40,10 +40,19 @@ class EventSerializer(serializers.ModelSerializer):
         self.fields['extended_description'].required = False
 
     def validate(self, data):
-        if data['date_to'] < data['date_from']:
-            raise serializers.ValidationError({
-                "date_to": ("The end date cannot be earlier than the start date.")
-            })
+        instance_date_from = getattr(self.instance, 'date_from', None)
+        instance_date_to = getattr(self.instance, 'date_to', None)
+
+        date_from = data.get('date_from', instance_date_from)
+        date_to = data.get('date_to', instance_date_to)
+
+        if date_from and date_to:
+            if date_to < date_from:
+                raise serializers.ValidationError({
+                    "date_to": "The end date cannot be earlier than the start date.",
+                    "date_from": "The start date cannot be later than the end date."
+                })
+
         return data
 
     def create(self, validated_data):
