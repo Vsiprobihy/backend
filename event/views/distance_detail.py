@@ -97,14 +97,13 @@ class DistanceDetailView(APIView):
                     for option_data in additional_options_data:
                         option_data['event'] = event
                         option_data['distance'] = updated_distance
-                        AdditionalItemEvent.objects.update_or_create(id=option_data.get('id'), defaults=option_data)
+                        AdditionalItemEvent.objects.filter(id=option_data.get('id')).update(**option_data)
 
                 updated_data.append(serializer.data)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(updated_data, status=status.HTTP_200_OK)
-
 
     @swagger_auto_schema(**SwaggerDocs.Distance.patch)
     def patch(self, request, event_id):
@@ -144,7 +143,7 @@ class DistanceDetailView(APIView):
                     for option_data in additional_options_data:
                         option_data['event'] = event
                         option_data['distance'] = updated_distance
-                        AdditionalItemEvent.objects.update_or_create(id=option_data.get('id'), defaults=option_data)
+                        AdditionalItemEvent.objects.filter(id=option_data.get('id')).update(**option_data)
 
                 updated_data.append(serializer.data)
             else:
