@@ -1,11 +1,12 @@
 from django.utils import timezone
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from event.models import Event
 from mainpage.swagger_schemas import SwaggerDocs
+
 
 @swagger_auto_schema(method='get', **SwaggerDocs.MainPage.get)
 @api_view(['GET'])
@@ -14,12 +15,14 @@ def mainpage(request):
     API endpoint for receiving the next upcoming events.
     """
     today = timezone.now().date()
-    
+
     # Get the count of events to return from the request or default to 3
     count = int(request.GET.get('count', 3))
 
     # Filter upcoming events
-    upcoming_events = Event.objects.filter(date_from__gte=today).order_by('date_from')[:count]
+    upcoming_events = Event.objects.filter(date_from__gte=today).order_by('date_from')[
+        :count
+    ]
 
     event_data = [
         {

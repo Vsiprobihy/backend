@@ -1,18 +1,17 @@
 import re
+from io import BytesIO
 
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from PIL import Image
-from io import BytesIO
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from authentication.models import AdditionalProfile, CustomUser
 
 
-
 def validate_password_confirm(password, password2):
     if password != password2:
-        raise serializers.ValidationError("Passwords must match")
+        raise serializers.ValidationError('Passwords must match')
     return True
 
 
@@ -33,13 +32,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         - 1 number
         """
         if not re.search(r'[A-Z]', value):
-            raise ValidationError("Password must contain at least 1 uppercase letter.")
+            raise ValidationError('Password must contain at least 1 uppercase letter.')
 
         if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
-            raise ValidationError("Password must contain at least 1 special character.")
+            raise ValidationError('Password must contain at least 1 special character.')
 
         if not re.search(r'\d', value):
-            raise ValidationError("Password must contain at least 1 number.")
+            raise ValidationError('Password must contain at least 1 number.')
 
         return value
 
@@ -51,7 +50,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data.pop('password2')
         user = get_user_model().objects.create_user(**validated_data)
         return user
-
 
 
 class LoginSerializer(serializers.Serializer):
@@ -66,14 +64,28 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'id', 'first_name', 'last_name', 'first_name_eng', 'last_name_eng',
-            'gender', 'date_of_birth', 't_shirt_size', 'country', 'city',
-            'phone_number', 'sports_club', 'emergency_contact_name',
-            'emergency_contact_phone', 'registered_events', 'avatar', 'email'
+            'id',
+            'first_name',
+            'last_name',
+            'first_name_eng',
+            'last_name_eng',
+            'gender',
+            'date_of_birth',
+            't_shirt_size',
+            'country',
+            'city',
+            'phone_number',
+            'sports_club',
+            'emergency_contact_name',
+            'emergency_contact_phone',
+            'registered_events',
+            'avatar',
+            'email',
         ]
 
     def get_registered_events(self, obj):
         from event.serializers.events import EventSerializer
+
         events = obj.events_registered.all()
         return EventSerializer(events, many=True).data
 
@@ -91,14 +103,16 @@ class UserAvatarUploadSerializer(serializers.ModelSerializer):
     def validate_avatar(self, value):
         if value:
             if not value.name.endswith(('.png', '.jpg', '.jpeg')):
-                raise ValidationError("Invalid file format. Only PNG, JPG, and JPEG are allowed.")
+                raise ValidationError(
+                    'Invalid file format. Only PNG, JPG, and JPEG are allowed.'
+                )
 
             if value.size > 3 * 1024 * 1024:
-                raise ValidationError("File size exceeds the 3 MB limit.")
+                raise ValidationError('File size exceeds the 3 MB limit.')
 
             image = Image.open(value)
 
-             # If the image is in RGBA, convert it to RGB (remove alpha channel)
+            # If the image is in RGBA, convert it to RGB (remove alpha channel)
             if image.mode == 'RGBA':
                 image = image.convert('RGB')
 
@@ -116,10 +130,12 @@ class UserAvatarUploadSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['avatar']
 
+
 class AdditionalProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdditionalProfile
         fields = '__all__'
+
 
 class AdditionalProfileDetailSerializer(serializers.ModelSerializer):
     class Meta:

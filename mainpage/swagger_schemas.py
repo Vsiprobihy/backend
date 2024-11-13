@@ -1,5 +1,6 @@
 from drf_yasg import openapi
 
+
 class SwaggerDocs:
 
     class MainPage:
@@ -8,25 +9,55 @@ class SwaggerDocs:
             type=openapi.TYPE_OBJECT,
             properties={
                 'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Event ID'),
-                'name': openapi.Schema(type=openapi.TYPE_STRING, description='Event name'),
-                'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME, description='Event start date'),
-                'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME, description='Event end date (optional)'),
-                'place': openapi.Schema(type=openapi.TYPE_STRING, description='Event place'),
-                'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition'),
-                'photos': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='URL of event photo (optional)'),
+                'name': openapi.Schema(
+                    type=openapi.TYPE_STRING, description='Event name'
+                ),
+                'date_from': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_DATETIME,
+                    description='Event start date',
+                ),
+                'date_to': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_DATETIME,
+                    description='Event end date (optional)',
+                ),
+                'place': openapi.Schema(
+                    type=openapi.TYPE_STRING, description='Event place'
+                ),
+                'competition_type': openapi.Schema(
+                    type=openapi.TYPE_STRING, description='Type of competition'
+                ),
+                'photos': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_URI,
+                    description='URL of event photo (optional)',
+                ),
                 'distances': openapi.Schema(
                     type=openapi.TYPE_ARRAY,
                     items=openapi.Schema(
                         type=openapi.TYPE_OBJECT,
                         properties={
-                            'name': openapi.Schema(type=openapi.TYPE_STRING, description='Distance name'),
-                            'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='Distance ID'),
-                        }
+                            'name': openapi.Schema(
+                                type=openapi.TYPE_STRING, description='Distance name'
+                            ),
+                            'id': openapi.Schema(
+                                type=openapi.TYPE_INTEGER, description='Distance ID'
+                            ),
+                        },
                     ),
-                    description='List of event distances'
+                    description='List of event distances',
                 ),
             },
-            required=['id', 'name', 'date_from', 'date_to', 'place', 'competition_type', 'distances']
+            required=[
+                'id',
+                'name',
+                'date_from',
+                'date_to',
+                'place',
+                'competition_type',
+                'distances',
+            ],
         )
 
         mainpage_response_schema = openapi.Schema(
@@ -35,27 +66,33 @@ class SwaggerDocs:
                 'events': openapi.Schema(
                     type=openapi.TYPE_ARRAY,
                     items=event_schema,
-                    description='List of upcoming events'
+                    description='List of upcoming events',
                 )
             },
-            required=['events']
+            required=['events'],
         )
 
         get = {
-            'operation_description': "Get upcoming events for the main page",
+            'operation_description': 'Get upcoming events for the main page',
             'responses': {
                 200: mainpage_response_schema,
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid parameters (e.g. non-integer "count" value)')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid parameters (e.g. non-integer "count" value)',
+                        )
                     },
                     required=['detail'],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected server error occurred')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected server error occurred',
+                        )
                     },
                     required=['detail'],
                 ),
@@ -68,5 +105,5 @@ class SwaggerDocs:
                     required=False,
                     description='Number of upcoming events to return (default is 3)',
                 )
-            ]
+            ],
         }

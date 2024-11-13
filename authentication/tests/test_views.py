@@ -1,8 +1,9 @@
 import pytest
-from django.urls import reverse
-from rest_framework.test import APIClient
-from rest_framework import status
 from django.contrib.auth import get_user_model
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
+
 
 User = get_user_model()
 
@@ -18,7 +19,7 @@ def user(db):
         email='user@example.com',
         password='String1!',
         first_name='John',
-        last_name='Doe'
+        last_name='Doe',
     )
 
 
@@ -55,7 +56,7 @@ def test_register_failure(api_client):
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert 'non_field_errors' in response.data
-    assert "Passwords must match" in response.data['non_field_errors']
+    assert 'Passwords must match' in response.data['non_field_errors']
 
 
 @pytest.mark.django_db
@@ -73,11 +74,7 @@ def test_get_user_profile(api_client, user):
 def test_update_user_profile_put(api_client, user):
     api_client.force_authenticate(user=user)
     url = reverse('user_profile')
-    data = {
-        'first_name': 'Jane',
-        'last_name': 'Smith',
-        'city': 'New York'
-    }
+    data = {'first_name': 'Jane', 'last_name': 'Smith', 'city': 'New York'}
     response = api_client.put(url, data)
 
     assert response.status_code == status.HTTP_200_OK
@@ -96,4 +93,3 @@ def test_update_user_profile_patch(api_client, user):
     assert response.status_code == status.HTTP_200_OK
     assert response.data['first_name'] == 'Jane'
     assert response.data['last_name'] == 'Doe'
-

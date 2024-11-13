@@ -1,7 +1,9 @@
 import pytest
 from django.contrib.auth import get_user_model
 
+
 CustomUser = get_user_model()
+
 
 @pytest.mark.django_db
 def test_create_user():
@@ -9,7 +11,7 @@ def test_create_user():
         email='user@example.com',
         password='testpass123',
         first_name='John',
-        last_name='Doe'
+        last_name='Doe',
     )
     assert user.email == 'user@example.com'
     assert user.check_password('testpass123')
@@ -17,11 +19,13 @@ def test_create_user():
     assert not user.is_staff
     assert not user.is_superuser
 
+
 @pytest.mark.django_db
 def test_create_user_no_email():
     with pytest.raises(ValueError) as excinfo:
         CustomUser.objects.create_user(email=None, password='testpass123')
     assert str(excinfo.value) == 'The given email must be set'
+
 
 @pytest.mark.django_db
 def test_create_superuser():
@@ -29,7 +33,7 @@ def test_create_superuser():
         email='admin@example.com',
         password='adminpass123',
         first_name='Admin',
-        last_name='User'
+        last_name='User',
     )
     assert superuser.email == 'admin@example.com'
     assert superuser.check_password('adminpass123')
@@ -37,15 +41,17 @@ def test_create_superuser():
     assert superuser.is_staff
     assert superuser.is_superuser
 
+
 @pytest.mark.django_db
 def test_user_string_representation():
     user = CustomUser.objects.create_user(
         email='user@example.com',
         password='testpass123',
         first_name='John',
-        last_name='Doe'
+        last_name='Doe',
     )
     assert str(user) == 'user@example.com'
+
 
 @pytest.mark.django_db
 def test_user_fields():

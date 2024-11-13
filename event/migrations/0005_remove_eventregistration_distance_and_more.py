@@ -17,6 +17,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='eventregistration',
             name='distances',
-            field=models.ManyToManyField(blank=True, related_name='registrations', to='event.distanceevent'),
+            field=models.ManyToManyField(
+                blank=True, related_name='registrations', to='event.distanceevent'
+            ),
         ),
     ]

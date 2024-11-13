@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from event.models import DistanceEvent, Event, AdditionalItemEvent
+from event.models import AdditionalItemEvent, DistanceEvent, Event
 from event.serializers.additional_items import AdditionalItemEventSerializer
 
 
@@ -11,9 +11,9 @@ class DistanceEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistanceEvent
         fields = [
-            'id', 'name', 'competition_type', 'category', 'allow_registration', 
+            'id', 'name', 'competition_type', 'category', 'allow_registration',
             'length', 'start_number_from', 'start_number_to', 'age_from', 'age_to',
-            'cost', 'is_free', 'promo_only_registration', 
+            'cost', 'is_free', 'promo_only_registration',
             'show_name_on_number', 'show_start_number', 'event', 'additional_options'
         ]
         extra_kwargs = {'event': {'read_only': True}}
@@ -30,7 +30,6 @@ class DistanceEventSerializer(serializers.ModelSerializer):
         return distance
 
     def update(self, instance, validated_data):
-        # Обновляем основные поля дистанции
         instance.name = validated_data.get('name', instance.name)
         instance.competition_type = validated_data.get('competition_type', instance.competition_type)
         instance.category = validated_data.get('category', instance.category)
@@ -41,24 +40,21 @@ class DistanceEventSerializer(serializers.ModelSerializer):
         instance.age_to = validated_data.get('age_to', instance.age_to)
         instance.cost = validated_data.get('cost', instance.cost)
         instance.is_free = validated_data.get('is_free', instance.is_free)
-        instance.promo_only_registration = validated_data.get('promo_only_registration', instance.promo_only_registration)
+        instance.promo_only_registration = validated_data.get('promo_only_registration', instance.promo_only_registration)  # noqa: E501
         instance.show_name_on_number = validated_data.get('show_name_on_number', instance.show_name_on_number)
         instance.show_start_number = validated_data.get('show_start_number', instance.show_start_number)
 
         instance.save()
 
-        # Обработка дополнительных опций, создаем их, если id нет, иначе обновляем
         additional_options_data = validated_data.get('additional_options', [])
         for option_data in additional_options_data:
             option_id = option_data.get('id')
             if option_id:
-                # Обновляем существующую опцию, если id есть
                 option = AdditionalItemEvent.objects.get(id=option_id)
                 option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
                 if option_serializer.is_valid():
                     option_serializer.save()
             else:
-                # Если id нет, создаем новую опцию
                 option_data['event'] = instance.event
                 option_data['distance'] = instance
                 AdditionalItemEvent.objects.create(**option_data)

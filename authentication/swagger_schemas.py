@@ -1,9 +1,13 @@
 from drf_yasg import openapi
+
 from authentication.serializers import (
-    LoginSerializer, AdditionalProfileSerializer, 
-    AdditionalProfileDetailSerializer, UserAvatarUploadSerializer, 
-    UserProfileSerializer
+    AdditionalProfileDetailSerializer,
+    AdditionalProfileSerializer,
+    LoginSerializer,
+    UserAvatarUploadSerializer,
+    UserProfileSerializer,
 )
+
 
 class SwaggerDocs:
 
@@ -16,29 +20,41 @@ class SwaggerDocs:
                 200: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Refresh Token'),
-                        'access': openapi.Schema(type=openapi.TYPE_STRING, description='JWT Access Token'),
+                        'refresh': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='JWT Refresh Token'
+                        ),
+                        'access': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='JWT Access Token'
+                        ),
                     },
                     required=['refresh', 'access'],
                 ),
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
@@ -55,28 +71,39 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 403: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to access this resource.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to access this resource.',
+                        )
                     },
                     required=['detail'],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
@@ -92,34 +119,44 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 403: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to create this resource.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to create this resource.',
+                        )
                     },
                     required=['detail'],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
             },
         }
-
 
     class AdditionalProfileDetail:
 
@@ -131,31 +168,40 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 403: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to access this resource.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to access this resource.',
+                        )
                     },
                     required=['detail'],
                 ),
-                404: openapi.Response(
-                    description="Profile not found"
-                ),
+                404: openapi.Response(description='Profile not found'),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
@@ -171,31 +217,40 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 403: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to update this resource.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to update this resource.',
+                        )
                     },
                     required=['detail'],
                 ),
-                404: openapi.Response(
-                    description="Profile not found"
-                ),
+                404: openapi.Response(description='Profile not found'),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
@@ -210,37 +265,45 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 403: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to delete this resource.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to delete this resource.',
+                        )
                     },
                     required=['detail'],
                 ),
-                404: openapi.Response(
-                    description="Profile not found"
-                ),
+                404: openapi.Response(description='Profile not found'),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
             },
         }
-
 
     class UserAvatarUpload:
 
@@ -252,14 +315,19 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid image file or bad request parameters.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid image file or bad request parameters.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
@@ -268,7 +336,10 @@ class SwaggerDocs:
                     properties={
                         'avatar': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
-                            items=openapi.Schema(type=openapi.TYPE_STRING, description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.')
+                            items=openapi.Schema(
+                                type=openapi.TYPE_STRING,
+                                description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.',
+                            ),
                         )
                     },
                     required=['avatar'],
@@ -276,7 +347,10 @@ class SwaggerDocs:
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
@@ -292,14 +366,19 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid image file or bad request parameters.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid image file or bad request parameters.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
@@ -308,7 +387,10 @@ class SwaggerDocs:
                     properties={
                         'avatar': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
-                            items=openapi.Schema(type=openapi.TYPE_STRING, description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.')
+                            items=openapi.Schema(
+                                type=openapi.TYPE_STRING,
+                                description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.',
+                            ),
                         )
                     },
                     required=['avatar'],
@@ -316,7 +398,10 @@ class SwaggerDocs:
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
@@ -333,42 +418,56 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 403: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to access this resource.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to access this resource.',
+                        )
                     },
                     required=['detail'],
                 ),
                 404: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='The requested resource does not exist.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='The requested resource does not exist.',
+                        )
                     },
                     required=['detail'],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
             },
             'operation_description': 'Get user profile data',
         }
-        
+
         put = {
             'tags': ['Profile'],
             'request_body': UserProfileSerializer,
@@ -377,42 +476,56 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 403: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to update this resource.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to update this resource.',
+                        )
                     },
                     required=['detail'],
                 ),
                 404: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='The resource to update does not exist.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='The resource to update does not exist.',
+                        )
                     },
                     required=['detail'],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),
             },
             'operation_description': 'Update user profile data',
         }
-        
+
         patch = {
             'tags': ['Profile'],
             'request_body': UserProfileSerializer,
@@ -421,35 +534,49 @@ class SwaggerDocs:
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid request parameters or data.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
                     },
                     required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Invalid credentials.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
                     },
                     required=['detail'],
                 ),
                 403: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='Insufficient permissions to partially update this resource.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to partially update this resource.',
+                        )
                     },
                     required=['detail'],
                 ),
                 404: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='The resource to partially update does not exist.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='The resource to partially update does not exist.',
+                        )
                     },
                     required=['detail'],
                 ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description='An unexpected error occurred on the server.')
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
                     },
                     required=['detail'],
                 ),

@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from event.models import AdditionalItemEvent
-from event.models import Event, DistanceEvent
+from event.models import AdditionalItemEvent, DistanceEvent, Event
 
 
 class AdditionalItemEventSerializer(serializers.ModelSerializer):
@@ -14,5 +13,5 @@ class AdditionalItemEventSerializer(serializers.ModelSerializer):
         fields = ['id', 'item_type', 'price', 'event', 'distance']
         extra_kwargs = {
             'event': {'read_only': True},
-            'id': {'read_only': True} 
+            'id': {'read_only': True}
             }

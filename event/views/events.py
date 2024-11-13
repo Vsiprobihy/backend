@@ -1,18 +1,15 @@
-from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from drf_yasg.utils import swagger_auto_schema
-
+from authentication.permissions import IsOrganizer
 from event.models import AdditionalItemEvent, DistanceEvent, Event, OrganizationAccess
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
 from event.serializers.events import EventSerializer
-
 from swagger_docs import SwaggerDocs
-from rest_framework import permissions
-from rest_framework.exceptions import PermissionDenied
-from authentication.permissions import IsOrganizer
 
 
 class EventsListView(APIView):
@@ -34,8 +31,10 @@ class EventDetailView(APIView):
         event = Event.objects.get(pk=pk)
         user = self.request.user
 
-        if not OrganizationAccess.objects.filter(organization=event.organizer, user=user).exists():
-            raise PermissionDenied("You do not have permission to access this event.")
+        if not OrganizationAccess.objects.filter(
+            organization=event.organizer, user=user
+        ).exists():
+            raise PermissionDenied('You do not have permission to access this event.')
 
         return event
 
@@ -49,7 +48,7 @@ class EventDetailView(APIView):
     def put(self, request, pk):
         event = self.get_object(pk)
         serializer = EventSerializer(event, data=request.data, context={'request': request})
-        
+
         if serializer.is_valid():
             updated_event = serializer.save()
 
@@ -57,34 +56,29 @@ class EventDetailView(APIView):
             for distance_data in distances_data:
                 distance_id = distance_data.get('id')
                 if distance_id:
-                    # Обновление существующей дистанции
                     distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
                     if distance:
                         distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
                         if distance_serializer.is_valid():
                             distance_serializer.save()
                 else:
-                    # Создание новой дистанции
                     distance_serializer = DistanceEventSerializer(data=distance_data)
                     if distance_serializer.is_valid():
                         distance_serializer.save(event=updated_event)
 
-                # Обработка дополнительных опций для дистанции
                 additional_options_data = distance_data.get('additional_options', [])
                 for option_data in additional_options_data:
                     option_id = option_data.get('id')
                     if option_id:
-                        # Обновление существующей опции
                         option = AdditionalItemEvent.objects.filter(id=option_id).first()
                         if option:
                             option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
                             if option_serializer.is_valid():
                                 option_serializer.save()
                     else:
-                        # Создание новой дополнительной опции
                         option_serializer = AdditionalItemEventSerializer(data=option_data)
                         if option_serializer.is_valid():
-                            option_serializer.save(event=updated_event)  # Указываем event_id
+                            option_serializer.save(event=updated_event)
 
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -93,7 +87,7 @@ class EventDetailView(APIView):
     def patch(self, request, pk):
         event = self.get_object(pk)
         serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
-        
+
         if serializer.is_valid():
             updated_event = serializer.save()
 
@@ -101,34 +95,29 @@ class EventDetailView(APIView):
             for distance_data in distances_data:
                 distance_id = distance_data.get('id')
                 if distance_id:
-                    # Обновление существующей дистанции
                     distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
                     if distance:
                         distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
                         if distance_serializer.is_valid():
                             distance_serializer.save()
                 else:
-                    # Создание новой дистанции
                     distance_serializer = DistanceEventSerializer(data=distance_data)
                     if distance_serializer.is_valid():
                         distance_serializer.save(event=updated_event)
 
-                # Обработка дополнительных опций для дистанции
                 additional_options_data = distance_data.get('additional_options', [])
                 for option_data in additional_options_data:
                     option_id = option_data.get('id')
                     if option_id:
-                        # Обновление существующей опции
                         option = AdditionalItemEvent.objects.filter(id=option_id).first()
                         if option:
                             option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
                             if option_serializer.is_valid():
                                 option_serializer.save()
                     else:
-                        # Создание новой дополнительной опции
                         option_serializer = AdditionalItemEventSerializer(data=option_data)
                         if option_serializer.is_valid():
-                            option_serializer.save(event=updated_event)  # Указываем event_id
+                            option_serializer.save(event=updated_event)
 
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

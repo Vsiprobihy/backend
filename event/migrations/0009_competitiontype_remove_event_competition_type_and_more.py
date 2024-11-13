@@ -13,7 +13,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CompetitionType',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('name', models.CharField(max_length=50)),
             ],
         ),
@@ -24,6 +32,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='competition_type',
-            field=models.ManyToManyField(related_name='events', to='event.competitiontype'),
+            field=models.ManyToManyField(
+                related_name='events', to='event.competitiontype'
+            ),
         ),
     ]
