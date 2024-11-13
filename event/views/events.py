@@ -56,19 +56,36 @@ class EventDetailView(APIView):
             distances_data = request.data.get('distances', [])
             for distance_data in distances_data:
                 distance_id = distance_data.get('id')
-                distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
-                if distance:
-                    distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
+                if distance_id:
+                    # Обновление существующей дистанции
+                    distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
+                    if distance:
+                        distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
+                        if distance_serializer.is_valid():
+                            distance_serializer.save()
+                else:
+                    # Создание новой дистанции
+                    distance_serializer = DistanceEventSerializer(data=distance_data)
                     if distance_serializer.is_valid():
-                        distance_serializer.save()
-                        additional_options_data = distance_data.get('additional_options', [])
-                        for option_data in additional_options_data:
-                            option_id = option_data.get('id')
-                            option = AdditionalItemEvent.objects.filter(id=option_id).first()
-                            if option:
-                                option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
-                                if option_serializer.is_valid():
-                                    option_serializer.save()
+                        distance_serializer.save(event=updated_event)
+
+                # Обработка дополнительных опций для дистанции
+                additional_options_data = distance_data.get('additional_options', [])
+                for option_data in additional_options_data:
+                    option_id = option_data.get('id')
+                    if option_id:
+                        # Обновление существующей опции
+                        option = AdditionalItemEvent.objects.filter(id=option_id).first()
+                        if option:
+                            option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
+                            if option_serializer.is_valid():
+                                option_serializer.save()
+                    else:
+                        # Создание новой дополнительной опции
+                        option_serializer = AdditionalItemEventSerializer(data=option_data)
+                        if option_serializer.is_valid():
+                            option_serializer.save(event=updated_event)  # Указываем event_id
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -83,19 +100,35 @@ class EventDetailView(APIView):
             distances_data = request.data.get('distances', [])
             for distance_data in distances_data:
                 distance_id = distance_data.get('id')
-                distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
-                if distance:
-                    distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
+                if distance_id:
+                    # Обновление существующей дистанции
+                    distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
+                    if distance:
+                        distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
+                        if distance_serializer.is_valid():
+                            distance_serializer.save()
+                else:
+                    # Создание новой дистанции
+                    distance_serializer = DistanceEventSerializer(data=distance_data)
                     if distance_serializer.is_valid():
-                        distance_serializer.save()
-                        additional_options_data = distance_data.get('additional_options', [])
-                        for option_data in additional_options_data:
-                            option_id = option_data.get('id')
-                            option = AdditionalItemEvent.objects.filter(id=option_id).first()
-                            if option:
-                                option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
-                                if option_serializer.is_valid():
-                                    option_serializer.save()
+                        distance_serializer.save(event=updated_event)
+
+                # Обработка дополнительных опций для дистанции
+                additional_options_data = distance_data.get('additional_options', [])
+                for option_data in additional_options_data:
+                    option_id = option_data.get('id')
+                    if option_id:
+                        # Обновление существующей опции
+                        option = AdditionalItemEvent.objects.filter(id=option_id).first()
+                        if option:
+                            option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
+                            if option_serializer.is_valid():
+                                option_serializer.save()
+                    else:
+                        # Создание новой дополнительной опции
+                        option_serializer = AdditionalItemEventSerializer(data=option_data)
+                        if option_serializer.is_valid():
+                            option_serializer.save(event=updated_event)  # Указываем event_id
 
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

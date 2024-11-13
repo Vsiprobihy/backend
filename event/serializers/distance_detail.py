@@ -30,6 +30,7 @@ class DistanceEventSerializer(serializers.ModelSerializer):
         return distance
 
     def update(self, instance, validated_data):
+        # Обновляем основные поля дистанции
         instance.name = validated_data.get('name', instance.name)
         instance.competition_type = validated_data.get('competition_type', instance.competition_type)
         instance.category = validated_data.get('category', instance.category)
@@ -46,13 +47,20 @@ class DistanceEventSerializer(serializers.ModelSerializer):
 
         instance.save()
 
+        # Обработка дополнительных опций, создаем их, если id нет, иначе обновляем
         additional_options_data = validated_data.get('additional_options', [])
         for option_data in additional_options_data:
             option_id = option_data.get('id')
             if option_id:
+                # Обновляем существующую опцию, если id есть
                 option = AdditionalItemEvent.objects.get(id=option_id)
                 option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
                 if option_serializer.is_valid():
                     option_serializer.save()
+            else:
+                # Если id нет, создаем новую опцию
+                option_data['event'] = instance.event
+                option_data['distance'] = instance
+                AdditionalItemEvent.objects.create(**option_data)
 
         return instance
