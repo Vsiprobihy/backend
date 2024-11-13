@@ -101,7 +101,6 @@ class EventSerializer(serializers.ModelSerializer):
             distance = DistanceEvent.objects.create(event=event, **distance_data)
 
             for option_data in additional_options_data:
-                option_data['event'] = event
                 option_data['distance'] = distance
                 AdditionalItemEvent.objects.create(**option_data)
 

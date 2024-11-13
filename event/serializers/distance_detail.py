@@ -47,6 +47,10 @@ class DistanceEventSerializer(serializers.ModelSerializer):
         instance.save()
 
         additional_options_data = validated_data.get('additional_options', [])
+        existing_option_ids = [option['id'] for option in additional_options_data if 'id' in option]
+
+        instance.additional_options.exclude(id__in=existing_option_ids).delete()
+
         for option_data in additional_options_data:
             option_id = option_data.get('id')
             if option_id:
@@ -55,7 +59,6 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                 if option_serializer.is_valid():
                     option_serializer.save()
             else:
-                option_data['event'] = instance.event
                 option_data['distance'] = instance
                 AdditionalItemEvent.objects.create(**option_data)
 
