@@ -51,35 +51,7 @@ class EventDetailView(APIView):
 
         if serializer.is_valid():
             updated_event = serializer.save()
-
-            distances_data = request.data.get('distances', [])
-            for distance_data in distances_data:
-                distance_id = distance_data.get('id')
-                if distance_id:
-                    distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
-                    if distance:
-                        distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
-                        if distance_serializer.is_valid():
-                            distance_serializer.save()
-                else:
-                    distance_serializer = DistanceEventSerializer(data=distance_data)
-                    if distance_serializer.is_valid():
-                        distance_serializer.save(event=updated_event)
-
-                additional_options_data = distance_data.get('additional_options', [])
-                for option_data in additional_options_data:
-                    option_id = option_data.get('id')
-                    if option_id:
-                        option = AdditionalItemEvent.objects.filter(id=option_id).first()
-                        if option:
-                            option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
-                            if option_serializer.is_valid():
-                                option_serializer.save()
-                    else:
-                        option_serializer = AdditionalItemEventSerializer(data=option_data)
-                        if option_serializer.is_valid():
-                            option_serializer.save(event=updated_event)
-
+            self._process_distances(updated_event, request.data.get('distances', []))
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -90,37 +62,51 @@ class EventDetailView(APIView):
 
         if serializer.is_valid():
             updated_event = serializer.save()
-
-            distances_data = request.data.get('distances', [])
-            for distance_data in distances_data:
-                distance_id = distance_data.get('id')
-                if distance_id:
-                    distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
-                    if distance:
-                        distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
-                        if distance_serializer.is_valid():
-                            distance_serializer.save()
-                else:
-                    distance_serializer = DistanceEventSerializer(data=distance_data)
-                    if distance_serializer.is_valid():
-                        distance_serializer.save(event=updated_event)
-
-                additional_options_data = distance_data.get('additional_options', [])
-                for option_data in additional_options_data:
-                    option_id = option_data.get('id')
-                    if option_id:
-                        option = AdditionalItemEvent.objects.filter(id=option_id).first()
-                        if option:
-                            option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
-                            if option_serializer.is_valid():
-                                option_serializer.save()
-                    else:
-                        option_serializer = AdditionalItemEventSerializer(data=option_data)
-                        if option_serializer.is_valid():
-                            option_serializer.save(event=updated_event)
-
+            self._process_distances(updated_event, request.data.get('distances', []))
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def _process_distances(self, event, distances_data):
+        """Process each distance and its additional_options to ensure only updates and creations as necessary."""
+        for distance_data in distances_data:
+            distance_id = distance_data.get('id')
+            if distance_id:
+                # Update existing distance
+                distance = DistanceEvent.objects.filter(id=distance_id, event=event).first()
+                if distance:
+                    distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
+                    if distance_serializer.is_valid():
+                        distance = distance_serializer.save()
+            else:
+                # Create a new distance if no ID is provided
+                distance_serializer = DistanceEventSerializer(data=distance_data)
+                if distance_serializer.is_valid():
+                    distance = distance_serializer.save(event=event)
+
+            self._process_additional_options(distance, distance_data.get('additional_options', []))
+
+    def _process_additional_options(self, distance, additional_options_data):
+        """Process additional options for a distance, creating or updating as necessary."""
+        existing_option_ids = set(distance.additional_options.values_list('id', flat=True))
+
+        for option_data in additional_options_data:
+            option_id = option_data.get('id')
+            if option_id and option_id in existing_option_ids:
+                # Update existing additional option if ID is provided
+                option = AdditionalItemEvent.objects.get(id=option_id, distance=distance)
+                option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
+                if option_serializer.is_valid():
+                    option_serializer.save()
+                # Remove ID from the existing list to handle deletion if needed
+                existing_option_ids.discard(option_id)
+            else:
+                # Create a new additional option if no ID is provided
+                option_serializer = AdditionalItemEventSerializer(data=option_data)
+                if option_serializer.is_valid():
+                    option_serializer.save(distance=distance)
+
+        # Optionally delete any remaining options not in the request
+        AdditionalItemEvent.objects.filter(id__in=existing_option_ids).delete()
 
     @swagger_auto_schema(**SwaggerDocs.Event.delete)
     def delete(self, request, pk):
