@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
-from event.models import Event, OrganizationAccess
+from event.models import AdditionalItemEvent, DistanceEvent, Event, OrganizationAccess
+from event.serializers.additional_items import AdditionalItemEventSerializer
+from event.serializers.distance_detail import DistanceEventSerializer
 from event.serializers.events import EventSerializer
 from swagger_docs import SwaggerDocs
 
@@ -45,22 +47,78 @@ class EventDetailView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Event.put)
     def put(self, request, pk):
         event = self.get_object(pk)
-        serializer = EventSerializer(
-            event, data=request.data, context={'request': request}
-        )
+        serializer = EventSerializer(event, data=request.data, context={'request': request})
+
         if serializer.is_valid():
-            serializer.save()
+            updated_event = serializer.save()
+
+            distances_data = request.data.get('distances', [])
+            for distance_data in distances_data:
+                distance_id = distance_data.get('id')
+                if distance_id:
+                    distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
+                    if distance:
+                        distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
+                        if distance_serializer.is_valid():
+                            distance_serializer.save()
+                else:
+                    distance_serializer = DistanceEventSerializer(data=distance_data)
+                    if distance_serializer.is_valid():
+                        distance_serializer.save(event=updated_event)
+
+                additional_options_data = distance_data.get('additional_options', [])
+                for option_data in additional_options_data:
+                    option_id = option_data.get('id')
+                    if option_id:
+                        option = AdditionalItemEvent.objects.filter(id=option_id).first()
+                        if option:
+                            option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
+                            if option_serializer.is_valid():
+                                option_serializer.save()
+                    else:
+                        option_serializer = AdditionalItemEventSerializer(data=option_data)
+                        if option_serializer.is_valid():
+                            option_serializer.save(event=updated_event)
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.Event.patch)
     def patch(self, request, pk):
         event = self.get_object(pk)
-        serializer = EventSerializer(
-            event, data=request.data, partial=True, context={'request': request}
-        )
+        serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
+
         if serializer.is_valid():
-            serializer.save()
+            updated_event = serializer.save()
+
+            distances_data = request.data.get('distances', [])
+            for distance_data in distances_data:
+                distance_id = distance_data.get('id')
+                if distance_id:
+                    distance = DistanceEvent.objects.filter(id=distance_id, event=updated_event).first()
+                    if distance:
+                        distance_serializer = DistanceEventSerializer(distance, data=distance_data, partial=True)
+                        if distance_serializer.is_valid():
+                            distance_serializer.save()
+                else:
+                    distance_serializer = DistanceEventSerializer(data=distance_data)
+                    if distance_serializer.is_valid():
+                        distance_serializer.save(event=updated_event)
+
+                additional_options_data = distance_data.get('additional_options', [])
+                for option_data in additional_options_data:
+                    option_id = option_data.get('id')
+                    if option_id:
+                        option = AdditionalItemEvent.objects.filter(id=option_id).first()
+                        if option:
+                            option_serializer = AdditionalItemEventSerializer(option, data=option_data, partial=True)
+                            if option_serializer.is_valid():
+                                option_serializer.save()
+                    else:
+                        option_serializer = AdditionalItemEventSerializer(data=option_data)
+                        if option_serializer.is_valid():
+                            option_serializer.save(event=updated_event)
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

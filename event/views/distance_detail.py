@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
-from event.models import DistanceEvent, Event, OrganizationAccess
+from event.models import AdditionalItemEvent, DistanceEvent, Event, OrganizationAccess
 from event.serializers.distance_detail import DistanceEventSerializer
 from swagger_docs import SwaggerDocs
 
@@ -86,8 +86,8 @@ class DistanceDetailView(APIView):
 
         updated_data = []
         for data in data_list:
-            if 'event' in data:
-                del data['event']
+            # Ensure the event is set correctly
+            data['event'] = event_id
 
             item = distances.filter(id=data.get('id')).first()
             if not item:
@@ -96,11 +96,21 @@ class DistanceDetailView(APIView):
                     status=404,
                 )
 
-            data['event'] = event_id
+            # Handle updating additional options if included in the request
+            additional_options_data = data.pop('additional_options', None)
 
+            # Update the DistanceEvent instance
             serializer = DistanceEventSerializer(item, data=data)
             if serializer.is_valid():
-                serializer.save()
+                updated_distance = serializer.save()
+
+                # Handle additional options separately if present
+                if additional_options_data is not None:
+                    for option_data in additional_options_data:
+                        option_data['event'] = event
+                        option_data['distance'] = updated_distance
+                        AdditionalItemEvent.objects.filter(id=option_data.get('id')).update(**option_data)
+
                 updated_data.append(serializer.data)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -144,9 +154,20 @@ class DistanceDetailView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
+            # Handle updating additional options if present
+            additional_options_data = data.pop('additional_options', None)
+
             serializer = DistanceEventSerializer(item, data=data, partial=True)
             if serializer.is_valid():
-                serializer.save()
+                updated_distance = serializer.save()
+
+                # Update additional options if provided
+                if additional_options_data is not None:
+                    for option_data in additional_options_data:
+                        option_data['event'] = event
+                        option_data['distance'] = updated_distance
+                        AdditionalItemEvent.objects.filter(id=option_data.get('id')).update(**option_data)
+
                 updated_data.append(serializer.data)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

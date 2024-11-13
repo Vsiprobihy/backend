@@ -8,7 +8,6 @@ from event.models import (
     OrganizationAccess,
     OrganizerEvent,
 )
-from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
 from event.serializers.organizer_detail import OrganizerEventSerializer
 
@@ -22,41 +21,25 @@ class CompetitionTypeSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     organizer_id = serializers.IntegerField(write_only=True)
     organizer = OrganizerEventSerializer(read_only=True)
-    additional_items = AdditionalItemEventSerializer(many=True, required=False)
     distances = DistanceEventSerializer(many=True, required=True)
     competition_type = CompetitionTypeSerializer(many=True)
 
     class Meta:
         model = Event
         fields = [
-            'name',
-            'competition_type',
-            'date_from',
-            'date_to',
-            'place',
-            'place_region',
-            'photos',
-            'description',
-            'registration_link',
-            'hide_participants',
-            'schedule_pdf',
-            'organizer',
-            'organizer_id',
-            'additional_items',
-            'distances',
-            'extended_description',
+            'name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region',
+            'photos', 'description', 'registration_link', 'hide_participants', 'schedule_pdf',
+            'organizer', 'organizer_id', 'distances', 'extended_description'
         ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Fields that are required
         self.fields['name'].required = True
         self.fields['competition_type'].required = True
         self.fields['date_from'].required = True
         self.fields['date_to'].required = True
         self.fields['place'].required = True
         self.fields['place_region'].required = True
-        # Fields that are optional
         self.fields['description'].required = False
         self.fields['registration_link'].required = False
         self.fields['hide_participants'].required = False
@@ -64,28 +47,30 @@ class EventSerializer(serializers.ModelSerializer):
         self.fields['extended_description'].required = False
 
     def validate(self, data):
-        if data['date_to'] < data['date_from']:
-            raise serializers.ValidationError(
-                {'date_to': ('The end date cannot be earlier than the start date.')}
-            )
+        instance_date_from = getattr(self.instance, 'date_from', None)
+        instance_date_to = getattr(self.instance, 'date_to', None)
+
+        date_from = data.get('date_from', instance_date_from)
+        date_to = data.get('date_to', instance_date_to)
+
+        if date_from and date_to:
+            if date_to < date_from:
+                raise serializers.ValidationError({
+                    'date_to': 'The end date cannot be earlier than the start date.',
+                    'date_from': 'The start date cannot be later than the end date.'
+                })
+
         return data
 
     def create(self, validated_data):
         organizer_id = validated_data.pop('organizer_id')
-        additional_items_data = validated_data.pop('additional_items', [])
         distances_data = validated_data.pop('distances')
         competition_type_data = validated_data.pop('competition_type', [])
 
         user = self.context['request'].user
 
-        if not OrganizationAccess.objects.filter(
-            organization_id=organizer_id, user=user
-        ).exists():
-            raise serializers.ValidationError(
-                {
-                    'organizer_id': 'You do not have access to the specified organization.'
-                }
-            )
+        if not OrganizationAccess.objects.filter(organization_id=organizer_id, user=user).exists():
+            raise serializers.ValidationError({'organizer_id': 'You do not have access to the specified organization.'})
 
         try:
             organizer = OrganizerEvent.objects.get(id=organizer_id)
@@ -111,19 +96,26 @@ class EventSerializer(serializers.ModelSerializer):
                     }
                 )
 
-        for item_data in additional_items_data:
-            AdditionalItemEvent.objects.create(event=event, **item_data)
-
         for distance_data in distances_data:
-            DistanceEvent.objects.create(event=event, **distance_data)
+            additional_options_data = distance_data.pop('additional_options', [])
+            distance = DistanceEvent.objects.create(event=event, **distance_data)
+
+            for option_data in additional_options_data:
+                option_data['event'] = event
+                option_data['distance'] = distance
+                AdditionalItemEvent.objects.create(**option_data)
 
         return event
 
     def update(self, instance, validated_data):
         validated_data.pop('organizer', None)
-        validated_data.pop('additional_items', None)
-        validated_data.pop('distances', None)
         competition_type_data = validated_data.pop('competition_type', None)
+
+        user = self.context['request'].user
+        organizer_id = validated_data.get('organizer_id', instance.organizer.id)
+
+        if not OrganizationAccess.objects.filter(organization_id=organizer_id, user=user).exists():
+            raise serializers.ValidationError({'organizer_id': 'You do not have access to the specified organization.'})
 
         if competition_type_data is not None:
             instance.competition_type.clear()
@@ -163,5 +155,4 @@ class EventSerializer(serializers.ModelSerializer):
         )
 
         instance.save()
-
         return instance

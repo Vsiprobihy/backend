@@ -93,11 +93,6 @@ class CustomUser(BaseProfile, AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    events_registered = models.ManyToManyField(
-        'event.Event',
-        through='event.EventRegistration',
-        related_name='registered_users',
-    )
 
     objects = CustomUserManager()
 

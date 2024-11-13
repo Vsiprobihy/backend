@@ -2,10 +2,6 @@ from drf_yasg import openapi
 
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
-from event.serializers.event_registrations import (
-    EventRegistrationDetailSerializer,
-    EventRegistrationSerializer,
-)
 from event.serializers.events import EventSerializer
 from event.serializers.organizer_detail import OrganizerEventSerializer
 
@@ -88,101 +84,45 @@ class SwaggerDocs:
                         description='ID of the organizer',
                         default=1,
                     ),
-                    'additional_items': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(
-                            type=openapi.TYPE_OBJECT,
-                            properties={
-                                'item_type': openapi.Schema(
-                                    type=openapi.TYPE_STRING,
-                                    description='Type of additional item',
-                                    default='transfer',
-                                ),
-                                'price': openapi.Schema(
-                                    type=openapi.TYPE_STRING,
-                                    description='Price of additional item',
-                                    default='50',
-                                ),
-                            },
-                        ),
-                        description='List of additional items',
-                    ),
+                    'date_from': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event start date', default='2024-10-28'),  # noqa: E501, F601
+                    'date_to': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Event end date', default='2024-10-28'),  # noqa: E501, F601
+                    'place': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='Lviv'),  # noqa: E501, F601
+                    'place_region': openapi.Schema(type=openapi.TYPE_STRING, description='Location of the event', default='lviv_region'),  # noqa: E501, F601
+                    'description': openapi.Schema(type=openapi.TYPE_STRING, description='Event description', default='Embrace the winter spirit with our Winter Wonderland Run!'),  # noqa: E501, F601
+                    'registration_link': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_URI, description='Registration link', default='http://site.com/registration/winter-wonderland-run-2024'),  # noqa: E501, F601
+                    'hide_participants': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether to hide participants', default=True),  # noqa: E501, F601
+                    'organizer_id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the organizer', default=1),  # noqa: E501, F601
                     'distances': openapi.Schema(
                         type=openapi.TYPE_ARRAY,
                         items=openapi.Schema(
                             type=openapi.TYPE_OBJECT,
                             properties={
-                                'name': openapi.Schema(
-                                    type=openapi.TYPE_STRING,
-                                    description='Name of the distance',
-                                    default='5km Snow Run',
+                                'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the distance', default='5km Snow Run'),  # noqa: E501
+                                'competition_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of competition', default='running'),  # noqa: E501
+                                'category': openapi.Schema(type=openapi.TYPE_STRING, description='Category of participants', default='adults'),  # noqa: E501
+                                'length': openapi.Schema(type=openapi.TYPE_NUMBER, description='Length of the distance in km', default=5.0),  # noqa: E501
+                                'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER, description='Starting number', default=1),  # noqa: E501
+                                'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER, description='Ending number', default=300),  # noqa: E501
+                                'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Show start number', default=True),  # noqa: E501
+                                'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Show name on the number', default=True),  # noqa: E501
+                                'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description='Minimum age', default=16),  # noqa: E501
+                                'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description='Maximum age', default=60),  # noqa: E501
+                                'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description='Cost of the distance', default=55),  # noqa: E501
+                                'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free', default=False),  # noqa: E501
+                                'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Promo-only registration', default=False),  # noqa: E501
+                                'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Allow registration', default=True),  # noqa: E501
+                                'additional_options': openapi.Schema(
+                                    type=openapi.TYPE_ARRAY,
+                                    items=openapi.Schema(
+                                        type=openapi.TYPE_OBJECT,
+                                        properties={
+                                            'item_type': openapi.Schema(type=openapi.TYPE_STRING, description='Type of additional option', default='t_shirt'),  # noqa: E501
+                                            'price': openapi.Schema(type=openapi.TYPE_NUMBER, description='Price of additional option', default=250),  # noqa: E501
+                                        }
+                                    ),
+                                    description='Additional options for the distance'
                                 ),
-                                'competition_type': openapi.Schema(
-                                    type=openapi.TYPE_STRING,
-                                    description='Type of competition',
-                                    default='running',
-                                ),
-                                'category': openapi.Schema(
-                                    type=openapi.TYPE_STRING,
-                                    description='Category of participants',
-                                    default='adults',
-                                ),
-                                'length': openapi.Schema(
-                                    type=openapi.TYPE_NUMBER,
-                                    description='Length of the distance in km',
-                                    default=5.0,
-                                ),
-                                'start_number_from': openapi.Schema(
-                                    type=openapi.TYPE_INTEGER,
-                                    description='Starting number',
-                                    default=1,
-                                ),
-                                'start_number_to': openapi.Schema(
-                                    type=openapi.TYPE_INTEGER,
-                                    description='Ending number',
-                                    default=300,
-                                ),
-                                'show_start_number': openapi.Schema(
-                                    type=openapi.TYPE_BOOLEAN,
-                                    description='Show start number',
-                                    default=True,
-                                ),
-                                'show_name_on_number': openapi.Schema(
-                                    type=openapi.TYPE_BOOLEAN,
-                                    description='Show name on the number',
-                                    default=True,
-                                ),
-                                'age_from': openapi.Schema(
-                                    type=openapi.TYPE_INTEGER,
-                                    description='Minimum age',
-                                    default=16,
-                                ),
-                                'age_to': openapi.Schema(
-                                    type=openapi.TYPE_INTEGER,
-                                    description='Maximum age',
-                                    default=60,
-                                ),
-                                'cost': openapi.Schema(
-                                    type=openapi.TYPE_NUMBER,
-                                    description='Cost of the distance',
-                                    default=55,
-                                ),
-                                'is_free': openapi.Schema(
-                                    type=openapi.TYPE_BOOLEAN,
-                                    description='Is the distance free',
-                                    default=False,
-                                ),
-                                'promo_only_registration': openapi.Schema(
-                                    type=openapi.TYPE_BOOLEAN,
-                                    description='Promo-only registration',
-                                    default=False,
-                                ),
-                                'allow_registration': openapi.Schema(
-                                    type=openapi.TYPE_BOOLEAN,
-                                    description='Allow registration',
-                                    default=True,
-                                ),
-                            },
+                            }
                         ),
                         description='List of distances',
                     ),
@@ -211,7 +151,7 @@ class SwaggerDocs:
                 201: openapi.Response('Event created successfully', EventSerializer),
                 400: 'Bad request',
             },
-            'operation_description': 'Create a new event with all related details including organizer, additional items, and distances.',
+            'operation_description': 'Create a new event with all related details including organizer, additional items, and distances.',  # noqa: E501
         }
         put = {
             'tags': ['Events'],
@@ -336,7 +276,7 @@ class SwaggerDocs:
                 200: openapi.Response('Success', EventSerializer),
                 404: 'Event not found',
             },
-            'operation_description': 'Partially update event details without organizer, additional_items, or distances fields.',
+            'operation_description': 'Partially update event details without organizer, additional_items, or distances fields.',  # noqa: E501
         }
         delete = {
             'tags': ['Events'],
@@ -347,201 +287,6 @@ class SwaggerDocs:
             'operation_description': 'Delete an event by ID.',
         }
 
-    class EventRegistration:
-        post = {
-            'tags': ['Event Registration'],
-            'request_body': openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'event': openapi.Schema(
-                        type=openapi.TYPE_INTEGER,
-                        description='ID of the event to register for.',
-                    ),
-                    'distances': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                        description='List of distance IDs selected by the user. At least one distance is required.',
-                    ),
-                    'additional_items': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                        description='List of additional item IDs selected by the user, such as t-shirts or medals. This field is optional.',
-                    ),
-                },
-                required=['event', 'distances'],
-                example={'event': 1, 'distances': [1, 2], 'additional_items': [1, 2]},
-            ),
-            'responses': {
-                201: openapi.Response(
-                    'User successfully registered for the event',
-                    EventRegistrationSerializer,
-                    examples={
-                        'application/json': {
-                            'event': 1,
-                            'distances': [1, 2],
-                            'additional_items': [1, 2],
-                            'registration_date': '2024-09-17T12:34:56.789Z',
-                            'is_confirmed': False,
-                        }
-                    },
-                ),
-                400: openapi.Response(
-                    'Bad request. Either the event does not exist, the user is already registered, or invalid distances/additional items were provided.'
-                ),
-                404: openapi.Response(
-                    'Event not found. The event ID provided does not match any existing event.'
-                ),
-            },
-            'operation_description': """
-            Registers a user for an event. The user is authenticated via JWT, and the event is identified by its ID.
-            The request body should include the event ID, a list of distance IDs the user wants to participate in, and optionally, additional item IDs.
-            The response will include the event registration details, such as the event ID, selected distances, additional items, registration date, and confirmation status.
-            """,
-            'operation_id': 'registerUserForEvent',
-        }
-
-        get = {
-            'tags': ['Event Registration'],
-            'responses': {
-                200: openapi.Response(
-                    'Successfully retrieved event registration details',
-                    EventRegistrationDetailSerializer,
-                    examples={
-                        'application/json': {
-                            'user': {
-                                'first_name': 'John',
-                                'last_name': 'Doe',
-                                'gender': 'M',
-                                'date_of_birth': '1990-01-01',
-                                't_shirt_size': 'L',
-                                'country': 'USA',
-                                'city': 'New York',
-                                'phone_number': '+123456789',
-                                'sports_club': 'NY Marathon Club',
-                                'emergency_contact_name': 'Jane Doe',
-                                'emergency_contact_phone': '+987654321',
-                            },
-                            'event': 1,
-                            'distances': [1, 2],
-                            'additional_items': [1, 2],
-                            'registration_date': '2024-09-17T12:34:56.789Z',
-                            'is_confirmed': False,
-                        }
-                    },
-                ),
-                404: openapi.Response(
-                    'Event registration not found. The registration ID does not exist.'
-                ),
-            },
-            'operation_description': """
-            Retrieves detailed information about a specific event registration, including user information, the selected event, distances, additional items, registration date, and whether the registration has been confirmed.
-            """,
-            'operation_id': 'getEventRegistration',
-        }
-
-        put = {
-            'tags': ['Event Registration'],
-            'request_body': openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'event': openapi.Schema(
-                        type=openapi.TYPE_INTEGER,
-                        description='ID of the event to update registration for.',
-                    ),
-                    'distances': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                        description='List of updated distance IDs selected by the user.',
-                    ),
-                    'additional_items': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                        description='List of updated additional item IDs selected by the user.',
-                    ),
-                },
-                required=['event', 'distances'],
-                example={'event': 1, 'distances': [1, 2], 'additional_items': [1, 2]},
-            ),
-            'responses': {
-                200: openapi.Response(
-                    'Updated event registration successfully',
-                    EventRegistrationDetailSerializer,
-                    examples={
-                        'application/json': {
-                            'event': 1,
-                            'distances': [1, 2],
-                            'additional_items': [1, 2],
-                            'registration_date': '2024-09-17T12:34:56.789Z',
-                            'is_confirmed': False,
-                        }
-                    },
-                ),
-                404: openapi.Response(
-                    'Event registration not found. The registration ID does not exist.'
-                ),
-            },
-            'operation_description': """
-            Updates the details of an existing event registration. You can change the distances the user is registered for, update additional items, or modify other registration details.
-            The event itself cannot be changed; only distances and additional items can be updated.
-            """,
-            'operation_id': 'updateEventRegistration',
-        }
-
-        patch = {
-            'tags': ['Event Registration'],
-            'request_body': openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    'distances': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                        description='List of updated distance IDs selected by the user.',
-                    ),
-                    'additional_items': openapi.Schema(
-                        type=openapi.TYPE_ARRAY,
-                        items=openapi.Schema(type=openapi.TYPE_INTEGER),
-                        description='List of updated additional item IDs selected by the user.',
-                    ),
-                },
-                example={'distances': [5], 'additional_items': [1]},
-            ),
-            'responses': {
-                200: openapi.Response(
-                    'Partially updated event registration',
-                    EventRegistrationDetailSerializer,
-                    examples={
-                        'application/json': {
-                            'event': 1,
-                            'distances': [1],
-                            'additional_items': [1],
-                            'registration_date': '2024-09-17T12:34:56.789Z',
-                            'is_confirmed': False,
-                        }
-                    },
-                ),
-                404: openapi.Response(
-                    'Event registration not found. The registration ID does not exist.'
-                ),
-            },
-            'operation_description': """
-            Partially updates an existing event registration. This can include modifying the distances or additional items associated with the registration.
-            Only the fields provided in the request body will be updated.
-            """,
-            'operation_id': 'partialUpdateEventRegistration',
-        }
-
-        delete = {
-            'tags': ['Event Registration'],
-            'responses': {
-                204: 'Event registration deleted successfully',
-                404: 'Event registration not found',
-            },
-            'operation_description': """
-            Deletes a specific event registration by its ID. This operation cannot be undone.
-            """,
-            'operation_id': 'deleteEventRegistration',
-        }
-
     class Organizer:
         get = {
             'tags': ['Organizers'],
@@ -549,7 +294,7 @@ class SwaggerDocs:
                 200: openapi.Response('Success', OrganizerEventSerializer),
                 404: 'Organizer not found',
             },
-            'operation_description': 'Retrieve the details of an event organizer by event_id. The event_id is used to find the organizer associated with a specific event.',
+            'operation_description': 'Retrieve the details of an event organizer by event_id. The event_id is used to find the organizer associated with a specific event.',  # noqa: E501
         }
 
         put = {
@@ -559,7 +304,7 @@ class SwaggerDocs:
                 200: openapi.Response('Updated organizer', OrganizerEventSerializer),
                 404: 'Organizer not found',
             },
-            'operation_description': 'Update the details of an event organizer by event_id. The event_id is used to find the organizer, and the request body contains the updated information about the organizer.',
+            'operation_description': 'Update the details of an event organizer by event_id. The event_id is used to find the organizer, and the request body contains the updated information about the organizer.',  # noqa: E501
         }
 
         patch = {
@@ -571,7 +316,7 @@ class SwaggerDocs:
                 ),
                 404: 'Organizer not found',
             },
-            'operation_description': 'Partially update an event organizer by event_id. Only the fields provided in the request body will be updated.',
+            'operation_description': 'Partially update an event organizer by event_id. Only the fields provided in the request body will be updated.',  # noqa: E501
         }
 
         delete = {
@@ -580,7 +325,7 @@ class SwaggerDocs:
                 204: 'Organizer deleted successfully',
                 404: 'Organizer not found',
             },
-            'operation_description': 'Delete an event organizer by event_id. The event_id is used to find and delete the organizer associated with a specific event.',
+            'operation_description': 'Delete an event organizer by event_id. The event_id is used to find and delete the organizer associated with a specific event.',  # noqa: E501
         }
 
     class AdditionalItem:
@@ -688,7 +433,7 @@ class SwaggerDocs:
         delete = {
             'tags': ['Additional Items'],
             'operation_description': """
-            Delete multiple additional items associated with a specific event identified by the `event_id` in the URL. 
+            Delete multiple additional items associated with a specific event identified by the `event_id` in the URL.
             The `id` field is required to identify each additional item to be deleted.
             """,
             'request_body': openapi.Schema(
@@ -729,7 +474,7 @@ class SwaggerDocs:
     class Distance:
         get = {
             'tags': ['Distances'],
-            'operation_description': 'Retrieve a list of distances associated with a specific event identified by the event_id passed in the URL.',
+            'operation_description': 'Retrieve a list of distances associated with a specific event identified by the event_id passed in the URL.',  # noqa: E501
             'responses': {
                 200: openapi.Response(
                     description='A list of distances for the event',
@@ -909,15 +654,15 @@ class SwaggerDocs:
                 ),
                 400: 'Bad request',
             },
-            'operation_description': 'Create a new distance for an event. The event is identified by the event_id passed in the URL.',
+            'operation_description': 'Create a new distance for an event. The event is identified by the event_id passed in the URL.',  # noqa: E501
         }
 
         put = {
             'tags': ['Distances'],
             'operation_description': """
-            Update one or more distances for a specific event. The `event_id` is passed through the URL, and each distance 
+            Update one or more distances for a specific event. The `event_id` is passed through the URL, and each distance
             should have a valid `id` to identify which distance is being updated. All fields will be fully replaced with the new data.
-            """,
+            """,  # noqa: E501
             'request_body': openapi.Schema(
                 type=openapi.TYPE_ARRAY,
                 items=openapi.Schema(
@@ -1072,9 +817,9 @@ class SwaggerDocs:
         patch = {
             'tags': ['Distances'],
             'operation_description': """
-            Partially update one or more distances associated with a specific event identified by the `event_id` in the URL. 
+            Partially update one or more distances associated with a specific event identified by the `event_id` in the URL.
             You can update one or more fields of the distances. The `id` field is required to identify each distance to be updated.
-            """,
+            """,  # noqa: E501
             'request_body': openapi.Schema(
                 type=openapi.TYPE_ARRAY,
                 items=openapi.Schema(
@@ -1229,7 +974,7 @@ class SwaggerDocs:
         delete = {
             'tags': ['Distances'],
             'operation_description': """
-            Delete multiple distances associated with a specific event identified by the `event_id` in the URL. 
+            Delete multiple distances associated with a specific event identified by the `event_id` in the URL.
             The `id` field is required to identify each distance to be deleted.
             """,
             'request_body': openapi.Schema(

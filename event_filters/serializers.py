@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from event.models import DistanceEvent, Event
+from event.models import CompetitionType, DistanceEvent, Event
 
 
 class DistanceEventSerializer(serializers.ModelSerializer):
@@ -9,8 +9,16 @@ class DistanceEventSerializer(serializers.ModelSerializer):
         fields = ['name']
         ref_name = 'DistanceSerializer'
 
+
+class CompetitionTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompetitionType
+        fields = ['name']
+
+
 class EventSerializer(serializers.ModelSerializer):
     distances = DistanceEventSerializer(many=True)
+    competition_type = CompetitionTypeSerializer(many=True)
 
     class Meta:
         model = Event
