@@ -1,3 +1,5 @@
+import logging
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -7,6 +9,8 @@ from event.models import Event
 from event.serializers.events import EventSerializer
 from public_events.swagger_schemas import SwaggerDocs
 
+
+logger = logging.getLogger(__name__)
 
 class PublicEventDetailView(APIView):
     permission_classes = [AllowAny]
@@ -20,4 +24,5 @@ class PublicEventDetailView(APIView):
         except Event.DoesNotExist:
             return Response({'detail': 'Event not found.'}, status=404)
         except Exception as e:
-            return Response({'detail': str(e)}, status=500)
+            logger.error(f'Error retrieving event {pk}: {str(e)}')
+            return Response({'detail': 'Something went wrong. Please try again later.'}, status=500)
