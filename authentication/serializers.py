@@ -58,7 +58,6 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    registered_events = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
 
     class Meta:
@@ -78,16 +77,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'sports_club',
             'emergency_contact_name',
             'emergency_contact_phone',
-            'registered_events',
             'avatar',
             'email',
         ]
-
-    def get_registered_events(self, obj):
-        from event.serializers.events import EventSerializer
-
-        events = obj.events_registered.all()
-        return EventSerializer(events, many=True).data
 
     def get_avatar(self, obj):
         request = self.context.get('request')

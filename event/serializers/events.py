@@ -35,6 +35,12 @@ class EventSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        if self.instance is None:
+            self.fields['distances'].required = True
+        else:
+            self.fields['distances'].required = False
+
         self.fields['name'].required = True
         self.fields['competition_type'].required = True
         self.fields['date_from'].required = True
@@ -137,23 +143,13 @@ class EventSerializer(serializers.ModelSerializer):
         instance.date_from = validated_data.get('date_from', instance.date_from)
         instance.date_to = validated_data.get('date_to', instance.date_to)
         instance.place = validated_data.get('place', instance.place)
-        instance.place_region = validated_data.get(
-            'place_region', instance.place_region
-        )
+        instance.place_region = validated_data.get('place_region', instance.place_region)
         instance.photos = validated_data.get('photos', instance.photos)
         instance.description = validated_data.get('description', instance.description)
-        instance.registration_link = validated_data.get(
-            'registration_link', instance.registration_link
-        )
-        instance.hide_participants = validated_data.get(
-            'hide_participants', instance.hide_participants
-        )
-        instance.schedule_pdf = validated_data.get(
-            'schedule_pdf', instance.schedule_pdf
-        )
-        instance.extended_description = validated_data.get(
-            'extended_description', instance.extended_description
-        )
+        instance.registration_link = validated_data.get('registration_link', instance.registration_link)
+        instance.hide_participants = validated_data.get('hide_participants', instance.hide_participants)
+        instance.schedule_pdf = validated_data.get('schedule_pdf', instance.schedule_pdf)
+        instance.extended_description = validated_data.get('extended_description', instance.extended_description)
 
         instance.save()
         return instance
