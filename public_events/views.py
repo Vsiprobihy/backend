@@ -24,5 +24,5 @@ class PublicEventDetailView(APIView):
         except Event.DoesNotExist:
             return Response({'detail': 'Event not found.'}, status=404)
         except Exception as e:
-            logger.error(f'Error retrieving event {pk}: {str(e)}')  # Логируем ошибку
+            logger.error(f'Error retrieving event {pk}: {str(e)}')
             return Response({'detail': 'Something went wrong. Please try again later.'}, status=500)
