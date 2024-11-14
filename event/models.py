@@ -33,12 +33,12 @@ class OrganizationAccess(models.Model):
     ]
 
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='organization_access'
+        CustomUser, on_delete=models.CASCADE, related_name='organization_access', null=False
     )
     organization = models.ForeignKey(
-        OrganizerEvent, on_delete=models.CASCADE, related_name='users_access'
+        OrganizerEvent, on_delete=models.CASCADE, related_name='users_access', null=False
     )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=False)
 
     class Meta:
         unique_together = ('user', 'organization')
@@ -92,8 +92,8 @@ class AdditionalItemEvent(models.Model):
 
     item_type = models.CharField(max_length=50, choices=ITEM_TYPES)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    event = models.ForeignKey('Event', related_name='additional_items', on_delete=models.CASCADE)
-    distance = models.ForeignKey(DistanceEvent, related_name='additional_options', on_delete=models.CASCADE, null=True)
+    event = models.ForeignKey('Event', related_name='additional_items', on_delete=models.CASCADE, null=False)
+    distance = models.ForeignKey(DistanceEvent, related_name='additional_options', on_delete=models.CASCADE, null=False)
 
     def __str__(self):
         return f'{self.get_item_type_display()} - {self.price}'
@@ -121,7 +121,7 @@ class Event(models.Model):
     extended_description = models.TextField(blank=True, null=True)
     schedule_pdf = models.FileField(upload_to='event_schedule/', blank=True, null=True)
     organizer = models.ForeignKey(
-        OrganizerEvent, on_delete=models.CASCADE, related_name='events'
+        OrganizerEvent, on_delete=models.CASCADE, related_name='events', null=False
     )
     status = models.CharField(
         max_length=12, choices=STATUS_CHOICES, default=STATUS_PENDING

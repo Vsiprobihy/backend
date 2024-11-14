@@ -8,18 +8,18 @@ from event.views.organizer_detail import InviteModeratorView, OrganizerEventDeta
 
 urlpatterns = [
     path(
-        'additional-items/<int:event_id>/',
+        'organizer-events/events/additional-items/<int:event_id>/',
         AdditionalItemsDetailView.as_view(),
         name='event_additional-items_detail',
     ),
     path(
-        'distances/<int:event_id>/',
+        'organizer-events/events/distances/<int:event_id>/',
         DistanceDetailView.as_view(),
         name='event_distances_detail',
     ),
-    path('events/', EventsListView.as_view(), name='event_events_list'),
-    path('events/<int:pk>/', EventDetailView.as_view(), name='event_events_detail'),
+    path('organizer-events/events/', EventsListView.as_view(), name='event_events_list'),
+    path('organizer-events/events/<int:pk>/', EventDetailView.as_view(), name='event_events_detail'),
     path('organizer-events/', OrganizerEventListCreateView.as_view(), name='organizer-event-list-create'),
     path('organizer-events/<int:pk>/', OrganizerEventDetailView.as_view(), name='organizer-event-detail'),
-    path('invite-moderator/', InviteModeratorView.as_view(), name='invite-moderator')
+    path('organizer-events/invite-moderator/', InviteModeratorView.as_view(), name='invite-moderator')
 ]
