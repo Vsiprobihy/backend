@@ -24,6 +24,12 @@ class AdditionalItemsDetailView(APIView):
         data = request.data.copy()
         data['event'] = event_id
 
+        if not data.get('distance'):
+            return Response(
+                {'distance': 'Distance must be specified when adding an AdditionalItem to an existing event.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         serializer = AdditionalItemEventSerializer(data=data)
 
         if serializer.is_valid():
