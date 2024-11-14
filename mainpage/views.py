@@ -31,12 +31,18 @@ def mainpage(request):
             'date_from': event.date_from.isoformat(),
             'date_to': event.date_to.isoformat() if event.date_to else None,
             'place': event.place,
-            'competition_type': event.competition_type,
+            'competition_type': [
+                {
+                    'id': competition_type.id,
+                    'name': competition_type.name,
+                }
+                for competition_type in event.competition_type.all()
+            ],
             'photos': event.photos.url if event.photos else None,
             'distances': [
                 {
-                    'name': distance.name,
                     'id': distance.id,
+                    'name': distance.name,
                 }
                 for distance in event.distances.all()
             ],
