@@ -19,6 +19,7 @@ class CompetitionTypeSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     organizer_id = serializers.IntegerField(write_only=True)
     organizer = OrganizerEventSerializer(read_only=True)
     distances = DistanceEventSerializer(many=True, required=True)
@@ -27,7 +28,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = [
-            'name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region',
+            'id', 'name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region',
             'photos', 'description', 'registration_link', 'hide_participants', 'schedule_pdf',
             'organizer', 'organizer_id', 'distances', 'extended_description'
         ]
