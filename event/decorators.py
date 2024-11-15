@@ -55,3 +55,14 @@ def extract_event_directly(request, *args, **kwargs):
     """
     event_id = kwargs.get('event_id')
     return Event.objects.get(pk=event_id)
+
+def extract_for_event_access_directly(request, *args, **kwargs):
+    """
+    Extracts the Event instance directly using the event_id parameter.
+
+    :param request: The HTTP request object.
+    :raises Event.DoesNotExist: If the Event with the given ID does not exist.
+    :return: The Event instance.
+    """
+    event_id = kwargs.get('pk')
+    return Event.objects.get(pk=event_id)
