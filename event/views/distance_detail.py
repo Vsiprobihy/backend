@@ -33,7 +33,7 @@ class DistanceDetailView(APIView):
         except DistanceEvent.DoesNotExist:
             raise Http404
 
-    def get_objects_by_event(self, event_id):
+    def _get_objects_by_event(self, event_id):
         return DistanceEvent.objects.filter(event_id=event_id)
 
     @swagger_auto_schema(**SwaggerDocs.Distance.post)
@@ -54,7 +54,7 @@ class DistanceDetailView(APIView):
         event = self.get_event(event_id)
         self.check_user_permission(event)
 
-        distances = self.get_objects_by_event(event_id)
+        distances = self._get_objects_by_event(event_id)
         if not distances.exists():
             return Response(
                 {'detail': 'No distances found for this event.'}, status=404
@@ -78,7 +78,7 @@ class DistanceDetailView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        distances = self.get_objects_by_event(event_id)
+        distances = self._get_objects_by_event(event_id)
         if not distances.exists():
             return Response(
                 {'detail': 'No distances found for this event.'}, status=404
@@ -132,7 +132,7 @@ class DistanceDetailView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        distances = self.get_objects_by_event(event_id)
+        distances = self._get_objects_by_event(event_id)
         if not distances.exists():
             return Response(
                 {'detail': 'No distances found for this event.'}, status=404
