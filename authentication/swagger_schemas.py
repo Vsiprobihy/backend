@@ -56,14 +56,42 @@ class SwaggerDocs:
                 200: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'refresh': openapi.Schema(
-                            type=openapi.TYPE_STRING, description='JWT Refresh Token.'
+                        'access_token': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'value': openapi.Schema(
+                                    type=openapi.TYPE_STRING, description='JWT Access Token'
+                                ),
+                                'expires': openapi.Schema(
+                                    type=openapi.TYPE_INTEGER, description='Expiration time of the access token in seconds'  # noqa: E501
+                                ),
+                            },
+                            required=['value', 'expires'],
                         ),
-                        'access': openapi.Schema(
-                            type=openapi.TYPE_STRING, description='JWT Access Token.'
+                        'refresh_token': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'value': openapi.Schema(
+                                    type=openapi.TYPE_STRING, description='JWT Refresh Token'
+                                ),
+                                'expires': openapi.Schema(
+                                    type=openapi.TYPE_INTEGER, description='Expiration time of the refresh token in seconds'  # noqa: E501
+                                ),
+                            },
+                            required=['value', 'expires'],
                         ),
                     },
-                    required=['refresh', 'access'],
+                    required=['access_token', 'refresh_token'],
+                ),
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
+                    },
+                    required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
@@ -74,21 +102,12 @@ class SwaggerDocs:
                     },
                     required=['detail'],
                 ),
-                403: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING, description='User account is not active.'
-                        )
-                    },
-                    required=['detail'],
-                ),
                 500: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
                         'detail': openapi.Schema(
                             type=openapi.TYPE_STRING,
-                            description='An unexpected error occurred on the server',
+                            description='An unexpected error occurred on the server.',
                         )
                     },
                     required=['detail'],
@@ -539,7 +558,7 @@ class SwaggerDocs:
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_STRING,
-                                description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.',
+                                description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.',  # noqa: E501
                             ),
                         )
                     },
@@ -590,7 +609,7 @@ class SwaggerDocs:
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_STRING,
-                                description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.',
+                                description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.',  # noqa: E501
                             ),
                         )
                     },
