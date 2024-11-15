@@ -80,17 +80,8 @@ class DistanceEvent(models.Model):
 
 
 class AdditionalItemEvent(models.Model):
-    TRANSFER = 'transfer'
-    MEDAL = 'medal'
-    T_SHIRT = 't_shirt'
 
-    ITEM_TYPES = [
-        (TRANSFER, 'Трансфер'),
-        (MEDAL, 'Медаль'),
-        (T_SHIRT, 'Футболка'),
-    ]
-
-    item_type = models.CharField(max_length=50, choices=ITEM_TYPES)
+    item_type = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     distance = models.ForeignKey(DistanceEvent, related_name='additional_options', on_delete=models.CASCADE, null=False)
 
