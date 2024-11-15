@@ -8,12 +8,15 @@ from rest_framework.views import APIView
 
 from event.constants.constants_event import REGIONS
 from event.models import CompetitionType, Event
+from event_filters.serializers import EventSerializer
 from event_filters.swagger_schemas import SwaggerDocs
 from event_filters.views.filter_service import EventFilterService
-from utils.pagination import EventPaginationView
+from utils.pagination import Pagination
 
 
 class EventFilterView(APIView):
+    pagination_class = Pagination
+
     @swagger_auto_schema(**SwaggerDocs.EventFilter.get)
     def get(self, request):
         competition_type = request.GET.getlist('competition_type')
@@ -118,6 +121,8 @@ class EventFilterView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        # Create an instance of EventPaginationView and call its get method
-        paginator_view = EventPaginationView()
-        return paginator_view.get(request, events)
+        paginator = self.pagination_class()
+        paginated_events = paginator.paginate_queryset(events, request)
+
+        serializer = EventSerializer(paginated_events, many=True)
+        return paginator.get_paginated_response(serializer.data)
