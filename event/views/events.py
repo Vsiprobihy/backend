@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
+from event.decorators import check_organization_access_decorator, extract_for_event_access_directly
 from event.models import Event, OrganizationAccess
 from event.serializers.events import EventSerializer
 from swagger_docs import SwaggerDocs
@@ -37,12 +38,14 @@ class EventDetailView(APIView):
         return event
 
     @swagger_auto_schema(**SwaggerDocs.Event.get)
+    @check_organization_access_decorator(extract_for_event_access_directly)
     def get(self, request, pk):
         event = self.get_object(pk)
         serializer = EventSerializer(event)
         return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.Event.put)
+    @check_organization_access_decorator(extract_for_event_access_directly)
     def put(self, request, pk):
         event = self.get_object(pk)
         serializer = EventSerializer(event, data=request.data, context={'request': request})
@@ -53,6 +56,7 @@ class EventDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.Event.patch)
+    @check_organization_access_decorator(extract_for_event_access_directly)
     def patch(self, request, pk):
         event = self.get_object(pk)
         serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
@@ -63,6 +67,7 @@ class EventDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.Event.delete)
+    @check_organization_access_decorator(extract_for_event_access_directly)
     def delete(self, request, pk):
         event = self.get_object(pk)
         event.delete()

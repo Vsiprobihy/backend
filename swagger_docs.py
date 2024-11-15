@@ -340,14 +340,6 @@ class SwaggerDocs:
 
         post = {
             'tags': ['Additional Items'],
-            'manual_parameters': [
-                openapi.Parameter(
-                    'event_id',
-                    openapi.IN_PATH,
-                    description='Event ID',
-                    type=openapi.TYPE_INTEGER,
-                )
-            ],
             'request_body': openapi.Schema(
                 type=openapi.TYPE_OBJECT,
                 properties={
