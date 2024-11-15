@@ -11,7 +11,7 @@ from event.serializers.events import EventSerializer
 from swagger_docs import SwaggerDocs
 
 
-class EventsListView(APIView):
+class EventsCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.Event.post)
