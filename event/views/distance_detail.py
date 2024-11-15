@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
-from event.decorators import check_organization_access_decorator
+from event.decorators import check_organization_access_decorator, extract_event_directly
 from event.models import AdditionalItemEvent, DistanceEvent, Event
 from event.serializers.distance_detail import DistanceEventSerializer
 from swagger_docs import SwaggerDocs
@@ -30,7 +30,7 @@ class DistanceDetailView(APIView):
         return DistanceEvent.objects.filter(event_id=event_id)
 
     @swagger_auto_schema(**SwaggerDocs.Distance.post)
-    @check_organization_access_decorator
+    @check_organization_access_decorator(extract_event_directly)
     def post(self, request, event_id):
 
         data = request.data.copy()
@@ -42,7 +42,7 @@ class DistanceDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.Distance.get)
-    @check_organization_access_decorator
+    @check_organization_access_decorator(extract_event_directly)
     def get(self, request, event_id):
 
         distances = self._get_objects_by_event(event_id)
@@ -55,7 +55,7 @@ class DistanceDetailView(APIView):
         return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.Distance.put)
-    @check_organization_access_decorator
+    @check_organization_access_decorator(extract_event_directly)
     def put(self, request, event_id):
         event = self.get_event(event_id)
 
@@ -109,7 +109,7 @@ class DistanceDetailView(APIView):
         return Response(updated_data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.Distance.patch)
-    @check_organization_access_decorator
+    @check_organization_access_decorator(extract_event_directly)
     def patch(self, request, event_id):
         event = self.get_event(event_id)
 
@@ -166,7 +166,7 @@ class DistanceDetailView(APIView):
         return Response(updated_data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.Distance.delete)
-    @check_organization_access_decorator
+    @check_organization_access_decorator(extract_event_directly)
     def delete(self, request, event_id):
 
         ids = request.data

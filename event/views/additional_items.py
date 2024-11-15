@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from event.decorators import check_organization_access_decorator, extract_event_from_distance
 from event.models import AdditionalItemEvent
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from swagger_docs import SwaggerDocs
@@ -39,6 +40,7 @@ class AdditionalItemsDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalItem.get)
+    @check_organization_access_decorator(extract_event_from_distance)
     def get(self, request, distance_id):
         items = AdditionalItemEvent.objects.filter(distance_id=distance_id)
         if not items.exists():
@@ -50,6 +52,7 @@ class AdditionalItemsDetailView(APIView):
         return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalItem.put)
+    @check_organization_access_decorator(extract_event_from_distance)
     def put(self, request, distance_id):
         if isinstance(request.data, dict):
             data_list = [request.data]
@@ -85,6 +88,7 @@ class AdditionalItemsDetailView(APIView):
         return Response(updated_data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalItem.patch)
+    @check_organization_access_decorator(extract_event_from_distance)
     def patch(self, request, distance_id):
         if isinstance(request.data, dict):
             data_list = [request.data]
@@ -128,6 +132,7 @@ class AdditionalItemsDetailView(APIView):
         return Response(updated_data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalItem.delete)
+    @check_organization_access_decorator(extract_event_from_distance)
     def delete(self, request, distance_id):
         ids = request.data
         if not isinstance(ids, list):
