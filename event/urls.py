@@ -8,7 +8,7 @@ from event.views.organizer_detail import InviteModeratorView, OrganizerEventDeta
 
 urlpatterns = [
     path(
-        'organizer-events/events/additional-items/<int:event_id>/',
+        'organizer-events/events/additional-items/<int:distance_id>/',
         AdditionalItemsDetailView.as_view(),
         name='event_additional-items_detail',
     ),
