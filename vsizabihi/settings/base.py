@@ -4,7 +4,6 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +19,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -46,18 +44,17 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'vsizabihi.middleware.DisableCSRF',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-
 
 ROOT_URLCONF = 'vsizabihi.urls'
 
@@ -134,6 +131,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'authentication.authentication_backends.CustomAuthBackend',
 )
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
@@ -165,10 +163,15 @@ EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
 
 DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': 'api/auth/reset_password_confirm/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
     'EMAIL': {
+        'activation': 'authentication.emails.CustomActivationEmail',
         'password_reset': 'authentication.emails.CustomPasswordResetEmail',
+        'password_changed_confirmation': 'authentication.emails.CustomPasswordChangedConfirmationEmail',
     },
+
+    'PASSWORD_RESET_CONFIRM_URL': 'api/auth/reset_password_confirm/{uid}/{token}/',
+    "ACTIVATION_URL": "api/auth/activate/{uid}/{token}/",
 }
 
 SIMPLE_JWT = {

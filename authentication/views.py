@@ -1,7 +1,12 @@
+
 from django.conf import settings
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from djoser.views import UserViewSet
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -9,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from authentication.emails import send_activation_email
 from authentication.models import AdditionalProfile, CustomUser
 from authentication.serializers import (
     AdditionalProfileDetailSerializer,
@@ -19,60 +25,119 @@ from authentication.serializers import (
     UserProfileSerializer,
 )
 from authentication.swagger_schemas import SwaggerDocs
-from utils.custom_exceptions import InvalidCredentialsError
+from utils.custom_exceptions import (
+    BadRequestError,
+    ForbiddenError,
+    NotFoundError,
+    SuccessResponseCustom,
+    UnauthorizedError,
+)
 
 
-class RegisterView(generics.CreateAPIView):
-    """
-    API view for user registration.
-
-    This view allows new users to register and generates access and refresh tokens
-    upon successful registration.
-
-    Methods:
-        Handles POST requests to register a new user.
-
-    """
-
+class RegisterView(APIView):
     serializer_class = RegisterSerializer
 
-    def create(self, request, *args, **kwargs) -> Response:
-        """
-        Register a new user and return tokens.
+    @swagger_auto_schema(**SwaggerDocs.UserRegister.post)
+    def post(self, request, *args, **kwargs) -> Response:
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
 
-        Args:
-            request (Request): The request object with user data.
+            if user and user.pk is not None:
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                token = default_token_generator.make_token(user)
 
-        Returns:
-            Response: A response containing access and refresh tokens.
+                send_activation_email(
+                    user=user,
+                    uid=uid,
+                    token=token,
+                    site_name='vsiprobihy',
+                    domain='127.0.0.1:8000'
+                )
 
-        Raises:
-            ValidationError: If validation fails.
-        """
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+                return SuccessResponseCustom('Verify your account from email').get_response()
 
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            response = Response(status=status.HTTP_201_CREATED)
+        raise BadRequestError('Failed to create user')
 
-            response.data = {
-                'access_token': {
-                    'value': str(refresh.access_token),
-                    'expires': settings.SIMPLE_JWT[
-                        'ACCESS_TOKEN_LIFETIME'
-                    ].total_seconds(),
-                },
-                'refresh_token': {
-                    'value': str(refresh),
-                    'expires': settings.SIMPLE_JWT[
-                        'REFRESH_TOKEN_LIFETIME'
-                    ].total_seconds(),
-                },
-            }
 
-            return response
+class LoginView(APIView):
+    serializer_class = LoginSerializer
+
+    @swagger_auto_schema(**SwaggerDocs.UserLogin.post)
+    def post(self, request, *args, **kwargs) -> Response:
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = authenticate(email=email, password=password)
+
+        if user is None:
+            raise UnauthorizedError('Invalid credentials')
+
+        if not user.is_active:
+            raise ForbiddenError('User account is not active')
+
+        refresh = RefreshToken.for_user(user)
+        response = Response()
+        response.data = {
+            'access_token': {
+                'value': str(refresh.access_token),
+                'expires': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
+            },
+            'refresh_token': {
+                'value': str(refresh),
+                'expires': settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
+            },
+        }
+
+        return response
+
+
+class ActivateUserEmailView(APIView):
+
+    @swagger_auto_schema(**SwaggerDocs.ActivateUserEmailView.get)
+    def get(self, request, uid, token):
+
+        uid = force_str(urlsafe_base64_decode(uid))
+        user = CustomUser.objects.get(pk=uid)
+
+        if user is None:
+            return NotFoundError('User does not exist')
+
+        if default_token_generator.check_token(user, token):
+            user.is_active = True
+            user.save()
+
+            return SuccessResponseCustom('Your account has been activated successfully').get_response()
+        else:
+            return BadRequestError().get_response()
+
+
+class CustomResetPasswordView(UserViewSet):
+    @swagger_auto_schema(**SwaggerDocs.CustomResetPasswordView.post)
+    def reset_password(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        if not email:
+            return BadRequestError('Email field is required.').get_response()
+
+        if not CustomUser.objects.filter(email=email).exists():
+            return NotFoundError('Email not found in the database.').get_response()
+
+        response = super().reset_password(request, *args, **kwargs)
+
+        if response.status_code == status.HTTP_204_NO_CONTENT:
+            return SuccessResponseCustom('A password reset email has been sent to the provided email address.').get_response()
+
+        return response
+
+
+class CustomResetPasswordConfirmView(UserViewSet):
+    @swagger_auto_schema(**SwaggerDocs.CustomResetPasswordConfirmView.post)
+    def reset_password_confirm(self, request, *args, **kwargs):
+        response = super().reset_password_confirm(request, *args, **kwargs)
+
+        if response.status_code == status.HTTP_204_NO_CONTENT:
+            return SuccessResponseCustom('Your password has been successfully changed.').get_response()
+
+        return response
 
 
 class UserProfileView(APIView):
@@ -131,62 +196,6 @@ class UserAvatarUploadView(generics.UpdateAPIView):
                 pass
 
         serializer.save(avatar=self.request.data.get('avatar'))
-
-
-class LoginView(APIView):
-    """
-    API view for user login.
-
-    Allows users to authenticate using their email and password, and returns
-    access and refresh tokens upon successful login.
-
-    Methods:
-        Handles POST requests to authenticate and issue JWT tokens.
-    """
-
-    serializer_class = LoginSerializer
-
-    @swagger_auto_schema(**SwaggerDocs.UserAuth.post)
-    def post(self, request, *args, **kwargs) -> Response:
-        """
-        Authenticate user and return JWT tokens.
-
-        Validates user credentials and, if successful, returns access and refresh
-        tokens. Raises an error if authentication fails.
-
-        Args:
-            request (Request): The request object with login credentials.
-
-        Returns:
-            Response: A response containing access and refresh tokens.
-
-        Raises:
-            InvalidCredentialsError: If the authentication fails.
-        """
-        email = request.data.get('email')
-        password = request.data.get('password')
-        user = authenticate(email=email, password=password)
-
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            response = Response()
-
-            response.data = {
-                'access_token': {
-                    'value': str(refresh.access_token),
-                    'expires': settings.SIMPLE_JWT[
-                        'ACCESS_TOKEN_LIFETIME'
-                    ].total_seconds(),
-                },
-                'refresh_token': {
-                    'value': str(refresh),
-                    'expires': settings.SIMPLE_JWT[
-                        'REFRESH_TOKEN_LIFETIME'
-                    ].total_seconds(),
-                },
-            }
-            return response
-        raise InvalidCredentialsError
 
 
 class AdditionalProfileListView(APIView):

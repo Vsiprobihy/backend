@@ -4,6 +4,7 @@ from authentication.serializers import (
     AdditionalProfileDetailSerializer,
     AdditionalProfileSerializer,
     LoginSerializer,
+    RegisterSerializer,
     UserAvatarUploadSerializer,
     UserProfileSerializer,
 )
@@ -11,8 +12,43 @@ from authentication.serializers import (
 
 class SwaggerDocs:
 
-    class UserAuth:
+    class UserRegister:
+        post = {
+            'operation_description': 'Register user with email and password',
+            'request_body': RegisterSerializer,
+            'responses': {
+                200: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Verify your account from email'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Password must contain at least 1 uppercase letter.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server',
+                        )
+                    },
+                    required=['detail'],
+                ),
+            },
+        }
 
+    class UserLogin:
         post = {
             'operation_description': 'Login with JWT token',
             'request_body': LoginSerializer,
@@ -21,29 +57,82 @@ class SwaggerDocs:
                     type=openapi.TYPE_OBJECT,
                     properties={
                         'refresh': openapi.Schema(
-                            type=openapi.TYPE_STRING, description='JWT Refresh Token'
+                            type=openapi.TYPE_STRING, description='JWT Refresh Token.'
                         ),
                         'access': openapi.Schema(
-                            type=openapi.TYPE_STRING, description='JWT Access Token'
+                            type=openapi.TYPE_STRING, description='JWT Access Token.'
                         ),
                     },
                     required=['refresh', 'access'],
-                ),
-                400: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description='Invalid request parameters or data.',
-                        )
-                    },
-                    required=['detail'],
                 ),
                 401: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
                         'detail': openapi.Schema(
                             type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                403: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='User account is not active.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server',
+                        )
+                    },
+                    required=['detail'],
+                ),
+            },
+        }
+
+    class CustomResetPasswordView:
+        post = {
+            'operation_description': 'Request a password reset email.',
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'email': openapi.Schema(
+                        type=openapi.TYPE_STRING, description='User email address'
+                    ),
+                },
+                required=['email'],
+            ),
+            'responses': {
+                200: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='A password reset email has been sent to the provided email address.'
+                        ),
+                    },
+                    required=['detail'],
+                ),
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Email field is required or invalid.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Email not found in the database.'
                         )
                     },
                     required=['detail'],
@@ -61,8 +150,122 @@ class SwaggerDocs:
             },
         }
 
-    class AdditionalProfileList:
+    class CustomResetPasswordConfirmView:
+        post = {
+            'operation_description': 'Confirm and reset the user password.',
+            'request_body': openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'uid': openapi.Schema(
+                        type=openapi.TYPE_STRING, description='User ID from the password reset link'
+                    ),
+                    'token': openapi.Schema(
+                        type=openapi.TYPE_STRING, description='Password reset token'
+                    ),
+                    'new_password': openapi.Schema(
+                        type=openapi.TYPE_STRING, description='New password for the user'
+                    ),
+                },
+                required=['uid', 'token', 'new_password'],
+            ),
+            'responses': {
+                200: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Your password has been successfully changed.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid token or password.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='User not found or invalid request.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+            },
+        }
 
+    class ActivateUserEmailView:
+        get = {
+            'operation_description': 'Activate user by email',
+            'manual_parameters': [
+                openapi.Parameter(
+                    'uid', openapi.IN_PATH, description="User's unique identifier", type=openapi.TYPE_STRING,
+                    required=True
+                ),
+                openapi.Parameter(
+                    'token', openapi.IN_PATH, description='Activation token for the user', type=openapi.TYPE_STRING,
+                    required=True
+                ),
+            ]
+            ,
+            'responses': {
+                200: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Your account has been activated successfully'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Bad request'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='User does not exist'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server',
+                        )
+                    },
+                    required=['detail'],
+                ),
+            },
+        }
+
+    class AdditionalProfileList:
         get = {
             'tags': ['Additional Profile'],
             'operation_description': 'Get a list of additional profiles',
@@ -159,7 +362,6 @@ class SwaggerDocs:
         }
 
     class AdditionalProfileDetail:
-
         get = {
             'tags': ['Additional Profile'],
             'operation_description': 'Get an additional profile',
@@ -306,7 +508,6 @@ class SwaggerDocs:
         }
 
     class UserAvatarUpload:
-
         put = {
             'tags': ['User Management'],
             'request_body': UserAvatarUploadSerializer,
@@ -410,7 +611,6 @@ class SwaggerDocs:
         }
 
     class Profile:
-
         get = {
             'tags': ['Profile'],
             'responses': {

@@ -1,11 +1,13 @@
 from django.urls import include, path
-from djoser.views import UserViewSet
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from authentication.auth_views import google_account_info, google_login
 from authentication.views import (
+    ActivateUserEmailView,
     AdditionalProfileDetailView,
     AdditionalProfileListView,
+    CustomResetPasswordConfirmView,
+    CustomResetPasswordView,
     LoginView,
     RegisterView,
     UserAvatarUploadView,
@@ -23,14 +25,15 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='user_profile'),
     path(
         'reset_password/',
-        UserViewSet.as_view({'post': 'reset_password'}),
+        CustomResetPasswordView.as_view({'post': 'reset_password'}),
         name='reset_password',
     ),
     path(
         'reset_password_confirm/',
-        UserViewSet.as_view({'post': 'reset_password_confirm'}),
+        CustomResetPasswordConfirmView.as_view({'post': 'reset_password_confirm'}),
         name='reset_password_confirm',
     ),
+    path('activate/<str:uid>/<str:token>/', ActivateUserEmailView.as_view(), name='activate email'),
     path(
         'profile/upload-avatar/', UserAvatarUploadView.as_view(), name='upload-avatar'
     ),
