@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from event.models import AdditionalItemEvent, DistanceEvent, Event, OrganizationAccess
+from event.models import AdditionalItemEvent, DistanceEvent, Event
 from event.serializers.additional_items import AdditionalItemEventSerializer
 
 
@@ -17,17 +17,6 @@ class DistanceEventSerializer(serializers.ModelSerializer):
             'show_name_on_number', 'show_start_number', 'event', 'additional_options'
         ]
         extra_kwargs = {'event': {'read_only': True}}
-
-    def validate(self, data):
-        user = data.get('request', None).user
-        event = data.get('event', None)
-
-        if event and not OrganizationAccess.objects.filter(organization_id=event.organizer.id, user=user).exists():
-            raise serializers.ValidationError({
-                'event': 'You do not have access to the organization associated with this event.'
-            })
-
-        return data
 
     def create(self, validated_data):
         additional_options_data = validated_data.pop('additional_options', [])
