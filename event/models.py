@@ -92,7 +92,6 @@ class AdditionalItemEvent(models.Model):
 
     item_type = models.CharField(max_length=50, choices=ITEM_TYPES)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    event = models.ForeignKey('Event', related_name='additional_items', on_delete=models.CASCADE, null=False)
     distance = models.ForeignKey(DistanceEvent, related_name='additional_options', on_delete=models.CASCADE, null=False)
 
     def __str__(self):
