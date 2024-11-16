@@ -5,11 +5,11 @@ from event.models import (
     CompetitionType,
     DistanceEvent,
     Event,
-    OrganizationAccess,
     OrganizerEvent,
 )
 from event.serializers.distance_detail import DistanceEventSerializer
-from event.serializers.organizer_detail import OrganizerEventSerializer
+from organization.models import OrganizationAccess
+from organization.serializers import OrganizerEventSerializer
 
 
 class CompetitionTypeSerializer(serializers.ModelSerializer):

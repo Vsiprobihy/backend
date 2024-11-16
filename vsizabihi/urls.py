@@ -34,6 +34,7 @@ urlpatterns = [
     ),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api/organizer/', include('event.urls')),
+    path('api/organizer/', include('organization.urls')),
     path('api/event/', include('public_events.urls')),
     path('api/calendar/', include('event_filters.urls')),
     path('api/upcoming-events/', include('mainpage.urls')),

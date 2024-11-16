@@ -3,7 +3,8 @@ from functools import wraps
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 
-from event.models import DistanceEvent, Event, OrganizationAccess
+from event.models import DistanceEvent, Event
+from organization.models import OrganizationAccess
 
 
 def check_organization_access_decorator(event_extractor):

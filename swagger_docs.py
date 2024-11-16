@@ -3,7 +3,7 @@ from drf_yasg import openapi
 from event.serializers.additional_items import AdditionalItemEventSerializer
 from event.serializers.distance_detail import DistanceEventSerializer
 from event.serializers.events import EventSerializer
-from event.serializers.organizer_detail import OrganizerEventSerializer
+from organization.serializers import OrganizerEventSerializer
 
 
 class SwaggerDocs:
