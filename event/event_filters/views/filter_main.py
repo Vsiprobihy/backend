@@ -7,10 +7,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from event.constants.constants_event import REGIONS
+from event.event_filters.serializers import EventSerializer
+from event.event_filters.swagger_schemas import SwaggerDocs
+from event.event_filters.views.filter_service import EventFilterService
 from event.models import CompetitionType, Event
-from event_filters.serializers import EventSerializer
-from event_filters.swagger_schemas import SwaggerDocs
-from event_filters.views.filter_service import EventFilterService
 from utils.pagination import Pagination
 
 

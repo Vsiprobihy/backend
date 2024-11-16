@@ -38,7 +38,7 @@ urlpatterns = [
     path('api/organizer/', include('distance_details.urls')),
     path('api/organizer/', include('additional_items.urls')),
     path('api/event/', include('public_events.urls')),
-    path('api/calendar/', include('event_filters.urls')),
+    path('api/calendar/', include('event.event_filters.urls')),
     path('api/upcoming-events/', include('mainpage.urls')),
 ]
 
