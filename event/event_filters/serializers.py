@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from event.models import CompetitionType, DistanceEvent, Event
+from distance_details.models import DistanceEvent
+from event.models import CompetitionType, Event
 
 
 class DistanceEventSerializer(serializers.ModelSerializer):

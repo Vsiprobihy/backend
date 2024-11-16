@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
-from event.decorators import check_organization_access_decorator, extract_for_event_access_directly
-from event.models import Event, OrganizationAccess
+from event.models import Event
 from event.serializers.events import EventSerializer
+from organization.decorators import check_organization_access_decorator, extract_for_event_access_directly
+from organization.models import OrganizationAccess
 from swagger_docs import SwaggerDocs
 
 

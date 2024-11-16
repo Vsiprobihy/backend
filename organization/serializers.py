@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from authentication.models import CustomUser
-from event.models import OrganizationAccess, OrganizerEvent
+from organization.models import OrganizationAccess, OrganizerEvent
 
 
 class OrganizerEventSerializer(serializers.ModelSerializer):

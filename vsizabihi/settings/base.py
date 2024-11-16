@@ -4,6 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,7 +37,9 @@ INSTALLED_APPS = [
     'social_django',
     'authentication',
     'event',
-    'event_filters',
+    'organization',
+    'distance_details',
+    'additional_items',
     'mainpage',
     'user_info',
     'public_events',

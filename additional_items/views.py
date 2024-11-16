@@ -4,9 +4,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from event.decorators import check_organization_access_decorator, extract_event_from_distance
-from event.models import AdditionalItemEvent
-from event.serializers.additional_items import AdditionalItemEventSerializer
+from additional_items.models import AdditionalItemEvent
+from additional_items.serializers import AdditionalItemEventSerializer
+from organization.decorators import check_organization_access_decorator, extract_event_from_distance
 from swagger_docs import SwaggerDocs
 
 

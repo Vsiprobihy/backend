@@ -4,8 +4,8 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 from authentication.permissions import IsOrganizer
-from event.models import OrganizationAccess, OrganizerEvent
-from event.serializers.organizer_detail import (
+from organization.models import OrganizationAccess, OrganizerEvent
+from organization.serializers import (
     OrganizationAccessSerializer,
     OrganizerEventSerializer,
 )
