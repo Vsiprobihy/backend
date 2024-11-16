@@ -4,7 +4,7 @@ from organization.views import InviteModeratorView, OrganizerEventDetailView, Or
 
 
 urlpatterns = [
-    path('organizer-events/', OrganizerEventListCreateView.as_view(), name='organizer-event-list-create'),
-    path('organizer-events/<int:pk>/', OrganizerEventDetailView.as_view(), name='organizer-event-detail'),
-    path('organizer-events/invite-moderator/', InviteModeratorView.as_view(), name='invite-moderator')
+    path('', OrganizerEventListCreateView.as_view(), name='organizer-event-list-create'),
+    path('<int:pk>', OrganizerEventDetailView.as_view(), name='organizer-event-detail'),
+    path('invite-moderator', InviteModeratorView.as_view(), name='invite-moderator')
 ]
