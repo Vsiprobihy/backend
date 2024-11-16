@@ -1,14 +1,13 @@
 from rest_framework import serializers
 
+from distance_details.models import DistanceEvent
+from distance_details.serializers import DistanceEventSerializer
 from event.models import (
     AdditionalItemEvent,
     CompetitionType,
-    DistanceEvent,
     Event,
-    OrganizerEvent,
 )
-from event.serializers.distance_detail import DistanceEventSerializer
-from organization.models import OrganizationAccess
+from organization.models import OrganizationAccess, OrganizerEvent
 from organization.serializers import OrganizerEventSerializer
 
 

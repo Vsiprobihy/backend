@@ -3,7 +3,8 @@ from functools import wraps
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 
-from event.models import DistanceEvent, Event
+from distance_details.models import DistanceEvent
+from event.models import Event
 from organization.models import OrganizationAccess
 
 

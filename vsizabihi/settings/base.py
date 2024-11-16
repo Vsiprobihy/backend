@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'authentication',
     'event',
     'organization',
+    'distance_details',
     'event_filters',
     'mainpage',
     'user_info',

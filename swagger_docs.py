@@ -1,7 +1,7 @@
 from drf_yasg import openapi
 
+from distance_details.serializers import DistanceEventSerializer
 from event.serializers.additional_items import AdditionalItemEventSerializer
-from event.serializers.distance_detail import DistanceEventSerializer
 from event.serializers.events import EventSerializer
 from organization.serializers import OrganizerEventSerializer
 
