@@ -36,12 +36,10 @@ INSTALLED_APPS = [
     'drf_yasg',
     'social_django',
     'authentication',
-    'event',
+    'organizer_event',
     'organization',
-    'distance_details',
-    'additional_items',
-    'mainpage',
-    'user_info',
+    'organizer_event.distance_details',
+    'organizer_event.additional_items',
     'public_events',
 ]
 
@@ -150,20 +148,20 @@ LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'authentication.CustomUser'
 
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # For Gmail
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_ADMIN = os.getenv('GMAIL_ADMIN')
-EMAIL_SERVER = os.getenv('GMAIL_SERVER')
-EMAIL_HOST = os.getenv('GMAIL_HOST')
-EMAIL_PORT = os.getenv('GMAIL_PORT')
-EMAIL_HOST_USER = os.getenv('GMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('GMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_STARTTLS = True
-EMAIL_USE_SSL = False
-EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_ADMIN = os.getenv('GMAIL_ADMIN')
+# EMAIL_SERVER = os.getenv('GMAIL_SERVER')
+# EMAIL_HOST = os.getenv('GMAIL_HOST')
+# EMAIL_PORT = os.getenv('GMAIL_PORT')
+# EMAIL_HOST_USER = os.getenv('GMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('GMAIL_HOST_PASSWORD')
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL_STARTTLS = True
+# EMAIL_USE_SSL = False
+# EMAIL_USE_TLS = True
 
 DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
@@ -174,7 +172,7 @@ DJOSER = {
     },
 
     'PASSWORD_RESET_CONFIRM_URL': 'api/auth/reset_password_confirm/{uid}/{token}/',
-    "ACTIVATION_URL": "api/auth/activate/{uid}/{token}/",
+    'ACTIVATION_URL': 'api/auth/activate/{uid}/{token}/',
 }
 
 SIMPLE_JWT = {
