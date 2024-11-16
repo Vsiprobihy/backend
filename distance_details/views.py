@@ -4,10 +4,11 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from additional_items.models import AdditionalItemEvent
 from authentication.permissions import IsOrganizer
 from distance_details.models import DistanceEvent
 from distance_details.serializers import DistanceEventSerializer
-from event.models import AdditionalItemEvent, Event
+from event.models import Event
 from organization.decorators import check_organization_access_decorator, extract_event_directly
 from swagger_docs import SwaggerDocs
 

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
+from additional_items.models import AdditionalItemEvent
 from distance_details.models import DistanceEvent
-from event.models import AdditionalItemEvent
 
 
 class AdditionalItemEventSerializer(serializers.ModelSerializer):
