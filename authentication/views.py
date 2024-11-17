@@ -23,7 +23,7 @@ from authentication.serializers import (
     UserAvatarUploadSerializer,
     UserProfileSerializer,
 )
-from swager.authenticate import SwaggerDocs
+from swagger.authenticate import SwaggerDocs
 from utils.custom_exceptions import (
     BadRequestError,
     ForbiddenError,

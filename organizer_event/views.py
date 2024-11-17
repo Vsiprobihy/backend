@@ -7,7 +7,7 @@ from authentication.permissions import IsOrganizer
 from organization.decorators import check_organization_access_decorator, extract_for_event_access_directly
 from organizer_event.models import Event
 from organizer_event.serializers import EventSerializer
-from swager.event import SwaggerDocs
+from swagger.event import SwaggerDocs
 from utils.pagination import Pagination
 
 

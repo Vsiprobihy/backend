@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from utils.swager_schema import schema_view
+from utils.swagger_schema import schema_view
 from vsizabihi.views import api_root_view
 
 
