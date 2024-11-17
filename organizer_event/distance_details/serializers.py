@@ -31,6 +31,8 @@ class DistanceEventSerializer(serializers.ModelSerializer):
         return distance
 
     def update(self, instance, validated_data):
+        additional_options_data = validated_data.pop('additional_options', None)
+
         instance.name = validated_data.get('name', instance.name)
         instance.competition_type = validated_data.get('competition_type', instance.competition_type)
         instance.category = validated_data.get('category', instance.category)
@@ -44,7 +46,24 @@ class DistanceEventSerializer(serializers.ModelSerializer):
         instance.promo_only_registration = validated_data.get('promo_only_registration', instance.promo_only_registration)  # noqa: E501
         instance.show_name_on_number = validated_data.get('show_name_on_number', instance.show_name_on_number)
         instance.show_start_number = validated_data.get('show_start_number', instance.show_start_number)
-
         instance.save()
+
+        if additional_options_data is not None:
+            existing_ids = [opt.id for opt in instance.additionalitemevent_set.all()]
+            input_ids = [item.get('id') for item in additional_options_data if 'id' in item]
+
+            for opt_id in set(existing_ids) - set(input_ids):
+                AdditionalItemEvent.objects.filter(id=opt_id).delete()
+
+            for option_data in additional_options_data:
+                option_id = option_data.get('id', None)
+                if option_id:
+                    option_instance = AdditionalItemEvent.objects.get(id=option_id)
+                    for attr, value in option_data.items():
+                        setattr(option_instance, attr, value)
+                    option_instance.save()
+                else:
+                    option_data['distance'] = instance
+                    AdditionalItemEvent.objects.create(**option_data)
 
         return instance
