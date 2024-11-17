@@ -5,6 +5,6 @@ from organization.views import InviteModeratorView, OrganizerEventDetailView, Or
 
 urlpatterns = [
     path('', OrganizerEventListCreateView.as_view(), name='organizer-event-list-create'),
-    path('<int:pk>', OrganizerEventDetailView.as_view(), name='organizer-event-detail'),
-    path('invite-moderator', InviteModeratorView.as_view(), name='invite-moderator')
+    path('<int:pk>/', OrganizerEventDetailView.as_view(), name='organizer-event-detail'),
+    path('invite-moderator/', InviteModeratorView.as_view(), name='invite-moderator')
 ]
