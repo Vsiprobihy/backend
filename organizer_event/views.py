@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -25,12 +27,24 @@ class EventsListView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.EventList.get)
     def get(self, request):
+        current_date = datetime.now().date()
+        archives = request.GET.get('archives', None)
+
         organizer_access = OrganizationAccess.objects.filter(user=request.user)
         organizer_ids = organizer_access.values_list('organization__id', flat=True)
-        events = Event.objects.filter(organizer__id__in=organizer_ids).order_by('-date_from')
+
+        if archives:
+            events = (Event.objects.filter(organizer__id__in=organizer_ids)
+                      .order_by('-date_from')
+                      .filter(date_to__lt=current_date)
+                      )
+        else:
+            events = (Event.objects.filter(organizer__id__in=organizer_ids)
+                      .order_by('-date_from')
+                      )
 
         paginator = Pagination()
-        paginator.page_size = 2
+        paginator.page_size = 6  # temporary long value
 
         paginated_events = paginator.paginate_queryset(events, request)
 

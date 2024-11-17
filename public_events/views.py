@@ -24,8 +24,11 @@ class PublicEventListView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.PublicEventListView.get)
     def get(self, request):
-        events = Event.objects.all().order_by('-date_from')
+        events = (Event.objects.filter(status='published').order_by('-date_from'))
+
         paginator = Pagination()
+        paginator.page_size = 6  # temporary long value
+
         paginated_events = paginator.paginate_queryset(events, request)
 
         if paginated_events is not None:
@@ -41,15 +44,15 @@ class PublicEventDetailView(APIView):
     permission_classes = [AllowAny]
 
     @swagger_auto_schema(**SwaggerDocs.PublicEventDetailView.get)
-    def get(self, request, _id):
+    def get(self, request, pk):
         try:
-            event = Event.objects.get(pk=_id)
+            event = Event.objects.get(pk=pk, status='published')
             serializer = EventSerializer(event)
             return Response(serializer.data)
         except Event.DoesNotExist:
             return Response({'detail': 'Event not found.'}, status=404)
         except Exception as e:
-            logger.error(f'Error retrieving event {_id}: {str(e)}')
+            logger.error(f'Error retrieving event {pk}: {str(e)}')
             return Response({'detail': 'Something went wrong. Please try again later.'}, status=500)
 
 
