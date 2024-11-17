@@ -338,7 +338,7 @@ class SwaggerDocs:
         }
 
         post = {
-            'tags': ['Profile'],
+            'tags': ['Additional Profile'],
             'operation_description': 'Create an additional profile',
             'request_body': AdditionalProfileSerializer,
             'responses': {
@@ -435,7 +435,7 @@ class SwaggerDocs:
         }
 
         put = {
-            'tags': ['Profile'],
+            'tags': ['Additional Profile'],
             'operation_description': 'Update an additional profile',
             'request_body': AdditionalProfileDetailSerializer,
             'responses': {
@@ -484,7 +484,7 @@ class SwaggerDocs:
         }
 
         delete = {
-            'tags': ['Profile'],
+            'tags': ['Additional Profile'],
             'operation_description': 'Delete an additional profile',
             'responses': {
                 204: openapi.Response(description='Profile deleted successfully'),
