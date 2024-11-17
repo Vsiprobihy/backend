@@ -3,9 +3,9 @@ from functools import wraps
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 
-from distance_details.models import DistanceEvent
-from event.models import Event
 from organization.models import OrganizationAccess
+from organizer_event.distance_details.models import DistanceEvent
+from organizer_event.models import Event
 
 
 def check_organization_access_decorator(event_extractor):
@@ -16,6 +16,7 @@ def check_organization_access_decorator(event_extractor):
     :raises PermissionDenied: If the user does not have access to the organization.
     :raises Http404: If the extracted Event does not exist.
     """
+
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(self, request, *args, **kwargs):
@@ -26,14 +27,16 @@ def check_organization_access_decorator(event_extractor):
 
             user = request.user
             if not OrganizationAccess.objects.filter(
-                organization=event.organizer, user=user
+                    organization=event.organizer, user=user
             ).exists():
                 raise PermissionDenied('You do not have permission to access this event.')
 
             return view_func(self, request, *args, **kwargs)
 
         return _wrapped_view
+
     return decorator
+
 
 def extract_event_from_distance(request, *args, **kwargs):
     """
@@ -47,6 +50,7 @@ def extract_event_from_distance(request, *args, **kwargs):
     distance = DistanceEvent.objects.select_related('event').get(pk=distance_id)
     return distance.event
 
+
 def extract_event_directly(request, *args, **kwargs):
     """
     Extracts the Event instance directly using the event_id parameter.
@@ -57,6 +61,7 @@ def extract_event_directly(request, *args, **kwargs):
     """
     event_id = kwargs.get('event_id')
     return Event.objects.get(pk=event_id)
+
 
 def extract_for_event_access_directly(request, *args, **kwargs):
     """
