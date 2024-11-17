@@ -18,7 +18,9 @@ from utils.pagination import Pagination
 class BaseEventView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
-
+    def get_object(self, pk):
+        event = Event.objects.get(pk=pk)
+        return event
 
 class EventsListView(BaseEventView):
 
