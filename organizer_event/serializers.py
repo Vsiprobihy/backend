@@ -113,29 +113,7 @@ class EventSerializer(serializers.ModelSerializer):
         return event
 
     def update(self, instance, validated_data):
-        validated_data.pop('organizer', None)
-        competition_type_data = validated_data.pop('competition_type', None)
-
-        user = self.context['request'].user
-        organizer_id = validated_data.get('organizer_id', instance.organizer.id)
-
-        if not OrganizationAccess.objects.filter(organization_id=organizer_id, user=user).exists():
-            raise serializers.ValidationError({'organizer_id': 'You do not have access to the specified organization.'})
-
-        if competition_type_data is not None:
-            instance.competition_type.clear()
-            for comp in competition_type_data:
-                competition_type_obj = CompetitionType.objects.filter(
-                    name=comp['name']
-                ).first()
-                if competition_type_obj:
-                    instance.competition_type.add(competition_type_obj)
-                else:
-                    raise serializers.ValidationError(
-                        {
-                            'competition_type': f"Competition type '{comp['name']}' does not exist."
-                        }
-                    )
+        distances_data = validated_data.pop('distances', None)
 
         instance.name = validated_data.get('name', instance.name)
         instance.date_from = validated_data.get('date_from', instance.date_from)
@@ -148,6 +126,22 @@ class EventSerializer(serializers.ModelSerializer):
         instance.hide_participants = validated_data.get('hide_participants', instance.hide_participants)
         instance.schedule_pdf = validated_data.get('schedule_pdf', instance.schedule_pdf)
         instance.extended_description = validated_data.get('extended_description', instance.extended_description)
-
         instance.save()
+
+        if distances_data is not None:
+            existing_ids = [dist.id for dist in instance.distances.all()]
+            input_ids = [item.get('id') for item in distances_data if 'id' in item]
+
+            for dist_id in set(existing_ids) - set(input_ids):
+                DistanceEvent.objects.filter(id=dist_id).delete()
+
+            for distance_data in distances_data:
+                distance_id = distance_data.get('id', None)
+                if distance_id:
+                    distance_instance = DistanceEvent.objects.get(id=distance_id)
+                    DistanceEventSerializer().update(distance_instance, distance_data)
+                else:
+                    distance_data['event'] = instance
+                    DistanceEventSerializer().create(distance_data)
+
         return instance

@@ -50,14 +50,14 @@ class OrganizerEventDetailView(APIView):
             if event:
                 serializer = OrganizerEventSerializer(event)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
     @swagger_auto_schema(**SwaggerDocs.Organization.put)
     def put(self, request, pk):
         event = OrganizerEvent.objects.filter(users_access__user=request.user, pk=pk).first()
         if not event:
-            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = OrganizerEventSerializer(event, data=request.data, partial=True)
         if serializer.is_valid():
@@ -71,7 +71,7 @@ class OrganizerEventDetailView(APIView):
         if event:
             event.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class InviteModeratorView(APIView):
@@ -81,7 +81,7 @@ class InviteModeratorView(APIView):
     def post(self, request):
         organization_id = request.data.get('organization_id')
         email = request.data.get('email')
-        message = request.data.get('message', '')
+        message = request.data.get('message', '')  # noqa: F841
 
         user = User.objects.filter(email=email).first()
         if not user:

@@ -1,12 +1,10 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
 from organization.decorators import check_organization_access_decorator, extract_for_event_access_directly
-from organization.models import OrganizationAccess
 from organizer_event.models import Event
 from organizer_event.serializers import EventSerializer
 from swager.event import SwaggerDocs
@@ -22,15 +20,7 @@ class BaseEventView(APIView):
 
     def get_object(self, pk):
         event = Event.objects.get(pk=pk)
-        user = self.request.user
-
-        if not OrganizationAccess.objects.filter(
-                organization=event.organizer, user=user
-        ).exists():
-            raise PermissionDenied('You do not have permission to access this event.')
-
         return event
-
 
 class EventsListView(BaseEventView):
 
