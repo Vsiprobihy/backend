@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 
 from organizer_event.models import CompetitionType, Event
 from organizer_event.serializers import EventSerializer
+from public_events.serializers import PublicEventSerializer
 from swagger.public_events import SwaggerDocs
 from utils.constants.constants_event import REGIONS
 from utils.pagination import Pagination
@@ -32,10 +33,10 @@ class PublicEventListView(APIView):
         paginated_events = paginator.paginate_queryset(events, request)
 
         if paginated_events is not None:
-            serializer = EventSerializer(paginated_events, many=True)
+            serializer = PublicEventSerializer(paginated_events, many=True)
             return paginator.get_paginated_response(serializer.data)
 
-        serializer = EventSerializer(events, many=True)
+        serializer = PublicEventSerializer(events, many=True)
 
         return Response(serializer.data)
 
@@ -47,7 +48,7 @@ class PublicEventDetailView(APIView):
     def get(self, request, pk):
         try:
             event = Event.objects.get(pk=pk, status='published')
-            serializer = EventSerializer(event)
+            serializer = PublicEventSerializer(event)
             return Response(serializer.data)
         except Event.DoesNotExist:
             return Response({'detail': 'Event not found.'}, status=404)
