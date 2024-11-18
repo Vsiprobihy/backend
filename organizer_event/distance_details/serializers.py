@@ -67,3 +67,9 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                     AdditionalItemEvent.objects.create(**option_data)
 
         return instance
+
+
+class PublicDistanceEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DistanceEvent
+        fields = ['name']

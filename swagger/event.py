@@ -1,3 +1,5 @@
+from drf_yasg import openapi
+
 from swagger.event_variables import Request, Responce
 
 
@@ -6,11 +8,20 @@ class SwaggerDocs:
     class EventList:
         get = {
             'tags': ['Events'],
+            'operation_description': 'Retrieve event details by ID.',
+            'manual_parameters': [
+                openapi.Parameter(
+                    'archives',
+                    openapi.IN_QUERY,
+                    description='Indicates whether to include archived records. Use "archives=true" to filter by archived data.',
+                    type=openapi.TYPE_STRING,
+                    example='true',
+                ),
+            ],
             'responses': {
                 200: Responce.EventResponse,
                 404: 'Event not found',
             },
-            'operation_description': 'Retrieve event details by ID.',
         }
 
     class EventCreate:
