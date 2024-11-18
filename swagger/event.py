@@ -1,6 +1,3 @@
-from drf_yasg import openapi
-
-from organizer_event.serializers import EventSerializer
 from swagger.event_variables import Request, Responce
 
 
@@ -10,7 +7,7 @@ class SwaggerDocs:
         get = {
             'tags': ['Events'],
             'responses': {
-                200: openapi.Response('Success', EventSerializer),
+                200: Responce.EventResponse,
                 404: 'Event not found',
             },
             'operation_description': 'Retrieve event details by ID.',
