@@ -40,7 +40,7 @@ class RegisterView(APIView):
     def post(self, request, *args, **kwargs) -> Response:
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
+            user = serializer.save()  # noqa: F841
 
             # if user and user.pk is not None:
             #     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -123,7 +123,7 @@ class CustomResetPasswordView(UserViewSet):
         response = super().reset_password(request, *args, **kwargs)
 
         if response.status_code == status.HTTP_204_NO_CONTENT:
-            return SuccessResponseCustom('A password reset email has been sent to the provided email address.').get_response()
+            return SuccessResponseCustom('A password reset email has been sent to the provided email address.').get_response()  # noqa: E501
 
         return response
 

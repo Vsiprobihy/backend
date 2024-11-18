@@ -65,6 +65,18 @@ class OrganizerEventDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(**SwaggerDocs.Organization.patch)
+    def patch(self, request, pk):
+        event = OrganizerEvent.objects.filter(users_access__user=request.user, pk=pk).first()
+        if not event:
+            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = OrganizerEventSerializer(event, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     @swagger_auto_schema(**SwaggerDocs.Organization.delete)
     def delete(self, request, pk):
         event = OrganizerEvent.objects.filter(users_access__user=request.user, pk=pk).first()
