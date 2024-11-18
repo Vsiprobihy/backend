@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -5,14 +7,11 @@ from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
 from organization.decorators import check_organization_access_decorator, extract_for_event_access_directly
+from organization.models import OrganizationAccess
 from organizer_event.models import Event
 from organizer_event.serializers import EventSerializer
 from swager.event import SwaggerDocs
 from utils.pagination import Pagination
-
-
-# TODO: треба передивитись всі методи та класи щоб
-#  загальний обьект івента з всіма полями корректно зберігався по таблицях
 
 
 class BaseEventView(APIView):
@@ -22,13 +21,31 @@ class BaseEventView(APIView):
         event = Event.objects.get(pk=pk)
         return event
 
-class EventsListView(BaseEventView):
+
+class EventsListView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.EventList.get)
-    @check_organization_access_decorator(extract_for_event_access_directly)
     def get(self, request):
-        events = Event.objects.filter(organizer=self.request.user).order_by('-date_from')
+        current_date = datetime.now().date()
+        archives = request.GET.get('archives', None)
+
+        organizer_access = OrganizationAccess.objects.filter(user=request.user)
+        organizer_ids = organizer_access.values_list('organization__id', flat=True)
+
+        if archives:
+            events = (Event.objects.filter(organizer__id__in=organizer_ids)
+                      .order_by('-date_from')
+                      .filter(date_to__lt=current_date)
+                      )
+        else:
+            events = (Event.objects.filter(organizer__id__in=organizer_ids)
+                      .order_by('-date_from')
+                      )
+
         paginator = Pagination()
+        paginator.page_size = 6  # temporary long value
+
         paginated_events = paginator.paginate_queryset(events, request)
 
         if paginated_events is not None:
@@ -36,7 +53,6 @@ class EventsListView(BaseEventView):
             return paginator.get_paginated_response(serializer.data)
 
         serializer = EventSerializer(events, many=True)
-
         return Response(serializer.data)
 
 

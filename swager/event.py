@@ -12,6 +12,15 @@ class SwaggerDocs:
                 404: 'Event not found',
             },
             'operation_description': 'Retrieve event details by ID.',
+            'manual_parameters': [
+                openapi.Parameter(
+                    'archives',
+                    openapi.IN_QUERY,
+                    description="Filter for past events. Set to any value to show archives.",
+                    type=openapi.TYPE_STRING,
+                    required=False
+                )
+            ]
         }
 
     class EventCreate:
