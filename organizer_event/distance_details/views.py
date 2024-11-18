@@ -10,7 +10,7 @@ from organizer_event.additional_items.models import AdditionalItemEvent
 from organizer_event.distance_details.models import DistanceEvent
 from organizer_event.distance_details.serializers import DistanceEventSerializer
 from organizer_event.models import Event
-from swager.distanse import SwaggerDocs
+from swagger.distanse import SwaggerDocs
 
 
 class DistanceDetailView(APIView):

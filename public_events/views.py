@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 
 from organizer_event.models import CompetitionType, Event
 from organizer_event.serializers import EventSerializer
-from swager.public_events import SwaggerDocs
+from swagger.public_events import SwaggerDocs
 from utils.constants.constants_event import REGIONS
 from utils.pagination import Pagination
 

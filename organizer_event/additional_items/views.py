@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from organization.decorators import check_organization_access_decorator, extract_event_from_distance
 from organizer_event.additional_items.models import AdditionalItemEvent
 from organizer_event.additional_items.serializers import AdditionalItemEventSerializer
-from swager.additional_items import SwaggerDocs
+from swagger.additional_items import SwaggerDocs
 
 
 class AdditionalItemsDetailView(APIView):

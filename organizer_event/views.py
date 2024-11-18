@@ -10,7 +10,7 @@ from organization.decorators import check_organization_access_decorator, extract
 from organization.models import OrganizationAccess
 from organizer_event.models import Event
 from organizer_event.serializers import EventSerializer
-from swager.event import SwaggerDocs
+from swagger.event import SwaggerDocs
 from utils.pagination import Pagination
 
 

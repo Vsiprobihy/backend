@@ -9,7 +9,7 @@ from organization.models import OrganizationAccess, OrganizerEvent
 from organization.serializers import (
     OrganizerEventSerializer,
 )
-from swager.organization import SwaggerDocs
+from swagger.organization import SwaggerDocs
 
 
 User = get_user_model()
