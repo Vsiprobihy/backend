@@ -27,7 +27,7 @@ class PublicEventListView(APIView):
         events = (Event.objects.filter(status='published').order_by('-date_from'))
 
         paginator = Pagination()
-        paginator.page_size = 6  # temporary long value
+        paginator.page_size = 3
 
         paginated_events = paginator.paginate_queryset(events, request)
 
