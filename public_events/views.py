@@ -10,7 +10,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from organizer_event.models import CompetitionType, Event
-from organizer_event.serializers import EventSerializer
 from public_events.serializers import PublicEventSerializer
 from swagger.public_events import SwaggerDocs
 from utils.constants.constants_event import REGIONS
@@ -167,7 +166,7 @@ class PublicEventFilterView(APIView):
         paginator = self.pagination_class()
         paginated_events = paginator.paginate_queryset(events, request)
 
-        serializer = EventSerializer(paginated_events, many=True)
+        serializer = PublicEventSerializer(paginated_events, many=True)
         return paginator.get_paginated_response(serializer.data)
 
 

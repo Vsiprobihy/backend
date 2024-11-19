@@ -26,9 +26,15 @@ def check_organization_access_decorator(event_extractor):
                 raise Http404('Event not found.')
 
             user = request.user
-            if not OrganizationAccess.objects.filter(
-                    organization=event.organizer, user=user
-            ).exists():
+            organizer_id = kwargs.get('organizer_id')
+
+            organizer_access_exists = OrganizationAccess.objects.filter(
+                organization=event.organizer,
+                user=user,
+                user_id=organizer_id
+            ).exists()
+
+            if not organizer_access_exists:
                 raise PermissionDenied('You do not have permission to access this event.')
 
             return view_func(self, request, *args, **kwargs)
@@ -71,5 +77,5 @@ def extract_for_event_access_directly(request, *args, **kwargs):
     :raises Event.DoesNotExist: If the Event with the given ID does not exist.
     :return: The Event instance.
     """
-    event_id = kwargs.get('pk')
+    event_id = kwargs.get('event_id')
     return Event.objects.get(pk=event_id)

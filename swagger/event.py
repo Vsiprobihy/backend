@@ -5,7 +5,7 @@ from swagger.event_variables import Request, Responce
 
 class SwaggerDocs:
 
-    class EventList:
+    class EventsListCreateView:
         get = {
             'tags': ['Events'],
             'operation_description': 'Retrieve event details by ID.',
@@ -24,7 +24,6 @@ class SwaggerDocs:
             },
         }
 
-    class EventCreate:
         post = {
             'tags': ['Events'],
             'request_body': Request.EventRequestBody,
@@ -35,7 +34,7 @@ class SwaggerDocs:
             'operation_description': 'Create a new event with all related details including organizer, additional items, and distances.',  # noqa: E501
         }
 
-    class EventDetail:
+    class EventDetailView:
         get = {
             'tags': ['Events'],
             'responses': {
@@ -45,7 +44,6 @@ class SwaggerDocs:
             'operation_description': 'Retrieve event details by ID.',
         }
 
-    class EventUpdate:
         put = {
             'tags': ['Events'],
             'request_body': Request.EventRequestBody,
@@ -56,7 +54,6 @@ class SwaggerDocs:
             'operation_description': 'Update event details without organizer, additional_items, or distances fields.',
         }
 
-    class EventPartialUpdate:
         patch = {
             'tags': ['Events'],
             'request_body': Request.EventRequestBody,
@@ -67,7 +64,6 @@ class SwaggerDocs:
             'operation_description': 'Partially update event details without organizer, additional_items, or distances fields.',  # noqa: E501
         }
 
-    class EventDelete:
         delete = {
             'tags': ['Events'],
             'responses': {

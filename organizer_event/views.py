@@ -14,18 +14,10 @@ from swagger.event import SwaggerDocs
 from utils.pagination import Pagination
 
 
-class BaseEventView(APIView):
+class EventsListCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
-    def get_object(self, pk):
-        event = Event.objects.get(pk=pk)
-        return event
-
-
-class EventsListView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
-
-    @swagger_auto_schema(**SwaggerDocs.EventList.get)
+    @swagger_auto_schema(**SwaggerDocs.EventsListCreateView.get)
     def get(self, request):
         current_date = datetime.now().date()
         archives = request.GET.get('archives', None)
@@ -55,10 +47,7 @@ class EventsListView(APIView):
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
-
-class EventCreateView(BaseEventView):
-
-    @swagger_auto_schema(**SwaggerDocs.EventCreate.post)
+    @swagger_auto_schema(**SwaggerDocs.EventsListCreateView.post)
     def post(self, request):
         serializer = EventSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -67,22 +56,25 @@ class EventCreateView(BaseEventView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class EventDetailView(BaseEventView):
+class EventDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
-    @swagger_auto_schema(**SwaggerDocs.EventDetail.get)
+    def get_object(self, event_id):
+        event = Event.objects.get(pk=event_id)
+        return event
+
+    @swagger_auto_schema(**SwaggerDocs.EventDetailView.get)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def get(self, request, pk):
-        event = self.get_object(pk)
+    def get(self, request, organizer_id, event_id):
+        event = self.get_object(event_id)
         serializer = EventSerializer(event)
         return Response(serializer.data)
 
-
-class EventUpdateView(BaseEventView):
-
-    @swagger_auto_schema(**SwaggerDocs.EventUpdate.put)
+    @swagger_auto_schema(**SwaggerDocs.EventDetailView.put)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def put(self, request, pk):
-        event = self.get_object(pk)
+    def put(self, request, organizer_id, event_id):
+        event = self.get_object(event_id)
+        request.data['organizer_id'] = organizer_id
         serializer = EventSerializer(event, data=request.data, context={'request': request})
 
         if serializer.is_valid():
@@ -90,13 +82,10 @@ class EventUpdateView(BaseEventView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class EventPartialUpdateView(BaseEventView):
-
-    @swagger_auto_schema(**SwaggerDocs.EventPartialUpdate.patch)
+    @swagger_auto_schema(**SwaggerDocs.EventDetailView.patch)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def patch(self, request, pk):
-        event = self.get_object(pk)
+    def patch(self, request, organizer_id, event_id):
+        event = self.get_object(event_id)
         serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
 
         if serializer.is_valid():
@@ -104,12 +93,10 @@ class EventPartialUpdateView(BaseEventView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class EventDeleteView(BaseEventView):
-
-    @swagger_auto_schema(**SwaggerDocs.EventDelete.delete)
+    @swagger_auto_schema(**SwaggerDocs.EventDetailView.delete)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def delete(self, request, pk):
-        event = self.get_object(pk)
+    def delete(self, request, organizer_id, event_id):
+        event = self.get_object(event_id)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
