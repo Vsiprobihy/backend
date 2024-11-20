@@ -4,8 +4,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from djoser.views import UserViewSet
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
@@ -14,7 +14,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from authentication.emails import send_activation_email
 from authentication.models import AdditionalProfile, CustomUser
 from authentication.serializers import (
     AdditionalProfileDetailSerializer,
@@ -24,7 +23,7 @@ from authentication.serializers import (
     UserAvatarUploadSerializer,
     UserProfileSerializer,
 )
-from authentication.swagger_schemas import SwaggerDocs
+from swagger.authenticate import SwaggerDocs
 from utils.custom_exceptions import (
     BadRequestError,
     ForbiddenError,
@@ -41,7 +40,7 @@ class RegisterView(APIView):
     def post(self, request, *args, **kwargs) -> Response:
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
+            user = serializer.save()  # noqa: F841
 
             # if user and user.pk is not None:
             #     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -124,7 +123,7 @@ class CustomResetPasswordView(UserViewSet):
         response = super().reset_password(request, *args, **kwargs)
 
         if response.status_code == status.HTTP_204_NO_CONTENT:
-            return SuccessResponseCustom('A password reset email has been sent to the provided email address.').get_response()
+            return SuccessResponseCustom('A password reset email has been sent to the provided email address.').get_response()  # noqa: E501
 
         return response
 
@@ -220,18 +219,18 @@ class AdditionalProfileDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.get)
-    def get(self, request, profile_id):
+    def get(self, request, _id):
         try:
-            profile = request.user.additional_profiles.get(id=profile_id)
+            profile = request.user.additional_profiles.get(id=_id)
             serializer = AdditionalProfileDetailSerializer(profile)
             return Response(serializer.data)
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.put)
-    def put(self, request, profile_id):
+    def put(self, request, _id):
         try:
-            profile = request.user.additional_profiles.get(id=profile_id)
+            profile = request.user.additional_profiles.get(id=_id)
             serializer = AdditionalProfileDetailSerializer(profile, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -241,9 +240,9 @@ class AdditionalProfileDetailView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.delete)
-    def delete(self, request, profile_id):
+    def delete(self, request, _id):
         try:
-            profile = request.user.additional_profiles.get(id=profile_id)
+            profile = request.user.additional_profiles.get(id=_id)
             profile.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except AdditionalProfile.DoesNotExist:

@@ -1,4 +1,4 @@
-from event.constants.constants_event import REGIONS
+from utils.constants.constants_event import REGIONS
 
 
 def get_region_name(code):

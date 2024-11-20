@@ -3,7 +3,9 @@ from datetime import date
 import pytest
 from django.contrib.auth import get_user_model
 
-from event.models import DistanceEvent, Event, OrganizerEvent
+from distance_details.models import DistanceEvent
+from organization.models import OrganizerEvent
+from organizer_event.models import Event
 
 
 User = get_user_model()

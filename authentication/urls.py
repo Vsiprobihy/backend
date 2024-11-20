@@ -43,7 +43,7 @@ urlpatterns = [
         name='additional_profiles_list',
     ),
     path(
-        'profile/additional_profiles/<int:profile_id>/',
+        'profile/additional_profiles/<int:id>/',
         AdditionalProfileDetailView.as_view(),
         name='additional_profile_detail',
     ),
