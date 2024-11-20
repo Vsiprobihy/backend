@@ -50,4 +50,4 @@ jobs:
             docker images
             docker image prune -a -f
 
-            docker-compose -f /home/azureuser/probihy/backend/docker-compose.yml up -d
+            docker-compose -f /home/ubuntu/vsiprobihy/backend/docker-compose.yml up -d
