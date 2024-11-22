@@ -43,6 +43,7 @@ jobs:
             export BACKEND_SHA=${{ github.sha }}
 
             df -h
+            docker-compose down -v
             docker container prune -f
             docker image prune -f
             docker volume prune -f
