@@ -42,7 +42,7 @@ def test_distance_event():
         date_to=date.today(),
         place='Test Place',
         description='Test description',
-        organizer=OrganizerEvent.objects.create(
+        organizer=Organization.objects.create(
             name='Organizer', phone_number='+1234567890', email='organizer@example.com'
         ),
     )

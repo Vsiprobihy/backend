@@ -22,6 +22,7 @@ def check_organization_access_decorator(event_extractor):
             try:
                 event = event_extractor(request, *args, **kwargs)
             except Event.DoesNotExist:
+
                 raise NotFoundError('Event not found.')
 
             user = request.user
@@ -81,7 +82,7 @@ def extract_for_event_access_directly(request, *args, **kwargs):
 
 def extract_organization_directly(request, *args, **kwargs):
     """
-    Extracts the Organization instance directly using the organizer_id parameter.
+    Extracts the Organization instance directly using the organization_id parameter.
 
     :param request: The HTTP request object.
     :raises OrganizationAccess.DoesNotExist: If the Organization with the given ID does not exist.
@@ -104,7 +105,7 @@ def check_organizer_access_decorator(organizer_extractor):
         def _wrapped_view(self, request, *args, **kwargs):
             if request.data:
                 if request.data.get('organization_id') != kwargs.get('organization_id'):
-                    raise BadRequestError('Parameter organizer_id dont match with organization id')
+                    raise BadRequestError('Parameter organization_id dont match with organization id')
 
             try:
                 organizer = organizer_extractor(request, *args, **kwargs)

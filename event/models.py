@@ -18,7 +18,7 @@ class CompetitionType(models.Model):
 class Event(models.Model):
 
     name = models.CharField(max_length=255)
-    competition_type = models.ManyToManyField(CompetitionType, related_name='events')
+    competition_type = models.ManyToManyField(CompetitionType, related_name='event')
     date_from = models.DateField()
     date_to = models.DateField()
     place_region = models.CharField(max_length=255, choices=REGIONS, null=True)

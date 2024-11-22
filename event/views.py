@@ -73,7 +73,7 @@ class EventDetailView(APIView):
 
     def get_object(self, event_id, organization_id):
         try:
-            event = (Event.objects.select_related('organizer')
+            event = (Event.objects.select_related('organization')
                      .prefetch_related('distances')
                      .get(pk=event_id, organization_id=organization_id)
                      )
@@ -102,8 +102,8 @@ class EventDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.patch)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def patch(self, request, organizer_id, event_id):
-        event = self.get_object(event_id, organizer_id)
+    def patch(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
         serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
 
         if serializer.is_valid():
@@ -113,7 +113,7 @@ class EventDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.delete)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def delete(self, request, organizer_id, event_id):
-        event = self.get_object(event_id, organizer_id)
+    def delete(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

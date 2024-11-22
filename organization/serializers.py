@@ -12,7 +12,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_users(self, obj):
-        access = Organization.objects.filter(organization=obj)
+        access = Organizer.objects.filter(organization=obj)
         return [
             {'user': access_item.user.email, 'role': access_item.role}
             for access_item in access

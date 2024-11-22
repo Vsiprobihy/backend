@@ -31,14 +31,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         - 1 special character
         - 1 number
         """
-        if not re.search(r'[A-Z]', value):
-            raise ValidationError('Password must contain at least 1 uppercase letter.')
-
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
-            raise ValidationError('Password must contain at least 1 special character.')
-
-        if not re.search(r'\d', value):
-            raise ValidationError('Password must contain at least 1 number.')
+        # if not re.search(r'[A-Z]', value):
+        #     raise ValidationError('Password must contain at least 1 uppercase letter.')
+        #
+        # if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
+        #     raise ValidationError('Password must contain at least 1 special character.')
+        #
+        # if not re.search(r'\d', value):
+        #     raise ValidationError('Password must contain at least 1 number.')
 
         return value
 

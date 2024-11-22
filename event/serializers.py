@@ -76,18 +76,18 @@ class EventSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
 
         if not Organizer.objects.filter(organization_id=organization_id, user=user).exists():
-            raise serializers.ValidationError({'organizer_id': 'You do not have access to the specified organization.'})
+            raise serializers.ValidationError({'organization_id': 'You do not have access to the specified organization.'})
 
         try:
             organization = Organization.objects.get(id=organization_id)
         except Organization.DoesNotExist:
             raise serializers.ValidationError(
                 {
-                    'organizer_id': 'The organization with the specified ID was not found.'
+                    'organization_id': 'The organization with the specified ID was not found.'
                 }
             )
 
-        event = Event.objects.create(organizer=organization, **validated_data)
+        event = Event.objects.create(organization=organization, **validated_data)
 
         for comp in competition_type_data:
             competition_type_obj = CompetitionType.objects.filter(
