@@ -5,9 +5,9 @@ from swagger.event_variables import Request, Responce
 
 class SwaggerDocs:
 
-    class EventList:
+    class EventsListCreateView:
         get = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'operation_description': 'Retrieve event details by ID.',
             'manual_parameters': [
                 openapi.Parameter(
@@ -24,9 +24,8 @@ class SwaggerDocs:
             },
         }
 
-    class EventCreate:
         post = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'request_body': Request.EventRequestBody,
             'responses': {
                 201: Responce.EventResponse,
@@ -35,9 +34,9 @@ class SwaggerDocs:
             'operation_description': 'Create a new event with all related details including organizer, additional items, and distances.',  # noqa: E501
         }
 
-    class EventDetail:
+    class EventDetailView:
         get = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'responses': {
                 200: Responce.EventResponse,
                 404: 'Event not found',
@@ -45,9 +44,8 @@ class SwaggerDocs:
             'operation_description': 'Retrieve event details by ID.',
         }
 
-    class EventUpdate:
         put = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'request_body': Request.EventRequestBody,
             'responses': {
                 200: Responce.EventResponse,
@@ -56,9 +54,8 @@ class SwaggerDocs:
             'operation_description': 'Update event details without organizer, additional_items, or distances fields.',
         }
 
-    class EventPartialUpdate:
         patch = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'request_body': Request.EventRequestBody,
             'responses': {
                 200: Responce.EventResponse,
@@ -67,9 +64,8 @@ class SwaggerDocs:
             'operation_description': 'Partially update event details without organizer, additional_items, or distances fields.',  # noqa: E501
         }
 
-    class EventDelete:
         delete = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'responses': {
                 204: 'Event deleted successfully',
                 404: 'Event not found',

@@ -9,9 +9,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from organizer_event.models import CompetitionType, Event
-from organizer_event.serializers import EventSerializer
-from public_events.serializers import PublicEventSerializer
+from event.models import CompetitionType, Event
+from public_event.serializers import PublicEventSerializer
 from swagger.public_events import SwaggerDocs
 from utils.constants.constants_event import REGIONS
 from utils.pagination import Pagination
@@ -45,15 +44,15 @@ class PublicEventDetailView(APIView):
     permission_classes = [AllowAny]
 
     @swagger_auto_schema(**SwaggerDocs.PublicEventDetailView.get)
-    def get(self, request, pk):
+    def get(self, request, event_id):
         try:
-            event = Event.objects.get(pk=pk, status='published')
+            event = Event.objects.get(pk=event_id, status='published')
             serializer = PublicEventSerializer(event)
             return Response(serializer.data)
         except Event.DoesNotExist:
             return Response({'detail': 'Event not found.'}, status=404)
         except Exception as e:
-            logger.error(f'Error retrieving event {pk}: {str(e)}')
+            logger.error(f'Error retrieving event {event_id}: {str(e)}')
             return Response({'detail': 'Something went wrong. Please try again later.'}, status=500)
 
 
@@ -167,7 +166,7 @@ class PublicEventFilterView(APIView):
         paginator = self.pagination_class()
         paginated_events = paginator.paginate_queryset(events, request)
 
-        serializer = EventSerializer(paginated_events, many=True)
+        serializer = PublicEventSerializer(paginated_events, many=True)
         return paginator.get_paginated_response(serializer.data)
 
 

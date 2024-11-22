@@ -1,6 +1,6 @@
 from drf_yasg import openapi
 
-from organizer_event.serializers import EventSerializer
+from event.serializers import EventSerializer
 from utils.constants.constants_event import COMPETITION_TYPES, REGIONS
 
 
@@ -8,7 +8,7 @@ class SwaggerDocs:
 
     class PublicEventListView:
         get = {
-            'tags': ['Public Events'],
+            'tags': ['Public Event'],
             'operation_description': 'Retrieve detailed information list event',
             'responses': {
                 200: EventSerializer,
@@ -36,7 +36,7 @@ class SwaggerDocs:
 
     class PublicEventDetailView:
         get = {
-            'tags': ['Public Events'],
+            'tags': ['Public Event'],
             'operation_description': 'Retrieve detailed information about a specific event by its ID.',
             'responses': {
                 200: EventSerializer,
@@ -65,7 +65,7 @@ class SwaggerDocs:
     class PublicEventFilterView:
 
         get = {
-            'tags': ['Public Events'],
+            'tags': ['Public Event'],
             'operation_description': 'Filtering events by competition type, name, location, distance, and date range',
             'manual_parameters': [
                 openapi.Parameter(

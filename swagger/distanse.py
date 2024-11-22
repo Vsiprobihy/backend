@@ -1,6 +1,6 @@
 from drf_yasg import openapi
 
-from organizer_event.distance_details.serializers import DistanceEventSerializer
+from event.distance_details.serializers import DistanceEventSerializer
 
 
 class SwaggerDocs:

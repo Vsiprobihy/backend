@@ -6,40 +6,43 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
-from organization.decorators import check_organization_access_decorator, extract_for_event_access_directly
-from organization.models import OrganizationAccess
-from organizer_event.models import Event
-from organizer_event.serializers import EventSerializer
+from organization.decorators import (
+    check_organization_access_decorator,
+    check_organizer_access_decorator,
+    extract_for_event_access_directly,
+    extract_organization_directly,
+)
+from organization.models import Organizer
+from event.models import Event
+from event.serializers import EventSerializer
 from swagger.event import SwaggerDocs
+from utils.custom_exceptions import NotFoundError
 from utils.pagination import Pagination
 
 
-class BaseEventView(APIView):
+class EventsListCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
-    def get_object(self, pk):
-        event = Event.objects.get(pk=pk)
-        return event
-
-
-class EventsListView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
-
-    @swagger_auto_schema(**SwaggerDocs.EventList.get)
-    def get(self, request):
+    @swagger_auto_schema(**SwaggerDocs.EventsListCreateView.get)
+    @check_organizer_access_decorator(extract_organization_directly)
+    def get(self, request, organization_id):
         current_date = datetime.now().date()
         archives = request.GET.get('archives', None)
+        user = request.user
 
-        organizer_access = OrganizationAccess.objects.filter(user=request.user)
-        organizer_ids = organizer_access.values_list('organization__id', flat=True)
+        organizer = Organizer.objects.filter(
+            user=user,
+            organization_id=organization_id,
+        )
+        organizer_ids = organizer.values_list('organization__id', flat=True)
 
         if archives:
-            events = (Event.objects.filter(organizer__id__in=organizer_ids)
+            events = (Event.objects.filter(organization__id__in=organizer_ids)
                       .order_by('-date_from')
                       .filter(date_to__lt=current_date)
                       )
         else:
-            events = (Event.objects.filter(organizer__id__in=organizer_ids)
+            events = (Event.objects.filter(organization__id__in=organizer_ids)
                       .order_by('-date_from')
                       )
 
@@ -55,11 +58,9 @@ class EventsListView(APIView):
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
-
-class EventCreateView(BaseEventView):
-
-    @swagger_auto_schema(**SwaggerDocs.EventCreate.post)
-    def post(self, request):
+    @swagger_auto_schema(**SwaggerDocs.EventsListCreateView.post)
+    @check_organizer_access_decorator(extract_organization_directly)
+    def post(self, request, organization_id):
         serializer = EventSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -67,22 +68,31 @@ class EventCreateView(BaseEventView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class EventDetailView(BaseEventView):
+class EventDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
-    @swagger_auto_schema(**SwaggerDocs.EventDetail.get)
+    def get_object(self, event_id, organization_id):
+        try:
+            event = (Event.objects.select_related('organization')
+                     .prefetch_related('distances')
+                     .get(pk=event_id, organization_id=organization_id)
+                     )
+        except Event.DoesNotExist:
+            raise NotFoundError('Event not found.')
+        return event
+
+    @swagger_auto_schema(**SwaggerDocs.EventDetailView.get)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def get(self, request, pk):
-        event = self.get_object(pk)
+    def get(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
         serializer = EventSerializer(event)
         return Response(serializer.data)
 
-
-class EventUpdateView(BaseEventView):
-
-    @swagger_auto_schema(**SwaggerDocs.EventUpdate.put)
+    @swagger_auto_schema(**SwaggerDocs.EventDetailView.put)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def put(self, request, pk):
-        event = self.get_object(pk)
+    def put(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
+        request.data['organization_id'] = organization_id
         serializer = EventSerializer(event, data=request.data, context={'request': request})
 
         if serializer.is_valid():
@@ -90,13 +100,10 @@ class EventUpdateView(BaseEventView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class EventPartialUpdateView(BaseEventView):
-
-    @swagger_auto_schema(**SwaggerDocs.EventPartialUpdate.patch)
+    @swagger_auto_schema(**SwaggerDocs.EventDetailView.patch)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def patch(self, request, pk):
-        event = self.get_object(pk)
+    def patch(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
         serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
 
         if serializer.is_valid():
@@ -104,12 +111,9 @@ class EventPartialUpdateView(BaseEventView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class EventDeleteView(BaseEventView):
-
-    @swagger_auto_schema(**SwaggerDocs.EventDelete.delete)
+    @swagger_auto_schema(**SwaggerDocs.EventDetailView.delete)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def delete(self, request, pk):
-        event = self.get_object(pk)
+    def delete(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

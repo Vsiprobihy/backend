@@ -10,10 +10,10 @@ from vsizabihi.views import api_root_view
 urlpatterns = [
     path('', api_root_view, name='api-root'),
     path('api/admin/', admin.site.urls),
-    path('api/auth/', include('authentication.urls')),
-    path('api/organizer/', include('organizer_event.urls')),
-    path('api/organizer/', include('organization.urls')),
-    path('api/public_events/', include('public_events.urls')),
+    path('api/authentication/', include('authentication.urls')),
+    path('api/organization/', include('organization.urls')),
+    path('api/organization/', include('event.urls')),
+    path('api/public_event/', include('public_event.urls')),
     path(
         'swagger/',
         schema_view.with_ui('swagger', cache_timeout=0),
