@@ -27,7 +27,7 @@ class DistanceEvent(models.Model):
     promo_only_registration = models.BooleanField(default=False)
     allow_registration = models.BooleanField(default=True)
     event = models.ForeignKey(
-        'organizer_event.Event', related_name='distances', on_delete=models.CASCADE
+        'event.Event', related_name='distances', on_delete=models.CASCADE
     )
 
     def __str__(self):

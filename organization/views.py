@@ -5,81 +5,79 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
-from organization.models import OrganizationAccess, OrganizerEvent
-from organization.serializers import (
-    OrganizerEventSerializer,
-)
+from organization.models import Organization, Organizer
+from organization.serializers import OrganizationSerializer
 from swagger.organization import SwaggerDocs
 
 
 User = get_user_model()
 
 
-class OrganizerEventListCreateView(APIView):
+class OrganizationListCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.Organization.get)
     def get(self, request):
         if request.user.is_authenticated:
-            events = OrganizerEvent.objects.filter(users_access__user=request.user)
-            serializer = OrganizerEventSerializer(events, many=True)
+            organization = Organization.objects.filter(organizer_user__user=request.user)
+            serializer = OrganizationSerializer(organization, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response([], status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.Organization.post)
     def post(self, request):
-        serializer = OrganizerEventSerializer(data=request.data)
+        serializer = OrganizationSerializer(data=request.data)
         if serializer.is_valid():
             organization = serializer.save()
-            OrganizationAccess.objects.create(
+            Organizer.objects.create(
                 user=request.user,
                 organization=organization,
-                role=OrganizationAccess.OWNER,
+                role=Organizer.OWNER,
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class OrganizerEventDetailView(APIView):
+class OrganizationDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.Organization.get)
-    def get(self, request, pk):
+    def get(self, request, organization_id):
         if request.user.is_authenticated:
-            event = OrganizerEvent.objects.filter(users_access__user=request.user, pk=pk).first()
-            if event:
-                serializer = OrganizerEventSerializer(event)
+            organization = Organization.objects.filter(organizer_user__user=request.user, pk=organization_id).first()
+            if organization:
+                serializer = OrganizationSerializer(organization)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
     @swagger_auto_schema(**SwaggerDocs.Organization.put)
-    def put(self, request, pk):
-        event = OrganizerEvent.objects.filter(users_access__user=request.user, pk=pk).first()
-        if not event:
+    def put(self, request, organization_id):
+        organization = Organization.objects.filter(uorganizer_user__user=request.user, pk=organization_id).first()
+        if not organization:
             return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = OrganizerEventSerializer(event, data=request.data, partial=True)
+        serializer = OrganizationSerializer(organization, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.Organization.patch)
-    def patch(self, request, pk):
-        event = OrganizerEvent.objects.filter(users_access__user=request.user, pk=pk).first()
-        if not event:
+    def patch(self, request, organization_id):
+        organization = Organization.objects.filter(organizer_user__user=request.user, pk=organization_id).first()
+        if not organization:
             return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = OrganizerEventSerializer(event, data=request.data, partial=True)
+        serializer = OrganizationSerializer(organization, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.Organization.delete)
-    def delete(self, request, pk):
-        event = OrganizerEvent.objects.filter(users_access__user=request.user, pk=pk).first()
+    def delete(self, request, organization_id):
+        event = Organization.objects.filter(organizer_user__user=request.user, pk=organization_id).first()
         if event:
             event.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -90,8 +88,7 @@ class InviteModeratorView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.Organization.post)
-    def post(self, request):
-        organization_id = request.data.get('organization_id')
+    def post(self, request, organization_id):
         email = request.data.get('email')
         message = request.data.get('message', '')  # noqa: F841
 
@@ -102,15 +99,15 @@ class InviteModeratorView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        organization = OrganizerEvent.objects.filter(id=organization_id).first()
+        organization = Organization.objects.filter(pk=organization_id).first()
         if not organization:
             return Response(
                 {'error': 'Organization not found'},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        is_owner = OrganizationAccess.objects.filter(
-            organization=organization, user=request.user, role=OrganizationAccess.OWNER
+        is_owner = Organizer.objects.filter(
+            organization=organization, user=request.user, role=Organizer.OWNER
         ).exists()
         if not is_owner:
             return Response(
@@ -118,8 +115,8 @@ class InviteModeratorView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        OrganizationAccess.objects.create(
-            user=user, organization=organization, role=OrganizationAccess.MODERATOR
+        Organizer.objects.create(
+            user=user, organization=organization, role=Organizer.MODERATOR
         )
 
         return Response(

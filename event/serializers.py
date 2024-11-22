@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
-from organization.models import OrganizationAccess, OrganizerEvent
-from organization.serializers import OrganizerEventSerializer
-from organizer_event.additional_items.models import AdditionalItemEvent
-from organizer_event.distance_details.models import DistanceEvent
-from organizer_event.distance_details.serializers import DistanceEventSerializer
-from organizer_event.models import (
+from organization.models import Organizer, Organization
+from organization.serializers import OrganizationSerializer
+from event.additional_items.models import AdditionalItemEvent
+from event.distance_details.models import DistanceEvent
+from event.distance_details.serializers import DistanceEventSerializer
+from event.models import (
     CompetitionType,
     Event,
 )
@@ -19,8 +19,8 @@ class CompetitionTypeSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
-    organizer_id = serializers.IntegerField(write_only=True)
-    organizer = OrganizerEventSerializer(read_only=True)
+    organization_id = serializers.IntegerField(write_only=True)
+    organizer = OrganizationSerializer(read_only=True)
     distances = DistanceEventSerializer(many=True, required=True)
     competition_type = CompetitionTypeSerializer(many=True)
 
@@ -29,7 +29,7 @@ class EventSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region',
             'photos', 'description', 'registration_link', 'hide_participants', 'schedule_pdf',
-            'organizer', 'organizer_id', 'distances', 'extended_description'
+            'organizer', 'organization_id', 'distances', 'extended_description'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -69,25 +69,25 @@ class EventSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        organizer_id = validated_data.pop('organizer_id')
+        organization_id = validated_data.pop('organization_id')
         distances_data = validated_data.pop('distances')
         competition_type_data = validated_data.pop('competition_type', [])
 
         user = self.context['request'].user
 
-        if not OrganizationAccess.objects.filter(organization_id=organizer_id, user=user).exists():
+        if not Organizer.objects.filter(organization_id=organization_id, user=user).exists():
             raise serializers.ValidationError({'organizer_id': 'You do not have access to the specified organization.'})
 
         try:
-            organizer = OrganizerEvent.objects.get(id=organizer_id)
-        except OrganizerEvent.DoesNotExist:
+            organization = Organization.objects.get(id=organization_id)
+        except Organization.DoesNotExist:
             raise serializers.ValidationError(
                 {
                     'organizer_id': 'The organization with the specified ID was not found.'
                 }
             )
 
-        event = Event.objects.create(organizer=organizer, **validated_data)
+        event = Event.objects.create(organizer=organization, **validated_data)
 
         for comp in competition_type_data:
             competition_type_obj = CompetitionType.objects.filter(

@@ -1,6 +1,6 @@
 from drf_yasg import openapi
 
-from organization.serializers import OrganizerEventSerializer
+from organization.serializers import OrganizationSerializer
 
 
 class SwaggerDocs:
@@ -9,7 +9,7 @@ class SwaggerDocs:
         get = {
             'tags': ['Organization'],
             'responses': {
-                200: openapi.Response('Success', OrganizerEventSerializer),
+                200: openapi.Response('Success', OrganizationSerializer),
                 404: 'Organizer not found',
             },
             'operation_description': 'Retrieve the details of an event organizer by event_id. The event_id is used to find the organizer associated with a specific event.',  # noqa: E501
@@ -17,9 +17,9 @@ class SwaggerDocs:
 
         post = {
             'tags': ['Organization'],
-            'request_body': OrganizerEventSerializer,
+            'request_body': OrganizationSerializer,
             'responses': {
-                200: openapi.Response('Updated organizer', OrganizerEventSerializer),
+                200: openapi.Response('Updated organizer', OrganizationSerializer),
                 404: 'Organizer not found',
             },
             'operation_description': 'Update the details of an event organizer by event_id. The event_id is used to find the organizer, and the request body contains the updated information about the organizer.',  # noqa: E501
@@ -27,9 +27,9 @@ class SwaggerDocs:
 
         put = {
             'tags': ['Organization'],
-            'request_body': OrganizerEventSerializer,
+            'request_body': OrganizationSerializer,
             'responses': {
-                200: openapi.Response('Updated organizer', OrganizerEventSerializer),
+                200: openapi.Response('Updated organizer', OrganizationSerializer),
                 404: 'Organizer not found',
             },
             'operation_description': 'Update the details of an event organizer by event_id. The event_id is used to find the organizer, and the request body contains the updated information about the organizer.',  # noqa: E501
@@ -37,10 +37,10 @@ class SwaggerDocs:
 
         patch = {
             'tags': ['Organization'],
-            'request_body': OrganizerEventSerializer,
+            'request_body': OrganizationSerializer,
             'responses': {
                 200: openapi.Response(
-                    'Partially updated organizer', OrganizerEventSerializer
+                    'Partially updated organizer', OrganizationSerializer
                 ),
                 404: 'Organizer not found',
             },

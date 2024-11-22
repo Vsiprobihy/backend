@@ -1,6 +1,6 @@
 from drf_yasg import openapi
 
-from organizer_event.serializers import EventSerializer
+from event.serializers import EventSerializer
 from utils.constants.constants_event import COMPETITION_TYPES, REGIONS
 
 
