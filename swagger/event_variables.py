@@ -301,7 +301,7 @@ class Request:
                             description='Whether to hide participants',
                             default=True,
                         ),
-                        'organizer_id': openapi.Schema(
+                        'organization_id': openapi.Schema(
                             type=openapi.TYPE_INTEGER,
                             description='ID of the organizer',
                             default=1,
@@ -388,7 +388,7 @@ class Request:
                         'date_to',
                         'place',
                         'place_region',
-                        'organizer_id',
+                        'organization_id',
                         'additional_items',
                         'distances',
                     ],

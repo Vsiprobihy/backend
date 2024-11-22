@@ -7,7 +7,7 @@ class SwaggerDocs:
 
     class EventsListCreateView:
         get = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'operation_description': 'Retrieve event details by ID.',
             'manual_parameters': [
                 openapi.Parameter(
@@ -25,7 +25,7 @@ class SwaggerDocs:
         }
 
         post = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'request_body': Request.EventRequestBody,
             'responses': {
                 201: Responce.EventResponse,
@@ -36,7 +36,7 @@ class SwaggerDocs:
 
     class EventDetailView:
         get = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'responses': {
                 200: Responce.EventResponse,
                 404: 'Event not found',
@@ -45,7 +45,7 @@ class SwaggerDocs:
         }
 
         put = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'request_body': Request.EventRequestBody,
             'responses': {
                 200: Responce.EventResponse,
@@ -55,7 +55,7 @@ class SwaggerDocs:
         }
 
         patch = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'request_body': Request.EventRequestBody,
             'responses': {
                 200: Responce.EventResponse,
@@ -65,7 +65,7 @@ class SwaggerDocs:
         }
 
         delete = {
-            'tags': ['Events'],
+            'tags': ['Event'],
             'responses': {
                 204: 'Event deleted successfully',
                 404: 'Event not found',

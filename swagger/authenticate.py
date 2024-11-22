@@ -14,7 +14,7 @@ class SwaggerDocs:
 
     class UserRegister:
         post = {
-            'tags': ['Authenticate'],
+            'tags': ['Authentication'],
             'operation_description': 'Register user with email and password',
             'request_body': RegisterSerializer,
             'responses': {
@@ -51,7 +51,7 @@ class SwaggerDocs:
 
     class UserLogin:
         post = {
-            'tags': ['Authenticate'],
+            'tags': ['Authentication'],
             'operation_description': 'Login with JWT token',
             'request_body': LoginSerializer,
             'responses': {
@@ -119,7 +119,7 @@ class SwaggerDocs:
 
     class CustomResetPasswordView:
         post = {
-            'tags': ['Authenticate'],
+            'tags': ['Authentication'],
             'operation_description': 'Request a password reset email.',
             'request_body': openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -174,7 +174,7 @@ class SwaggerDocs:
 
     class CustomResetPasswordConfirmView:
         post = {
-            'tags': ['Authenticate'],
+            'tags': ['Authentication'],
             'operation_description': 'Confirm and reset the user password.',
             'request_body': openapi.Schema(
                 type=openapi.TYPE_OBJECT,
@@ -235,7 +235,7 @@ class SwaggerDocs:
 
     class ActivateUserEmailView:
         get = {
-            'tags': ['Authenticate'],
+            'tags': ['Authentication'],
             'operation_description': 'Activate user by email',
             'manual_parameters': [
                 openapi.Parameter(

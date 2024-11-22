@@ -1,11 +1,10 @@
 from functools import wraps
 
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from event.distance_details.models import DistanceEvent
+from event.models import Event
 
-from organization.models import OrganizationAccess
-from organizer_event.distance_details.models import DistanceEvent
-from organizer_event.models import Event
+from organization.models import Organizer
 from utils.custom_exceptions import BadRequestError, NotFoundError
 
 
@@ -23,14 +22,15 @@ def check_organization_access_decorator(event_extractor):
             try:
                 event = event_extractor(request, *args, **kwargs)
             except Event.DoesNotExist:
+
                 raise NotFoundError('Event not found.')
 
             user = request.user
-            organizer_id = kwargs.get('organizer_id')
+            organization_id = kwargs.get('organization_id')
 
-            organizer_access_exists = OrganizationAccess.objects.filter(
+            organizer_access_exists = Organizer.objects.filter(
                 user=user,
-                organization_id=organizer_id
+                organization_id=organization_id
             ).exists()
 
             if not organizer_access_exists:
@@ -82,21 +82,21 @@ def extract_for_event_access_directly(request, *args, **kwargs):
 
 def extract_organization_directly(request, *args, **kwargs):
     """
-    Extracts the Organization instance directly using the organizer_id parameter.
+    Extracts the Organization instance directly using the organization_id parameter.
 
     :param request: The HTTP request object.
     :raises OrganizationAccess.DoesNotExist: If the Organization with the given ID does not exist.
     :return: The Organization instance.
     """
-    organizer_id = kwargs.get('organizer_id')
-    return OrganizationAccess.objects.get(pk=organizer_id)
+    organization_id = kwargs.get('organization_id')
+    return Organizer.objects.get(pk=organization_id)
 
 
-def check_organizer_access_decorator(organization_extractor):
+def check_organizer_access_decorator(organizer_extractor):
     """
     A decorator to check if the user has access to the organization associated with the event.
 
-    :param event_extractor: A function that extracts the Event instance from the request and parameters.
+    :param organizer_extractor: A function that extracts the Event instance from the request and parameters.
     :raises PermissionDenied: If the user does not have access to the organization.
     :raises Http404: If the extracted Event does not exist.
     """
@@ -104,20 +104,20 @@ def check_organizer_access_decorator(organization_extractor):
         @wraps(view_func)
         def _wrapped_view(self, request, *args, **kwargs):
             if request.data:
-                if request.data.get('organizer_id') != kwargs.get('organizer_id'):
-                    raise BadRequestError('Parameter organizer_id dont match with organization id')
+                if request.data.get('organization_id') != kwargs.get('organization_id'):
+                    raise BadRequestError('Parameter organization_id dont match with organization id')
 
             try:
-                organization = organization_extractor(request, *args, **kwargs)
-            except OrganizationAccess.DoesNotExist:
+                organizer = organizer_extractor(request, *args, **kwargs)
+            except Organizer.DoesNotExist:
                 raise NotFoundError('Organization not found.')
 
             user = request.user
-            organizer_id = kwargs.get('organizer_id')
+            organization_id = kwargs.get('organization_id')
 
-            organizer_access_exists = OrganizationAccess.objects.filter(
+            organizer_access_exists = Organizer.objects.filter(
                 user=user,
-                organization_id=organizer_id
+                organization_id=organization_id
             ).exists()
 
             if not organizer_access_exists:

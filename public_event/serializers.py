@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from organizer_event.distance_details.serializers import PublicDistanceEventSerializer
-from organizer_event.models import Event
-from organizer_event.serializers import CompetitionTypeSerializer
+from event.distance_details.serializers import PublicDistanceEventSerializer
+from event.models import Event
+from event.serializers import CompetitionTypeSerializer
 
 
 class PublicEventSerializer(serializers.ModelSerializer):

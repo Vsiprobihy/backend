@@ -5,6 +5,6 @@ from .views import PublicEventDetailView, PublicEventFilterView, PublicEventList
 
 urlpatterns = [
     path('', PublicEventListView.as_view(), name='public-event-list'),
-    path('<int:pk>/', PublicEventDetailView.as_view(), name='public-event-detail'),
+    path('<int:event_id>/', PublicEventDetailView.as_view(), name='public-event-detail'),
     path('filter/', PublicEventFilterView.as_view(), name='public-event-filter'),
 ]

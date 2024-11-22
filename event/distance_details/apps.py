@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class PublicEventsConfig(AppConfig):
+class DistanceDetailsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'public_events'
+    name = 'event.distance_details'

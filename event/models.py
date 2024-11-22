@@ -1,6 +1,6 @@
 from django.db import models
 
-from organization.models import OrganizerEvent
+from organization.models import Organization
 from utils.constants.constants_event import (
     REGIONS,
     STATUS_CHOICES,
@@ -18,7 +18,7 @@ class CompetitionType(models.Model):
 class Event(models.Model):
 
     name = models.CharField(max_length=255)
-    competition_type = models.ManyToManyField(CompetitionType, related_name='events')
+    competition_type = models.ManyToManyField(CompetitionType, related_name='event')
     date_from = models.DateField()
     date_to = models.DateField()
     place_region = models.CharField(max_length=255, choices=REGIONS, null=True)
@@ -29,8 +29,8 @@ class Event(models.Model):
     hide_participants = models.BooleanField(default=False)
     extended_description = models.TextField(blank=True, null=True)
     schedule_pdf = models.FileField(upload_to='event_schedule/', blank=True, null=True)
-    organizer = models.ForeignKey(
-        OrganizerEvent, on_delete=models.CASCADE, related_name='events', null=False
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, related_name='event_organization', null=False
     )
     status = models.CharField(
         max_length=12, choices=STATUS_CHOICES, default=STATUS_PENDING

@@ -12,9 +12,9 @@ from organization.decorators import (
     extract_for_event_access_directly,
     extract_organization_directly,
 )
-from organization.models import OrganizationAccess
-from organizer_event.models import Event
-from organizer_event.serializers import EventSerializer
+from organization.models import Organizer
+from event.models import Event
+from event.serializers import EventSerializer
 from swagger.event import SwaggerDocs
 from utils.custom_exceptions import NotFoundError
 from utils.pagination import Pagination
@@ -25,24 +25,24 @@ class EventsListCreateView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.EventsListCreateView.get)
     @check_organizer_access_decorator(extract_organization_directly)
-    def get(self, request, organizer_id):
+    def get(self, request, organization_id):
         current_date = datetime.now().date()
         archives = request.GET.get('archives', None)
         user = request.user
 
-        organizer_access = OrganizationAccess.objects.filter(
+        organizer = Organizer.objects.filter(
             user=user,
-            organization_id=organizer_id,
+            organization_id=organization_id,
         )
-        organizer_ids = organizer_access.values_list('organization__id', flat=True)
+        organizer_ids = organizer.values_list('organization__id', flat=True)
 
         if archives:
-            events = (Event.objects.filter(organizer__id__in=organizer_ids)
+            events = (Event.objects.filter(organization__id__in=organizer_ids)
                       .order_by('-date_from')
                       .filter(date_to__lt=current_date)
                       )
         else:
-            events = (Event.objects.filter(organizer__id__in=organizer_ids)
+            events = (Event.objects.filter(organization__id__in=organizer_ids)
                       .order_by('-date_from')
                       )
 
@@ -60,7 +60,7 @@ class EventsListCreateView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.EventsListCreateView.post)
     @check_organizer_access_decorator(extract_organization_directly)
-    def post(self, request, organizer_id):
+    def post(self, request, organization_id):
         serializer = EventSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -71,11 +71,11 @@ class EventsListCreateView(APIView):
 class EventDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
-    def get_object(self, event_id, organizer_id):
+    def get_object(self, event_id, organization_id):
         try:
-            event = (Event.objects.select_related('organizer')
+            event = (Event.objects.select_related('organization')
                      .prefetch_related('distances')
-                     .get(pk=event_id, organizer_id=organizer_id)
+                     .get(pk=event_id, organization_id=organization_id)
                      )
         except Event.DoesNotExist:
             raise NotFoundError('Event not found.')
@@ -83,16 +83,16 @@ class EventDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.get)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def get(self, request, organizer_id, event_id):
-        event = self.get_object(event_id, organizer_id)
+    def get(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
         serializer = EventSerializer(event)
         return Response(serializer.data)
 
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.put)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def put(self, request, organizer_id, event_id):
-        event = self.get_object(event_id, organizer_id)
-        request.data['organizer_id'] = organizer_id
+    def put(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
+        request.data['organization_id'] = organization_id
         serializer = EventSerializer(event, data=request.data, context={'request': request})
 
         if serializer.is_valid():
@@ -102,8 +102,8 @@ class EventDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.patch)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def patch(self, request, organizer_id, event_id):
-        event = self.get_object(event_id, organizer_id)
+    def patch(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
         serializer = EventSerializer(event, data=request.data, partial=True, context={'request': request})
 
         if serializer.is_valid():
@@ -113,7 +113,7 @@ class EventDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.delete)
     @check_organization_access_decorator(extract_for_event_access_directly)
-    def delete(self, request, organizer_id, event_id):
-        event = self.get_object(event_id, organizer_id)
+    def delete(self, request, organization_id, event_id):
+        event = self.get_object(event_id, organization_id)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

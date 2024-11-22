@@ -3,7 +3,7 @@ from django.db import models
 from authentication.models import CustomUser
 
 
-class OrganizerEvent(models.Model):
+class Organization(models.Model):
     name = models.CharField(max_length=255)
     site_url = models.URLField(blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
@@ -16,7 +16,7 @@ class OrganizerEvent(models.Model):
         return self.name
 
 
-class OrganizationAccess(models.Model):
+class Organizer(models.Model):
     OWNER = 'owner'
     MODERATOR = 'organizer'
 
@@ -26,10 +26,10 @@ class OrganizationAccess(models.Model):
     ]
 
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='organization_access', null=False
+        CustomUser, on_delete=models.CASCADE, related_name='organizer_user', null=False
     )
     organization = models.ForeignKey(
-        OrganizerEvent, on_delete=models.CASCADE, related_name='users_access', null=False
+        Organization, on_delete=models.CASCADE, related_name='organizer_organization', null=False
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=False)
 

@@ -3,9 +3,9 @@ from datetime import date
 import pytest
 from django.contrib.auth import get_user_model
 
-from distance_details.models import DistanceEvent
-from organization.models import OrganizerEvent
-from organizer_event.models import Event
+from event.distance_details.models import DistanceEvent
+from organization.models import Organization
+from event.models import Event
 
 
 User = get_user_model()
@@ -13,7 +13,7 @@ User = get_user_model()
 
 @pytest.mark.django_db
 def test_create_event():
-    organizer = OrganizerEvent.objects.create(
+    organizer = Organization.objects.create(
         name='Test Organizer', phone_number='+1234567890', email='organizer@example.com'
     )
 
@@ -42,7 +42,7 @@ def test_distance_event():
         date_to=date.today(),
         place='Test Place',
         description='Test description',
-        organizer=OrganizerEvent.objects.create(
+        organizer=Organization.objects.create(
             name='Organizer', phone_number='+1234567890', email='organizer@example.com'
         ),
     )

@@ -1,6 +1,6 @@
 from drf_yasg import openapi
 
-from organizer_event.additional_items.serializers import AdditionalItemEventSerializer
+from event.additional_items.serializers import AdditionalItemEventSerializer
 
 
 class SwaggerDocs:

@@ -36,11 +36,11 @@ INSTALLED_APPS = [
     'drf_yasg',
     'social_django',
     'authentication',
-    'organizer_event',
     'organization',
-    'organizer_event.distance_details',
-    'organizer_event.additional_items',
-    'public_events',
+    'event',
+    'public_event',
+    'event.distance_details',
+    'event.additional_items',
 ]
 
 MIDDLEWARE = [
@@ -136,14 +136,14 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/authentication/userinfo.email',
+    'https://www.googleapis.com/authentication/userinfo.profile',
     'openid',
 ]
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH_CLIENT_SECRET')
-LOGIN_REDIRECT_URL = '/auth/oauth/login-success/'
+LOGIN_REDIRECT_URL = '/authentication/oauth/login-success/'
 LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'authentication.CustomUser'
@@ -171,8 +171,8 @@ DJOSER = {
         'password_changed_confirmation': 'authentication.emails.CustomPasswordChangedConfirmationEmail',
     },
 
-    'PASSWORD_RESET_CONFIRM_URL': 'api/auth/reset_password_confirm/{uid}/{token}/',
-    'ACTIVATION_URL': 'api/auth/activate/{uid}/{token}/',
+    'PASSWORD_RESET_CONFIRM_URL': 'api/authentication/reset_password_confirm/{uid}/{token}/',
+    'ACTIVATION_URL': 'api/authentication/activate/{uid}/{token}/',
 }
 
 SIMPLE_JWT = {
