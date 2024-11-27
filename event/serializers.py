@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from event.additional_items.models import AdditionalItemEvent
-from event.distance_details.models import DistanceEvent
+from event.distance_details.models import CostChangeRule, DistanceEvent
 from event.distance_details.serializers import DistanceEventSerializer
 from event.models import (
     CompetitionType,
@@ -81,36 +81,35 @@ class EventSerializer(serializers.ModelSerializer):
         try:
             organization = Organization.objects.get(id=organization_id)
         except Organization.DoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    'organization_id': 'The organization with the specified ID was not found.'
-                }
-            )
+            raise serializers.ValidationError({'organization_id': 'The organization with the specified ID was not found.'})  # noqa: E501
 
         event = Event.objects.create(organization=organization, **validated_data)
 
         for comp in competition_type_data:
-            competition_type_obj = CompetitionType.objects.filter(
-                name=comp['name']
-            ).first()
+            competition_type_obj = CompetitionType.objects.filter(name=comp['name']).first()
             if competition_type_obj:
                 event.competition_type.add(competition_type_obj)
             else:
-                raise serializers.ValidationError(
-                    {
-                        'competition_type': f"Competition type '{comp['name']}' does not exist."
-                    }
-                )
+                raise serializers.ValidationError({'competition_type': f"Competition type '{comp['name']}' does not exist."})  # noqa: E501
 
         for distance_data in distances_data:
             additional_options_data = distance_data.pop('additional_options', [])
+            cost_change_rules_data = distance_data.pop('cost_change_rules', [])  # Extract cost change rules data
+
             distance = DistanceEvent.objects.create(event=event, **distance_data)
 
+            # Create additional options
             for option_data in additional_options_data:
                 option_data['distance'] = distance
                 AdditionalItemEvent.objects.create(**option_data)
 
+            # Create cost change rules
+            for rule_data in cost_change_rules_data:
+                rule_data['distance'] = distance
+                CostChangeRule.objects.create(**rule_data)
+
         return event
+
 
     def update(self, instance, validated_data):
         distances_data = validated_data.pop('distances', None)
