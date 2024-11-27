@@ -34,21 +34,17 @@ class DistanceEventSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         additional_options_data = validated_data.pop('additional_options', None)
 
-        # Update the main fields of the DistanceEvent instance
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
         if additional_options_data is not None:
-            # Get existing and input IDs for additional items
             existing_ids = [opt.id for opt in instance.additional_options.all()]
             input_ids = [item.get('id') for item in additional_options_data if 'id' in item]
 
-            # Remove additional items that are in the database but not in the input data
             for opt_id in set(existing_ids) - set(input_ids):
                 AdditionalItemEvent.objects.filter(id=opt_id).delete()
 
-            # Update or create additional items based on the input data
             for option_data in additional_options_data:
                 option_id = option_data.get('id', None)
                 if option_id:
@@ -59,11 +55,9 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                             setattr(option_instance, attr, value)
                         option_instance.save()
                     except AdditionalItemEvent.DoesNotExist:
-                        # If the additional item with the given ID does not exist, create a new one
                         option_data['distance'] = instance
                         AdditionalItemEvent.objects.create(**option_data)
                 else:
-                    # If no ID is provided, create a new additional item
                     option_data['distance'] = instance
                     AdditionalItemEvent.objects.create(**option_data)
 
