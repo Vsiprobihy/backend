@@ -8,11 +8,10 @@ class Command(BaseCommand):
     help = 'Applies cost change rules to DistanceEvent instances with published events and existing cost change rules.'
 
     def handle(self, *args, **kwargs):
-        # Фильтруем DistanceEvent только для Event со статусом "published" и с существующими cost_change_rules
         distances = DistanceEvent.objects.filter(
             event__status='published',
             cost_change_rules__isnull=False
-        ).distinct()  # distinct() убирает дубли, если одна дистанция связана с несколькими правилами
+        ).distinct()
 
         if not distances.exists():
             self.stdout.write('No distances found with cost change rules for published events.')

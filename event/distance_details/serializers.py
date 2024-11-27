@@ -21,7 +21,7 @@ class DistanceEventSerializer(serializers.ModelSerializer):
     event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=False)
     additional_options = AdditionalItemEventSerializer(many=True, required=False)
     cost_change_rules = CostChangeRuleSerializer(many=True, required=False)
-    age_categories = AgeCategorySerializer(many=True, required=False)  # Новое поле
+    age_categories = AgeCategorySerializer(many=True, required=False)
 
     class Meta:
         model = DistanceEvent
@@ -30,14 +30,14 @@ class DistanceEventSerializer(serializers.ModelSerializer):
             'length', 'start_number_from', 'start_number_to', 'age_from', 'age_to',
             'cost', 'is_free', 'promo_only_registration',
             'show_name_on_number', 'show_start_number', 'event',
-            'additional_options', 'cost_change_rules', 'age_categories'  # Добавляем возрастные категории
+            'additional_options', 'cost_change_rules', 'age_categories'
         ]
         extra_kwargs = {'event': {'read_only': True}}
 
     def create(self, validated_data):
         cost_change_rules_data = validated_data.pop('cost_change_rules', [])
         additional_options_data = validated_data.pop('additional_options', [])
-        age_categories_data = validated_data.pop('age_categories', [])  # Извлекаем данные возрастных категорий
+        age_categories_data = validated_data.pop('age_categories', [])
 
         distance = DistanceEvent.objects.create(**validated_data)
 
