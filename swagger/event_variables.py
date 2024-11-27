@@ -311,6 +311,8 @@ class Request:
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
                                 properties={
+                                    'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='id',
+                                                            default=1),
                                     'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the distance',
                                                         default='5km Snow Run'),
                                     'competition_type': openapi.Schema(type=openapi.TYPE_STRING,

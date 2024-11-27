@@ -132,14 +132,21 @@ class EventSerializer(serializers.ModelSerializer):
             existing_ids = [dist.id for dist in instance.distances.all()]
             input_ids = [item.get('id') for item in distances_data if 'id' in item]
 
+            # Remove distances that are in the database but not in the input data
             for dist_id in set(existing_ids) - set(input_ids):
                 DistanceEvent.objects.filter(id=dist_id).delete()
 
             for distance_data in distances_data:
                 distance_id = distance_data.get('id', None)
                 if distance_id:
-                    distance_instance = DistanceEvent.objects.get(id=distance_id)
-                    DistanceEventSerializer().update(distance_instance, distance_data)
+                    try:
+                        # Try to fetch the existing distance by ID and update it
+                        distance_instance = DistanceEvent.objects.get(id=distance_id, event=instance)
+                        DistanceEventSerializer().update(distance_instance, distance_data)
+                    except DistanceEvent.DoesNotExist:
+                        # If the distance with the given ID does not exist, create a new one
+                        distance_data['event'] = instance
+                        DistanceEventSerializer().create(distance_data)
                 else:
                     distance_data['event'] = instance
                     DistanceEventSerializer().create(distance_data)
