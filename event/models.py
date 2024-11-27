@@ -33,7 +33,7 @@ class Event(models.Model):
         Organization, on_delete=models.CASCADE, related_name='event_organization', null=False
     )
     status = models.CharField(
-        max_length=12, choices=STATUS_CHOICES, default=STATUS_PENDING
+        max_length=12, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True
     )
 
     def __str__(self):

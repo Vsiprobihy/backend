@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.permissions import IsOrganizer
+from event.models import Event
+from event.serializers import EventSerializer
 from organization.decorators import (
     check_organization_access_decorator,
     check_organizer_access_decorator,
@@ -13,8 +15,6 @@ from organization.decorators import (
     extract_organization_directly,
 )
 from organization.models import Organizer
-from event.models import Event
-from event.serializers import EventSerializer
 from swagger.event import SwaggerDocs
 from utils.custom_exceptions import NotFoundError
 from utils.pagination import Pagination
@@ -97,8 +97,11 @@ class EventDetailView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            event.refresh_from_db()
+            updated_serializer = EventSerializer(event)
+            return Response(updated_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.patch)
     @check_organization_access_decorator(extract_for_event_access_directly)
@@ -108,7 +111,9 @@ class EventDetailView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            event.refresh_from_db()
+            updated_serializer = EventSerializer(event)
+            return Response(updated_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.delete)

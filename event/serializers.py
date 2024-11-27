@@ -1,14 +1,16 @@
 from rest_framework import serializers
 
-from organization.models import Organizer, Organization
-from organization.serializers import OrganizationSerializer
 from event.additional_items.models import AdditionalItemEvent
-from event.distance_details.models import DistanceEvent
+from event.age_category.models import AgeCategory
+from event.distance_details.models import CostChangeRule, DistanceEvent
 from event.distance_details.serializers import DistanceEventSerializer
 from event.models import (
     CompetitionType,
     Event,
 )
+from event.promo_code.models import PromoCode
+from organization.models import Organization, Organizer
+from organization.serializers import OrganizationSerializer
 
 
 class CompetitionTypeSerializer(serializers.ModelSerializer):
@@ -76,39 +78,45 @@ class EventSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
 
         if not Organizer.objects.filter(organization_id=organization_id, user=user).exists():
-            raise serializers.ValidationError({'organization_id': 'You do not have access to the specified organization.'})
+            raise serializers.ValidationError({'organization_id': 'You do not have access to the specified organization.'})  # noqa: E501
 
         try:
             organization = Organization.objects.get(id=organization_id)
         except Organization.DoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    'organization_id': 'The organization with the specified ID was not found.'
-                }
-            )
+            raise serializers.ValidationError({'organization_id': 'The organization with the specified ID was not found.'})  # noqa: E501
 
         event = Event.objects.create(organization=organization, **validated_data)
 
         for comp in competition_type_data:
-            competition_type_obj = CompetitionType.objects.filter(
-                name=comp['name']
-            ).first()
+            competition_type_obj = CompetitionType.objects.filter(name=comp['name']).first()
             if competition_type_obj:
                 event.competition_type.add(competition_type_obj)
             else:
-                raise serializers.ValidationError(
-                    {
-                        'competition_type': f"Competition type '{comp['name']}' does not exist."
-                    }
-                )
+                raise serializers.ValidationError({'competition_type': f"Competition type '{comp['name']}' does not exist."})  # noqa: E501
 
         for distance_data in distances_data:
             additional_options_data = distance_data.pop('additional_options', [])
+            cost_change_rules_data = distance_data.pop('cost_change_rules', [])
+            age_categories_data = distance_data.pop('age_categories', [])
+            promo_codes_data = distance_data.pop('promo_codes', [])
+
             distance = DistanceEvent.objects.create(event=event, **distance_data)
 
             for option_data in additional_options_data:
                 option_data['distance'] = distance
                 AdditionalItemEvent.objects.create(**option_data)
+
+            for rule_data in cost_change_rules_data:
+                rule_data['distance'] = distance
+                CostChangeRule.objects.create(**rule_data)
+
+            for category_data in age_categories_data:
+                category_data['distance'] = distance
+                AgeCategory.objects.create(**category_data)
+
+            for promo_code_data in promo_codes_data:
+                promo_code_data['distance'] = distance
+                PromoCode.objects.create(**promo_code_data)
 
         return event
 
@@ -138,8 +146,12 @@ class EventSerializer(serializers.ModelSerializer):
             for distance_data in distances_data:
                 distance_id = distance_data.get('id', None)
                 if distance_id:
-                    distance_instance = DistanceEvent.objects.get(id=distance_id)
-                    DistanceEventSerializer().update(distance_instance, distance_data)
+                    try:
+                        distance_instance = DistanceEvent.objects.get(id=distance_id, event=instance)
+                        DistanceEventSerializer().update(distance_instance, distance_data)
+                    except DistanceEvent.DoesNotExist:
+                        distance_data['event'] = instance
+                        DistanceEventSerializer().create(distance_data)
                 else:
                     distance_data['event'] = instance
                     DistanceEventSerializer().create(distance_data)
