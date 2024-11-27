@@ -37,7 +37,8 @@ class CostChangeRule(models.Model):
     distance = models.ForeignKey(
         'distance_details.DistanceEvent',
         related_name='cost_change_rules',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        db_index=True
     )
     cost = models.DecimalField(max_digits=10, decimal_places=2)
     from_participants = models.PositiveIntegerField(null=True, blank=True)
