@@ -1,9 +1,9 @@
 from functools import wraps
 
 from django.core.exceptions import PermissionDenied
+
 from event.distance_details.models import DistanceEvent
 from event.models import Event
-
 from organization.models import Organizer
 from utils.custom_exceptions import BadRequestError, NotFoundError
 
@@ -20,7 +20,7 @@ def check_organization_access_decorator(event_extractor):
         @wraps(view_func)
         def _wrapped_view(self, request, *args, **kwargs):
             try:
-                event = event_extractor(request, *args, **kwargs)
+                event = event_extractor(request, *args, **kwargs)  # noqa: F841
             except Event.DoesNotExist:
 
                 raise NotFoundError('Event not found.')
@@ -108,7 +108,7 @@ def check_organizer_access_decorator(organizer_extractor):
                     raise BadRequestError('Parameter organization_id dont match with organization id')
 
             try:
-                organizer = organizer_extractor(request, *args, **kwargs)
+                organizer = organizer_extractor(request, *args, **kwargs)  # noqa: F841
             except Organizer.DoesNotExist:
                 raise NotFoundError('Organization not found.')
 

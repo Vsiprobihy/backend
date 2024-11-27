@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from organization.models import Organizer, Organization
-from organization.serializers import OrganizationSerializer
 from event.additional_items.models import AdditionalItemEvent
 from event.distance_details.models import DistanceEvent
 from event.distance_details.serializers import DistanceEventSerializer
@@ -9,6 +7,8 @@ from event.models import (
     CompetitionType,
     Event,
 )
+from organization.models import Organization, Organizer
+from organization.serializers import OrganizationSerializer
 
 
 class CompetitionTypeSerializer(serializers.ModelSerializer):
@@ -76,7 +76,7 @@ class EventSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
 
         if not Organizer.objects.filter(organization_id=organization_id, user=user).exists():
-            raise serializers.ValidationError({'organization_id': 'You do not have access to the specified organization.'})
+            raise serializers.ValidationError({'organization_id': 'You do not have access to the specified organization.'})  # noqa: E501
 
         try:
             organization = Organization.objects.get(id=organization_id)
