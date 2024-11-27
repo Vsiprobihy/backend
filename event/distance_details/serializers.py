@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from event.additional_items.models import AdditionalItemEvent
 from event.additional_items.serializers import AdditionalItemEventSerializer
+from event.age_category.models import AgeCategory
+from event.age_category.serializers import AgeCategorySerializer
 from event.distance_details.models import CostChangeRule, DistanceEvent
 from event.models import Event
 
@@ -18,7 +20,8 @@ class DistanceEventSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=False)
     additional_options = AdditionalItemEventSerializer(many=True, required=False)
-    cost_change_rules = CostChangeRuleSerializer(many=True, required=False)  # New field
+    cost_change_rules = CostChangeRuleSerializer(many=True, required=False)
+    age_categories = AgeCategorySerializer(many=True, required=False)  # Новое поле
 
     class Meta:
         model = DistanceEvent
@@ -27,13 +30,14 @@ class DistanceEventSerializer(serializers.ModelSerializer):
             'length', 'start_number_from', 'start_number_to', 'age_from', 'age_to',
             'cost', 'is_free', 'promo_only_registration',
             'show_name_on_number', 'show_start_number', 'event',
-            'additional_options', 'cost_change_rules'
+            'additional_options', 'cost_change_rules', 'age_categories'  # Добавляем возрастные категории
         ]
         extra_kwargs = {'event': {'read_only': True}}
 
     def create(self, validated_data):
         cost_change_rules_data = validated_data.pop('cost_change_rules', [])
         additional_options_data = validated_data.pop('additional_options', [])
+        age_categories_data = validated_data.pop('age_categories', [])  # Извлекаем данные возрастных категорий
 
         distance = DistanceEvent.objects.create(**validated_data)
 
@@ -45,11 +49,16 @@ class DistanceEventSerializer(serializers.ModelSerializer):
             rule_data['distance'] = distance
             CostChangeRule.objects.create(**rule_data)
 
+        for age_category_data in age_categories_data:
+            age_category_data['distance'] = distance
+            AgeCategory.objects.create(**age_category_data)
+
         return distance
 
     def update(self, instance, validated_data):
         cost_change_rules_data = validated_data.pop('cost_change_rules', None)
         additional_options_data = validated_data.pop('additional_options', None)
+        age_categories_data = validated_data.pop('age_categories', None)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -60,11 +69,9 @@ class DistanceEventSerializer(serializers.ModelSerializer):
             existing_ids = [rule.id for rule in instance.cost_change_rules.all()]
             input_ids = [item.get('id') for item in cost_change_rules_data if 'id' in item]
 
-            # Delete rules not present in input
             for rule_id in set(existing_ids) - set(input_ids):
                 CostChangeRule.objects.filter(id=rule_id).delete()
 
-            # Update or create rules
             for rule_data in cost_change_rules_data:
                 rule_id = rule_data.get('id', None)
                 if rule_id:
@@ -103,7 +110,31 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                     option_data['distance'] = instance
                     AdditionalItemEvent.objects.create(**option_data)
 
+        # Update age categories
+        if age_categories_data is not None:
+            existing_ids = [cat.id for cat in instance.age_categories.all()]
+            input_ids = [item.get('id') for item in age_categories_data if 'id' in item]
+
+            for cat_id in set(existing_ids) - set(input_ids):
+                AgeCategory.objects.filter(id=cat_id).delete()
+
+            for age_category_data in age_categories_data:
+                cat_id = age_category_data.get('id', None)
+                if cat_id:
+                    try:
+                        cat_instance = AgeCategory.objects.get(id=cat_id, distance=instance)
+                        for attr, value in age_category_data.items():
+                            setattr(cat_instance, attr, value)
+                        cat_instance.save()
+                    except AgeCategory.DoesNotExist:
+                        age_category_data['distance'] = instance
+                        AgeCategory.objects.create(**age_category_data)
+                else:
+                    age_category_data['distance'] = instance
+                    AgeCategory.objects.create(**age_category_data)
+
         return instance
+
 
 class PublicDistanceEventSerializer(serializers.ModelSerializer):
     class Meta:

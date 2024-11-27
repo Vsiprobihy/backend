@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from event.additional_items.models import AdditionalItemEvent
+from event.age_category.models import AgeCategory
 from event.distance_details.models import CostChangeRule, DistanceEvent
 from event.distance_details.serializers import DistanceEventSerializer
 from event.models import (
@@ -94,21 +95,25 @@ class EventSerializer(serializers.ModelSerializer):
 
         for distance_data in distances_data:
             additional_options_data = distance_data.pop('additional_options', [])
-            cost_change_rules_data = distance_data.pop('cost_change_rules', [])  # Extract cost change rules data
+            cost_change_rules_data = distance_data.pop('cost_change_rules', [])
+            age_categories_data = distance_data.pop('age_categories', [])
 
             distance = DistanceEvent.objects.create(event=event, **distance_data)
 
-            # Create additional options
             for option_data in additional_options_data:
                 option_data['distance'] = distance
                 AdditionalItemEvent.objects.create(**option_data)
 
-            # Create cost change rules
             for rule_data in cost_change_rules_data:
                 rule_data['distance'] = distance
                 CostChangeRule.objects.create(**rule_data)
 
+            for category_data in age_categories_data:
+                category_data['distance'] = distance
+                AgeCategory.objects.create(**category_data)
+
         return event
+
 
 
     def update(self, instance, validated_data):
