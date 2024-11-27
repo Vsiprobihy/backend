@@ -468,7 +468,8 @@ class Request:
                                             properties={
                                                 'id': openapi.Schema(
                                                     type=openapi.TYPE_INTEGER,
-                                                    description='Cost change rule ID'
+                                                    description='Cost change rule ID',
+                                                    default=1
                                                 ),
                                                 'cost': openapi.Schema(
                                                     type=openapi.TYPE_STRING,
@@ -498,7 +499,7 @@ class Request:
                                                 'id': openapi.Schema(
                                                     type=openapi.TYPE_INTEGER,
                                                     description='Age category ID (optional during creation)',
-                                                    nullable=True
+                                                    default=1
                                                 ),
                                                 'name': openapi.Schema(
                                                     type=openapi.TYPE_STRING,
@@ -530,6 +531,11 @@ class Request:
                                             type=openapi.TYPE_OBJECT,
                                             required=['name', 'promo_type', 'discount_value', 'is_active'],
                                             properties={
+                                                'id': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    description='Age category ID (optional during creation)',
+                                                    default=1
+                                                ),
                                                 'name': openapi.Schema(
                                                     type=openapi.TYPE_STRING,
                                                     description='Name of the promo code',
