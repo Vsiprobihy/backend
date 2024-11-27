@@ -13,7 +13,7 @@ class SwaggerDocs:
                 openapi.Parameter(
                     'archives',
                     openapi.IN_QUERY,
-                    description='Indicates whether to include archived records. Use "archives=true" to filter by archived data.',
+                    description='Indicates whether to include archived records. Use "archives=true" to filter by archived data.',  # noqa: E501
                     type=openapi.TYPE_STRING,
                     example='true',
                 ),
@@ -26,7 +26,7 @@ class SwaggerDocs:
 
         post = {
             'tags': ['Event'],
-            'request_body': Request.EventRequestBody,
+            'request_body': Request.EventRequestBodyPost,
             'responses': {
                 201: Responce.EventResponse,
                 400: 'Bad request',

@@ -32,3 +32,17 @@ class DistanceEvent(models.Model):
 
     def __str__(self):
         return self.name
+
+class CostChangeRule(models.Model):
+    distance = models.ForeignKey(
+        'distance_details.DistanceEvent',
+        related_name='cost_change_rules',
+        on_delete=models.CASCADE,
+        db_index=True
+    )
+    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    from_participants = models.PositiveIntegerField(null=True, blank=True)
+    from_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Cost: {self.cost}, From Participants: {self.from_participants}, From Date: {self.from_date}'

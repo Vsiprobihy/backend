@@ -5,6 +5,7 @@ from event.distance_details.models import DistanceEvent
 
 
 class AdditionalItemEventSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
     distance = serializers.PrimaryKeyRelatedField(queryset=DistanceEvent.objects.all(), required=False)
 
     class Meta:
