@@ -254,6 +254,36 @@ class Responce:
                                     ),
                                     description='List of cost change rules for the distance'
                                 ),
+                                'age_categories': openapi.Schema(
+                                    type=openapi.TYPE_ARRAY,
+                                    items=openapi.Schema(
+                                        type=openapi.TYPE_OBJECT,
+                                        required=['id','name', 'gender', 'age_from', 'age_to'],
+                                        properties={
+                                            'id': openapi.Schema(
+                                                type=openapi.TYPE_INTEGER,
+                                                description='Age category ID'
+                                            ),
+                                            'name': openapi.Schema(
+                                                type=openapi.TYPE_STRING,
+                                                description='Name of the age category'
+                                            ),
+                                            'gender': openapi.Schema(
+                                                type=openapi.TYPE_STRING,
+                                                description='Gender for the category (e.g., male, female)'
+                                            ),
+                                            'age_from': openapi.Schema(
+                                                type=openapi.TYPE_INTEGER,
+                                                description='Minimum age for this category'
+                                            ),
+                                            'age_to': openapi.Schema(
+                                                type=openapi.TYPE_INTEGER,
+                                                description='Maximum age for this category'
+                                            )
+                                        }
+                                    ),
+                                    description='List of age categories for the distance'
+                                ),
                             },
                         ),
                     ),
@@ -423,6 +453,41 @@ class Request:
                                             },
                                         ),
                                         description='List of cost change rules for the distance'
+                                    ),
+                                    'age_categories': openapi.Schema(
+                                        type=openapi.TYPE_ARRAY,
+                                        items=openapi.Schema(
+                                            type=openapi.TYPE_OBJECT,
+                                            required=['name', 'gender', 'age_from', 'age_to'],
+                                            properties={
+                                                'id': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    description='Age category ID (optional during creation)',
+                                                    nullable=True
+                                                ),
+                                                'name': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Name of the age category',
+                                                    default='Young Adults'
+                                                ),
+                                                'gender': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Gender for the category (e.g., male, female)',
+                                                    default='male'
+                                                ),
+                                                'age_from': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    description='Minimum age for this category',
+                                                    default=16
+                                                ),
+                                                'age_to': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    description='Maximum age for this category',
+                                                    default=25
+                                                )
+                                            }
+                                        ),
+                                        description='List of age categories for the distance'
                                     ),
                                 },
                                 required=[
@@ -602,7 +667,37 @@ class Request:
                                             },
                                         ),
                                         description='List of cost change rules for the distance'
-                                    )
+                                    ),
+                                    'age_categories': openapi.Schema(
+                                        type=openapi.TYPE_ARRAY,
+                                        items=openapi.Schema(
+                                            type=openapi.TYPE_OBJECT,
+                                            required=['name', 'gender', 'age_from', 'age_to'],
+                                            properties={
+                                                'name': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Name of the age category',
+                                                    default='Young Adults'
+                                                ),
+                                                'gender': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Gender for the category (e.g., male, female)',
+                                                    default='male'
+                                                ),
+                                                'age_from': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    description='Minimum age for this category',
+                                                    default=16
+                                                ),
+                                                'age_to': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    description='Maximum age for this category',
+                                                    default=25
+                                                )
+                                            }
+                                        ),
+                                        description='List of age categories for the distance'
+                                    ),
                                 },
                                 required=[
                                     'name', 'competition_type', 'category',
