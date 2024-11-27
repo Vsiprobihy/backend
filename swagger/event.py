@@ -26,7 +26,7 @@ class SwaggerDocs:
 
         post = {
             'tags': ['Event'],
-            'request_body': Request.EventRequestBody,
+            'request_body': Request.EventRequestBodyPost,
             'responses': {
                 201: Responce.EventResponse,
                 400: 'Bad request',
