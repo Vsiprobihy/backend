@@ -226,6 +226,34 @@ class Responce:
                                         },
                                     ),
                                 ),
+                                'cost_change_rules': openapi.Schema(
+                                    type=openapi.TYPE_ARRAY,
+                                    items=openapi.Schema(
+                                        type=openapi.TYPE_OBJECT,
+                                        required=['id', 'cost', 'from_date'],
+                                        properties={
+                                            'id': openapi.Schema(
+                                                type=openapi.TYPE_INTEGER,
+                                                description='Cost change rule ID'
+                                            ),
+                                            'cost': openapi.Schema(
+                                                type=openapi.TYPE_STRING,
+                                                description='Updated cost for the distance'
+                                            ),
+                                            'from_participants': openapi.Schema(
+                                                type=openapi.TYPE_INTEGER,
+                                                nullable=True,
+                                                description='Minimum number of participants to apply this rule'
+                                            ),
+                                            'from_date': openapi.Schema(
+                                                type=openapi.TYPE_STRING,
+                                                format=openapi.FORMAT_DATE,
+                                                description='Start date for the cost change rule'
+                                            ),
+                                        },
+                                    ),
+                                    description='List of cost change rules for the distance'
+                                ),
                             },
                         ),
                     ),
@@ -367,6 +395,34 @@ class Request:
                                             required=['item_type', 'price'],
                                         ),
                                         description='Additional options for the distance'
+                                    ),
+                                    'cost_change_rules': openapi.Schema(
+                                        type=openapi.TYPE_ARRAY,
+                                        items=openapi.Schema(
+                                            type=openapi.TYPE_OBJECT,
+                                            required=['cost', 'from_date'],
+                                            properties={
+                                                'id': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    description='Cost change rule ID'
+                                                ),
+                                                'cost': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Updated cost for the distance'
+                                                ),
+                                                'from_participants': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    nullable=True,
+                                                    description='Minimum number of participants to apply this rule'
+                                                ),
+                                                'from_date': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    format=openapi.FORMAT_DATE,
+                                                    description='Start date for the cost change rule'
+                                                ),
+                                            },
+                                        ),
+                                        description='List of cost change rules for the distance'
                                     ),
                                 },
                                 required=[
@@ -523,6 +579,30 @@ class Request:
                                         ),
                                         description='Additional options for the distance'
                                     ),
+                                    'cost_change_rules': openapi.Schema(
+                                        type=openapi.TYPE_ARRAY,
+                                        items=openapi.Schema(
+                                            type=openapi.TYPE_OBJECT,
+                                            required=['cost', 'from_date'],
+                                            properties={
+                                                'cost': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Updated cost for the distance'
+                                                ),
+                                                'from_participants': openapi.Schema(
+                                                    type=openapi.TYPE_INTEGER,
+                                                    nullable=True,
+                                                    description='Minimum number of participants to apply this rule'
+                                                ),
+                                                'from_date': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    format=openapi.FORMAT_DATE,
+                                                    description='Start date for the cost change rule'
+                                                ),
+                                            },
+                                        ),
+                                        description='List of cost change rules for the distance'
+                                    )
                                 },
                                 required=[
                                     'name', 'competition_type', 'category',
