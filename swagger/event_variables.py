@@ -284,6 +284,40 @@ class Responce:
                                     ),
                                     description='List of age categories for the distance'
                                 ),
+                                'promo_codes': openapi.Schema(
+                                    type=openapi.TYPE_ARRAY,
+                                    items=openapi.Schema(
+                                        type=openapi.TYPE_OBJECT,
+                                        required=['id', 'name', 'promo_type', 'discount_value', 'is_active'],
+                                        properties={
+                                            'id': openapi.Schema(
+                                                type=openapi.TYPE_INTEGER,
+                                                description='Promo code ID'
+                                            ),
+                                            'name': openapi.Schema(
+                                                type=openapi.TYPE_STRING,
+                                                description='Name of the promo code'
+                                            ),
+                                            'promo_type': openapi.Schema(
+                                                type=openapi.TYPE_STRING,
+                                                description='Type of promo code (e.g., discount, free entry)'
+                                            ),
+                                            'discount_value': openapi.Schema(
+                                                type=openapi.TYPE_NUMBER,
+                                                description='Value of the discount'
+                                            ),
+                                            'is_active': openapi.Schema(
+                                                type=openapi.TYPE_BOOLEAN,
+                                                description='Whether the promo code is active'
+                                            ),
+                                            'is_single_use': openapi.Schema(
+                                                type=openapi.TYPE_BOOLEAN,
+                                                description='Whether the promo code can only be used once'
+                                            ),
+                                        },
+                                    ),
+                                    description='List of promo codes for the distance'
+                                ),
                             },
                         ),
                     ),
@@ -438,7 +472,8 @@ class Request:
                                                 ),
                                                 'cost': openapi.Schema(
                                                     type=openapi.TYPE_STRING,
-                                                    description='Updated cost for the distance'
+                                                    description='Updated cost for the distance',
+                                                    default='100'
                                                 ),
                                                 'from_participants': openapi.Schema(
                                                     type=openapi.TYPE_INTEGER,
@@ -473,7 +508,7 @@ class Request:
                                                 'gender': openapi.Schema(
                                                     type=openapi.TYPE_STRING,
                                                     description='Gender for the category (e.g., male, female)',
-                                                    default='male'
+                                                    default='M'
                                                 ),
                                                 'age_from': openapi.Schema(
                                                     type=openapi.TYPE_INTEGER,
@@ -488,6 +523,41 @@ class Request:
                                             }
                                         ),
                                         description='List of age categories for the distance'
+                                    ),
+                                    'promo_codes': openapi.Schema(
+                                        type=openapi.TYPE_ARRAY,
+                                        items=openapi.Schema(
+                                            type=openapi.TYPE_OBJECT,
+                                            required=['name', 'promo_type', 'discount_value', 'is_active'],
+                                            properties={
+                                                'name': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Name of the promo code',
+                                                    default='WINTER10'
+                                                ),
+                                                'promo_type': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Type of promo code (e.g., discount, free entry)',
+                                                    default='percentage'
+                                                ),
+                                                'discount_value': openapi.Schema(
+                                                    type=openapi.TYPE_NUMBER,
+                                                    description='Value of the discount',
+                                                    default=10
+                                                ),
+                                                'is_active': openapi.Schema(
+                                                    type=openapi.TYPE_BOOLEAN,
+                                                    description='Whether the promo code is active',
+                                                    default=True
+                                                ),
+                                                'is_single_use': openapi.Schema(
+                                                    type=openapi.TYPE_BOOLEAN,
+                                                    description='Whether the promo code can only be used once',
+                                                    default=False
+                                                ),
+                                            }
+                                        ),
+                                        description='List of promo codes for the distance'
                                     ),
                                 },
                                 required=[
@@ -652,7 +722,8 @@ class Request:
                                             properties={
                                                 'cost': openapi.Schema(
                                                     type=openapi.TYPE_STRING,
-                                                    description='Updated cost for the distance'
+                                                    description='Updated cost for the distance',
+                                                    default = '100'
                                                 ),
                                                 'from_participants': openapi.Schema(
                                                     type=openapi.TYPE_INTEGER,
@@ -682,7 +753,7 @@ class Request:
                                                 'gender': openapi.Schema(
                                                     type=openapi.TYPE_STRING,
                                                     description='Gender for the category (e.g., male, female)',
-                                                    default='male'
+                                                    default='M'
                                                 ),
                                                 'age_from': openapi.Schema(
                                                     type=openapi.TYPE_INTEGER,
@@ -697,6 +768,41 @@ class Request:
                                             }
                                         ),
                                         description='List of age categories for the distance'
+                                    ),
+                                    'promo_codes': openapi.Schema(
+                                        type=openapi.TYPE_ARRAY,
+                                        items=openapi.Schema(
+                                            type=openapi.TYPE_OBJECT,
+                                            required=['name', 'promo_type', 'discount_value', 'is_active'],
+                                            properties={
+                                                'name': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Name of the promo code',
+                                                    default='WINTER10'
+                                                ),
+                                                'promo_type': openapi.Schema(
+                                                    type=openapi.TYPE_STRING,
+                                                    description='Type of promo code (e.g., discount, free entry)',
+                                                    default='percentage'
+                                                ),
+                                                'discount_value': openapi.Schema(
+                                                    type=openapi.TYPE_NUMBER,
+                                                    description='Value of the discount',
+                                                    default=10
+                                                ),
+                                                'is_active': openapi.Schema(
+                                                    type=openapi.TYPE_BOOLEAN,
+                                                    description='Whether the promo code is active',
+                                                    default=True
+                                                ),
+                                                'is_single_use': openapi.Schema(
+                                                    type=openapi.TYPE_BOOLEAN,
+                                                    description='Whether the promo code can only be used once',
+                                                    default=False
+                                                ),
+                                            }
+                                        ),
+                                        description='List of promo codes for the distance'
                                     ),
                                 },
                                 required=[
