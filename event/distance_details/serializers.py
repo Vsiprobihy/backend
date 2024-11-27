@@ -6,6 +6,8 @@ from event.age_category.models import AgeCategory
 from event.age_category.serializers import AgeCategorySerializer
 from event.distance_details.models import CostChangeRule, DistanceEvent
 from event.models import Event
+from event.promo_code.models import PromoCode
+from event.promo_code.serializers import PromoCodeSerializer
 
 
 class CostChangeRuleSerializer(serializers.ModelSerializer):
@@ -16,12 +18,14 @@ class CostChangeRuleSerializer(serializers.ModelSerializer):
         fields = ['id', 'cost', 'from_participants', 'from_date']
 
 
+
 class DistanceEventSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=False)
     additional_options = AdditionalItemEventSerializer(many=True, required=False)
     cost_change_rules = CostChangeRuleSerializer(many=True, required=False)
     age_categories = AgeCategorySerializer(many=True, required=False)
+    promo_codes = PromoCodeSerializer(many=True, required=False)
 
     class Meta:
         model = DistanceEvent
@@ -30,7 +34,7 @@ class DistanceEventSerializer(serializers.ModelSerializer):
             'length', 'start_number_from', 'start_number_to', 'age_from', 'age_to',
             'cost', 'is_free', 'promo_only_registration',
             'show_name_on_number', 'show_start_number', 'event',
-            'additional_options', 'cost_change_rules', 'age_categories'
+            'additional_options', 'cost_change_rules', 'age_categories', 'promo_codes'
         ]
         extra_kwargs = {'event': {'read_only': True}}
 
@@ -38,6 +42,7 @@ class DistanceEventSerializer(serializers.ModelSerializer):
         cost_change_rules_data = validated_data.pop('cost_change_rules', [])
         additional_options_data = validated_data.pop('additional_options', [])
         age_categories_data = validated_data.pop('age_categories', [])
+        promo_codes_data = validated_data.pop('promo_codes', [])
 
         distance = DistanceEvent.objects.create(**validated_data)
 
@@ -53,12 +58,17 @@ class DistanceEventSerializer(serializers.ModelSerializer):
             age_category_data['distance'] = distance
             AgeCategory.objects.create(**age_category_data)
 
+        for promo_code_data in promo_codes_data:
+            promo_code_data['distance'] = distance
+            PromoCode.objects.create(**promo_code_data)
+
         return distance
 
     def update(self, instance, validated_data):
         cost_change_rules_data = validated_data.pop('cost_change_rules', None)
         additional_options_data = validated_data.pop('additional_options', None)
         age_categories_data = validated_data.pop('age_categories', None)
+        promo_codes_data = validated_data.pop('promo_codes', None)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -132,6 +142,29 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                 else:
                     age_category_data['distance'] = instance
                     AgeCategory.objects.create(**age_category_data)
+
+        # Update promo codes
+        if promo_codes_data is not None:
+            existing_ids = [promo.id for promo in instance.promo_codes.all()]
+            input_ids = [item.get('id') for item in promo_codes_data if 'id' in item]
+
+            for promo_id in set(existing_ids) - set(input_ids):
+                PromoCode.objects.filter(id=promo_id).delete()
+
+            for promo_code_data in promo_codes_data:
+                promo_id = promo_code_data.get('id', None)
+                if promo_id:
+                    try:
+                        promo_instance = PromoCode.objects.get(id=promo_id, distance=instance)
+                        for attr, value in promo_code_data.items():
+                            setattr(promo_instance, attr, value)
+                        promo_instance.save()
+                    except PromoCode.DoesNotExist:
+                        promo_code_data['distance'] = instance
+                        PromoCode.objects.create(**promo_code_data)
+                else:
+                    promo_code_data['distance'] = instance
+                    PromoCode.objects.create(**promo_code_data)
 
         return instance
 

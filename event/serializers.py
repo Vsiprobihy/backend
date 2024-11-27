@@ -8,6 +8,7 @@ from event.models import (
     CompetitionType,
     Event,
 )
+from event.promo_code.models import PromoCode
 from organization.models import Organization, Organizer
 from organization.serializers import OrganizationSerializer
 
@@ -97,6 +98,7 @@ class EventSerializer(serializers.ModelSerializer):
             additional_options_data = distance_data.pop('additional_options', [])
             cost_change_rules_data = distance_data.pop('cost_change_rules', [])
             age_categories_data = distance_data.pop('age_categories', [])
+            promo_codes_data = distance_data.pop('promo_codes', [])
 
             distance = DistanceEvent.objects.create(event=event, **distance_data)
 
@@ -112,9 +114,11 @@ class EventSerializer(serializers.ModelSerializer):
                 category_data['distance'] = distance
                 AgeCategory.objects.create(**category_data)
 
+            for promo_code_data in promo_codes_data:
+                promo_code_data['distance'] = distance
+                PromoCode.objects.create(**promo_code_data)
+
         return event
-
-
 
     def update(self, instance, validated_data):
         distances_data = validated_data.pop('distances', None)
@@ -136,7 +140,6 @@ class EventSerializer(serializers.ModelSerializer):
             existing_ids = [dist.id for dist in instance.distances.all()]
             input_ids = [item.get('id') for item in distances_data if 'id' in item]
 
-            # Remove distances that are in the database but not in the input data
             for dist_id in set(existing_ids) - set(input_ids):
                 DistanceEvent.objects.filter(id=dist_id).delete()
 
@@ -144,11 +147,9 @@ class EventSerializer(serializers.ModelSerializer):
                 distance_id = distance_data.get('id', None)
                 if distance_id:
                     try:
-                        # Try to fetch the existing distance by ID and update it
                         distance_instance = DistanceEvent.objects.get(id=distance_id, event=instance)
                         DistanceEventSerializer().update(distance_instance, distance_data)
                     except DistanceEvent.DoesNotExist:
-                        # If the distance with the given ID does not exist, create a new one
                         distance_data['event'] = instance
                         DistanceEventSerializer().create(distance_data)
                 else:

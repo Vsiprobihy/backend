@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'event.distance_details',
     'event.additional_items',
     'event.age_category',
+    'event.promo_code',
 ]
 
 MIDDLEWARE = [
