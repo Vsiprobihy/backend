@@ -16,7 +16,7 @@ User = get_user_model()
 class OrganizationListCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
-    @swagger_auto_schema(**SwaggerDocs.Organization.get)
+    @swagger_auto_schema(**SwaggerDocs.Organization.get_list)
     def get(self, request):
         if request.user.is_authenticated:
             organization = Organization.objects.filter(organizer_organization__user=request.user)
