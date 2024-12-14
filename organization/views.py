@@ -20,13 +20,13 @@ class OrganizationListCreateView(APIView):
     def get(self, request):
         if request.user.is_authenticated:
             organization = Organization.objects.filter(organizer_organization__user=request.user)
-            serializer = OrganizationSerializer(organization, many=True)
+            serializer = OrganizationSerializer(organization, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response([], status=status.HTTP_200_OK)
 
     @swagger_auto_schema(**SwaggerDocs.Organization.post)
     def post(self, request):
-        serializer = OrganizationSerializer(data=request.data)
+        serializer = OrganizationSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             organization = serializer.save()
             Organizer.objects.create(
@@ -46,7 +46,7 @@ class OrganizationDetailView(APIView):
         if request.user.is_authenticated:
             organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
             if organization:
-                serializer = OrganizationSerializer(organization)
+                serializer = OrganizationSerializer(organization, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -57,7 +57,7 @@ class OrganizationDetailView(APIView):
         if not organization:
             return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = OrganizationSerializer(organization, data=request.data, partial=True)
+        serializer = OrganizationSerializer(organization, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -69,7 +69,7 @@ class OrganizationDetailView(APIView):
         if not organization:
             return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = OrganizationSerializer(organization, data=request.data, partial=True)
+        serializer = OrganizationSerializer(organization, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
