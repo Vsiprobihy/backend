@@ -18,6 +18,17 @@ class OrganizationSerializer(serializers.ModelSerializer):
             for access_item in access
         ]
 
+    def get_main_image(self, obj):
+        request = self.context.get('request')
+        if obj.main_image and request:
+            return request.build_absolute_uri(obj.main_image.url)
+        return None
+
+    def get_background_image(self, obj):
+        request = self.context.get('request')
+        if obj.background_image and request:
+            return request.build_absolute_uri(obj.background_image.url)
+        return None
 
 class OrganizerSerializer(serializers.ModelSerializer):
     class Meta:

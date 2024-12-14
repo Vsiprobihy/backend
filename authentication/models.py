@@ -6,7 +6,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from authentication.managers import CustomUserManager
-from utils.data_validatiors import validate_phone_number
+from utils.data_validatiors import process_image, validate_file_size, validate_image_file, validate_phone_number
 
 
 def customer_image_file_path(instance, filename):
@@ -59,6 +59,7 @@ class BaseProfile(models.Model):
         blank=True,
         upload_to=customer_image_file_path,
         max_length=255,
+        validators=[validate_image_file, validate_file_size]
     )
 
     sports_club = models.CharField(max_length=100, null=True, blank=True)
@@ -72,6 +73,11 @@ class BaseProfile(models.Model):
         blank=True,
         validators=[validate_phone_number],
     )
+
+    def save(self, *args, **kwargs):
+        if self.avatar:
+            process_image(self.avatar, size=(300, 300))
+        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True
