@@ -1,13 +1,11 @@
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.storage import default_storage
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from djoser.views import UserViewSet
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -19,7 +17,6 @@ from authentication.serializers import (
     AdditionalProfileSerializer,
     LoginSerializer,
     RegisterSerializer,
-    UserAvatarUploadSerializer,
     UserProfileSerializer,
 )
 from swagger.authenticate import SwaggerDocs
@@ -150,7 +147,7 @@ class UserProfileView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Profile.put)
     def put(self, request):
         user = request.user
-        serializer = UserProfileSerializer(user, data=request.data)
+        serializer = UserProfileSerializer(user, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -159,41 +156,11 @@ class UserProfileView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Profile.patch)
     def patch(self, request):
         user = request.user
-        serializer = UserProfileSerializer(user, data=request.data, partial=True)
+        serializer = UserProfileSerializer(user, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UserAvatarUploadView(generics.UpdateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserAvatarUploadSerializer
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(**SwaggerDocs.UserAvatarUpload.put)
-    def put(self, request, *args, **kwargs):
-        return super().put(request, *args, **kwargs)
-
-    @swagger_auto_schema(**SwaggerDocs.UserAvatarUpload.patch)
-    def patch(self, request, *args, **kwargs):
-        return super().patch(request, *args, **kwargs)
-
-    def get_object(self):
-        return self.request.user
-
-    def perform_update(self, serializer):
-        user = self.get_object()
-
-        if user.avatar:
-            old_avatar_path = user.avatar.path
-            try:
-                if default_storage.exists(old_avatar_path):
-                    default_storage.delete(old_avatar_path)
-            except ObjectDoesNotExist:
-                pass
-
-        serializer.save(avatar=self.request.data.get('avatar'))
 
 
 class AdditionalProfileListView(APIView):

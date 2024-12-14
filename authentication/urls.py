@@ -10,7 +10,6 @@ from authentication.views import (
     CustomResetPasswordView,
     LoginView,
     RegisterView,
-    UserAvatarUploadView,
     UserProfileView,
 )
 
@@ -34,9 +33,6 @@ urlpatterns = [
         name='reset_password_confirm',
     ),
     path('activate/<str:uid>/<str:token>/', ActivateUserEmailView.as_view(), name='activate email'),
-    path(
-        'profile/upload-avatar/', UserAvatarUploadView.as_view(), name='upload-avatar'
-    ),
     path(
         'profile/additional_profiles/',
         AdditionalProfileListView.as_view(),

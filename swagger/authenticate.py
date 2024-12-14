@@ -5,7 +5,6 @@ from authentication.serializers import (
     AdditionalProfileSerializer,
     LoginSerializer,
     RegisterSerializer,
-    UserAvatarUploadSerializer,
     UserProfileSerializer,
 )
 
@@ -531,108 +530,6 @@ class SwaggerDocs:
             },
         }
 
-    class UserAvatarUpload:
-        put = {
-            'tags': ['Profile'],
-            'request_body': UserAvatarUploadSerializer,
-            'responses': {
-                200: openapi.Response(description='Avatar uploaded successfully.'),
-                400: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description='Invalid image file or bad request parameters.',
-                        )
-                    },
-                    required=['detail'],
-                ),
-                401: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING, description='Invalid credentials.'
-                        )
-                    },
-                    required=['detail'],
-                ),
-                415: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'avatar': openapi.Schema(
-                            type=openapi.TYPE_ARRAY,
-                            items=openapi.Schema(
-                                type=openapi.TYPE_STRING,
-                                description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.',  # noqa: E501
-                            ),
-                        )
-                    },
-                    required=['avatar'],
-                ),
-                500: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description='An unexpected error occurred on the server.',
-                        )
-                    },
-                    required=['detail'],
-                ),
-            },
-            'operation_description': 'Upload user avatar using PUT method.',
-        }
-
-        patch = {
-            'tags': ['Profile'],
-            'request_body': UserAvatarUploadSerializer,
-            'responses': {
-                200: openapi.Response(description='Avatar uploaded successfully.'),
-                400: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description='Invalid image file or bad request parameters.',
-                        )
-                    },
-                    required=['detail'],
-                ),
-                401: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING, description='Invalid credentials.'
-                        )
-                    },
-                    required=['detail'],
-                ),
-                415: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'avatar': openapi.Schema(
-                            type=openapi.TYPE_ARRAY,
-                            items=openapi.Schema(
-                                type=openapi.TYPE_STRING,
-                                description='Upload a valid image. The file you uploaded was either not an image or a corrupted image.',  # noqa: E501
-                            ),
-                        )
-                    },
-                    required=['avatar'],
-                ),
-                500: openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description='An unexpected error occurred on the server.',
-                        )
-                    },
-                    required=['detail'],
-                ),
-            },
-            'operation_description': 'Upload user avatar using PATCH method.',
-        }
 
     class Profile:
         get = {
