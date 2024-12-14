@@ -46,7 +46,7 @@ class Organization(models.Model):
     def save(self, *args, **kwargs):
         # Process images before saving them to the database
         if self.main_image:
-            process_image(self.main_image)
+            process_image(self.main_image, size=(300, 300))
         if self.background_image:
             process_image(self.background_image)
         super().save(*args, **kwargs)

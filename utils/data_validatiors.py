@@ -42,7 +42,7 @@ def validate_file_size(file):
         raise ValidationError(f'File size exceeds {max_size_mb}MB limit.')
 
 
-def process_image(file):
+def process_image(file, size=None):
     try:
         image = Image.open(file)
 
@@ -50,8 +50,9 @@ def process_image(file):
         if image.mode == 'RGBA':
             image = image.convert('RGB')
 
-        # Create a thumbnail of size 300x300
-        image.thumbnail((300, 300))
+        # Create a thumbnail of size
+        if size:
+            image.thumbnail(size)
 
         # Save the processed image into memory
         thumb_io = BytesIO()
