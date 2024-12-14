@@ -58,5 +58,5 @@ def process_image(file):
         image.save(thumb_io, format='JPEG')
         thumb_io.seek(0)
         file.file = thumb_io  # Replace the original file with the processed one
-    except Exception as e:
-        raise ValidationError(f'Error processing image: {str(e)}')
+    except Exception:
+        raise ValidationError('Error processing image')
