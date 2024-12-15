@@ -60,3 +60,13 @@ class SwaggerDocs:
             },
             'operation_description': 'Delete an event organizer by event_id. The event_id is used to find and delete the organizer associated with a specific event.',  # noqa: E501
         }
+
+        post_invite = {
+            'tags': ['Organization'],
+            'request_body': Request.ModeratorInviteRequestBody,
+            'responses': {
+                201: Response.ModeratorInviteResponse,
+                404: 'Organizer not found',
+            },
+            'operation_description': 'Update the details of an event organizer by event_id. The event_id is used to find the organizer, and the request body contains the updated information about the organizer.',  # noqa: E501
+        }

@@ -161,6 +161,21 @@ class Response:
         )
     )
 
+    ModeratorInviteResponse = openapi.Response(
+        'Moderator invitation response',
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'success': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description='Confirmation message of successful moderator invitation',
+                    default='Moderator invited successfully'
+                )
+            },
+            required=['success']
+        )
+    )
+
 
 class Request:
     OrganizationRequestBody = openapi.Schema(
@@ -222,6 +237,25 @@ class Request:
                 format=openapi.FORMAT_URI,
                 description='URL of the background image for the organization',
                 default='http://example.com/background_image.jpg',
+            ),
+        },
+        required=['name', 'email', 'users'],
+    )
+
+    ModeratorInviteRequestBody = openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'email': openapi.Schema(
+                type=openapi.TYPE_STRING,
+                description='User email',
+                default='user1@examople.com',
+            ),
+            'message': openapi.Schema(
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_URI,
+                description='Message to user',
+                nullable=True,
+                default='Welcome to organization',
             ),
         },
         required=['name', 'email', 'users'],

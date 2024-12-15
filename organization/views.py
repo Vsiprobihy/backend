@@ -87,7 +87,7 @@ class OrganizationDetailView(APIView):
 class InviteModeratorView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
-    @swagger_auto_schema(**SwaggerDocs.Organization.post)
+    @swagger_auto_schema(**SwaggerDocs.Organization.post_invite)
     def post(self, request, organization_id):
         email = request.data.get('email')
         message = request.data.get('message', '')  # noqa: F841
