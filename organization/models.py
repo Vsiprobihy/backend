@@ -1,5 +1,6 @@
 import os
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from authentication.models import CustomUser
@@ -23,7 +24,9 @@ def organization_background_image_path(instance, filename):
 class Organization(models.Model):
     name = models.CharField(max_length=255)
     site_url = models.URLField(blank=True, null=True)
-    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    phone_numbers = ArrayField(
+        models.CharField(max_length=20), blank=True, default=list
+    )
     email = models.EmailField()
     instagram_url = models.URLField(blank=True, null=True)
     facebook_url = models.URLField(blank=True, null=True)
