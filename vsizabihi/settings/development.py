@@ -1,4 +1,4 @@
-from .base import *  # noqa: F403
+from .base import *  # noqa
 
 
 DATABASES = {
@@ -11,13 +11,15 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-# include database sqlite3
-# from .base import BASE_DIR
 
-
+# from VADIM
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'probihy',
+#         'USER': 'probihy',
+#         'PASSWORD': 'probihy',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
 #     }
 # }

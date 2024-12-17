@@ -31,7 +31,7 @@ class EventSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region',
             'photos', 'description', 'registration_link', 'hide_participants', 'schedule_pdf',
-            'organizer', 'organization_id', 'distances', 'extended_description'
+            'co_organizer', 'organizer', 'organization_id', 'distances', 'extended_description'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -53,6 +53,7 @@ class EventSerializer(serializers.ModelSerializer):
         self.fields['hide_participants'].required = False
         self.fields['schedule_pdf'].required = False
         self.fields['extended_description'].required = False
+        self.fields['co_organizer'].required = False
 
     def validate(self, data):
         instance_date_from = getattr(self.instance, 'date_from', None)
@@ -134,6 +135,7 @@ class EventSerializer(serializers.ModelSerializer):
         instance.hide_participants = validated_data.get('hide_participants', instance.hide_participants)
         instance.schedule_pdf = validated_data.get('schedule_pdf', instance.schedule_pdf)
         instance.extended_description = validated_data.get('extended_description', instance.extended_description)
+        instance.co_organizer = validated_data.get('co_organizer', instance.co_organizer)
         instance.save()
 
         if distances_data is not None:
