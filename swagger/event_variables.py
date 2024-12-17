@@ -8,7 +8,7 @@ class Responce:
             type=openapi.TYPE_OBJECT,
             required=[
                 'id', 'name', 'competition_type', 'date_from', 'date_to',
-                'place', 'place_region', 'co_organizer', 'organizer', 'distances'
+                'place', 'place_region', 'organizer', 'distances'
             ],
             properties={
                 'id': openapi.Schema(
