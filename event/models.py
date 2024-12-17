@@ -29,6 +29,7 @@ class Event(models.Model):
     hide_participants = models.BooleanField(default=False)
     extended_description = models.TextField(blank=True, null=True)
     schedule_pdf = models.FileField(upload_to='event_schedule/', blank=True, null=True)
+    co_organizer = models.TextField(blank=True, null=True)
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, related_name='event_organization', null=False
     )
