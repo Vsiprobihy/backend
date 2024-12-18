@@ -16,7 +16,7 @@ from organization.serializers import OrganizationSerializer
 class CompetitionTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompetitionType
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class EventSerializer(serializers.ModelSerializer):

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("event", "0004_alter_event_status"),
+        ('event', '0004_alter_event_status'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="event",
-            name="co_organizer",
+            model_name='event',
+            name='co_organizer',
             field=models.TextField(blank=True, null=True),
         ),
     ]

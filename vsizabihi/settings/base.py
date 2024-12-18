@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'social_django',
     'authentication',
+    'custom_admin',
     'organization',
     'event',
     'public_event',

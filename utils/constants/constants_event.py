@@ -42,7 +42,7 @@ COMPETITION_TYPES = [
 STATUS_PENDING = 'pending'
 STATUS_UNPUBLISHED = 'unpublished'
 STATUS_PUBLISHED = 'published'
-STATUS_PUBLISHED = 'completed'
+STATUS_COMPLETED = 'completed'
 
 STATUS_CHOICES = [
     (STATUS_PENDING, 'Pending approval'),

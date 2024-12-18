@@ -2,6 +2,7 @@ from django.db import models
 
 from organization.models import Organization
 from utils.constants.constants_event import (
+    COMPETITION_TYPES,
     REGIONS,
     STATUS_CHOICES,
     STATUS_PENDING,
@@ -9,7 +10,7 @@ from utils.constants.constants_event import (
 
 
 class CompetitionType(models.Model):
-    name = models.CharField(max_length=50, unique=False)
+    name = models.CharField(max_length=50, choices=COMPETITION_TYPES, unique=True)
 
     def __str__(self):
         return self.name
