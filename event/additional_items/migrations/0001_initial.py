@@ -11,20 +11,20 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="AdditionalItemEvent",
+            name='AdditionalItemEvent',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
-                ("item_type", models.CharField(max_length=50)),
+                ('item_type', models.CharField(max_length=50)),
                 (
-                    "price",
+                    'price',
                     models.DecimalField(
                         blank=True, decimal_places=2, max_digits=10, null=True
                     ),

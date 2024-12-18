@@ -6,15 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("event", "0001_initial"),
+        ('event', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="event",
-            name="competition_type",
+            model_name='event',
+            name='competition_type',
             field=models.ManyToManyField(
-                related_name="event", to="event.competitiontype"
+                related_name='event', to='event.competitiontype'
             ),
         ),
     ]

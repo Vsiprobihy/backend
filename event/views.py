@@ -102,7 +102,6 @@ class EventDetailView(APIView):
             return Response(updated_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     @swagger_auto_schema(**SwaggerDocs.EventDetailView.patch)
     @check_organization_access_decorator(extract_for_event_access_directly)
     def patch(self, request, organization_id, event_id):
