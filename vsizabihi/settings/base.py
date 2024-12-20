@@ -61,7 +61,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'vsizabihi.middleware.DisableCSRF',
-    'vsizabihi.middleware.CamelCaseMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

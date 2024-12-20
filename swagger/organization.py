@@ -1,6 +1,6 @@
 from drf_yasg import openapi
 
-from organization.serializers import OrganizationSerializer
+from organization.serializers import OrganizationSerializer  # noqa
 
 
 class SwaggerDocs:
