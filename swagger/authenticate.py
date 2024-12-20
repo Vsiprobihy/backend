@@ -530,7 +530,6 @@ class SwaggerDocs:
             },
         }
 
-
     class Profile:
         get = {
             'tags': ['Profile'],

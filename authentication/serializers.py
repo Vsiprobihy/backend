@@ -1,4 +1,3 @@
-
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
@@ -53,8 +52,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField()
-    password = serializers.CharField()
+    email = serializers.CharField(default="user@example.com")
+    password = serializers.CharField(default="string")
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -64,6 +63,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             'id',
+            'email',
+            'role',
             'first_name',
             'last_name',
             'first_name_eng',
@@ -78,7 +79,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'emergency_contact_name',
             'emergency_contact_phone',
             'avatar',
-            'email',
         ]
 
     def update(self, instance, validated_data):
