@@ -8,7 +8,7 @@ from authentication.permissions import IsOrganizer
 from organization.models import Organization, Organizer
 from organization.serializers import OrganizationSerializer
 from swagger.organization import SwaggerDocs
-
+from utils.custom_exceptions import NotFoundError, UnauthorizedError, ForbiddenError, SuccessResponse
 
 User = get_user_model()
 
@@ -48,14 +48,14 @@ class OrganizationDetailView(APIView):
             if organization:
                 serializer = OrganizationSerializer(organization, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+            return ForbiddenError('You dont have permission to this action')
+        return UnauthorizedError('Unauthorized')
 
     @swagger_auto_schema(**SwaggerDocs.Organization.put)
     def put(self, request, organization_id):
         organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
         if not organization:
-            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
+            return ForbiddenError('You dont have permission to this action')
 
         serializer = OrganizationSerializer(organization, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
@@ -67,7 +67,7 @@ class OrganizationDetailView(APIView):
     def patch(self, request, organization_id):
         organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
         if not organization:
-            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
+            return ForbiddenError('You dont have permission to this action')
 
         serializer = OrganizationSerializer(organization, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
@@ -81,10 +81,10 @@ class OrganizationDetailView(APIView):
         if event:
             event.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
+        return ForbiddenError('You dont have permission to this action')
 
 
-class InviteModeratorView(APIView):
+class InviteOrganizerView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.Organization.post)
@@ -94,32 +94,20 @@ class InviteModeratorView(APIView):
 
         user = User.objects.filter(email=email).first()
         if not user:
-            return Response(
-                {'error': 'User with this email not found'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return NotFoundError('User with this email not found')
 
         organization = Organization.objects.filter(pk=organization_id).first()
         if not organization:
-            return Response(
-                {'error': 'Organization not found'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return NotFoundError('User with this email not found')
 
         is_owner = Organizer.objects.filter(
             organization=organization, user=request.user, role=Organizer.OWNER
         ).exists()
         if not is_owner:
-            return Response(
-                {'error': 'You are not the owner of this organization'},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+            return ForbiddenError('You are not the owner of this organization')
 
         Organizer.objects.create(
-            user=user, organization=organization, role=Organizer.MODERATOR
+            user=user, organization=organization, role=Organizer.ORGANIZER
         )
 
-        return Response(
-            {'success': 'Moderator invited successfully'},
-            status=status.HTTP_200_OK
-        )
+        return SuccessResponse('Organizer invited successfully')

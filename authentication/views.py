@@ -24,7 +24,7 @@ from utils.custom_exceptions import (
     BadRequestError,
     ForbiddenError,
     NotFoundError,
-    SuccessResponseCustom,
+    SuccessResponse,
     UnauthorizedError,
 )
 
@@ -50,7 +50,7 @@ class RegisterView(APIView):
             #         domain='127.0.0.1:8000'
             #     )
             #
-            return SuccessResponseCustom('Verify your account from email').get_response()
+            return SuccessResponse('Verify your account from email').get_response()
         else:
             raise BadRequestError('Failed to create user')
 
@@ -101,7 +101,7 @@ class ActivateUserEmailView(APIView):
             user.is_active = True
             user.save()
 
-            return SuccessResponseCustom('Your account has been activated successfully').get_response()
+            return SuccessResponse('Your account has been activated successfully').get_response()
         else:
             return BadRequestError().get_response()
 
@@ -119,7 +119,7 @@ class CustomResetPasswordView(UserViewSet):
         response = super().reset_password(request, *args, **kwargs)
 
         if response.status_code == status.HTTP_204_NO_CONTENT:
-            return SuccessResponseCustom('A password reset email has been sent to the provided email address.').get_response()  # noqa: E501
+            return SuccessResponse('A password reset email has been sent to the provided email address.').get_response()  # noqa: E501
 
         return response
 
@@ -130,7 +130,7 @@ class CustomResetPasswordConfirmView(UserViewSet):
         response = super().reset_password_confirm(request, *args, **kwargs)
 
         if response.status_code == status.HTTP_204_NO_CONTENT:
-            return SuccessResponseCustom('Your password has been successfully changed.').get_response()
+            return SuccessResponse('Your password has been successfully changed.').get_response()
 
         return response
 

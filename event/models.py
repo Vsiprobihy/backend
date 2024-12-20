@@ -10,7 +10,7 @@ from utils.constants.constants_event import (
 
 
 class CompetitionType(models.Model):
-    name = models.CharField(max_length=50, choices=COMPETITION_TYPES, unique=True)
+    name = models.CharField(max_length=50, choices=COMPETITION_TYPES)
 
     def __str__(self):
         return self.name

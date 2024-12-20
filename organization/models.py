@@ -60,11 +60,11 @@ class Organization(models.Model):
 
 class Organizer(models.Model):
     OWNER = 'owner'
-    MODERATOR = 'organizer'
+    ORGANIZER = 'organizer'
 
     ROLE_CHOICES = [
         (OWNER, 'Owner'),
-        (MODERATOR, 'Organizer'),
+        (ORGANIZER, 'Organizer'),
     ]
 
     user = models.ForeignKey(

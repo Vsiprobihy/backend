@@ -18,7 +18,6 @@ class CostChangeRuleSerializer(serializers.ModelSerializer):
         fields = ['id', 'cost', 'from_participants', 'from_date']
 
 
-
 class DistanceEventSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=False)
