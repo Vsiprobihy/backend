@@ -18,13 +18,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
         model = Organization
         fields = '__all__'
 
-    def get_users(self, obj):  # noqa
-        access = Organizer.objects.filter(organization=obj)
-        return [
-            {'user': access_item.user.email, 'role': access_item.role}
-            for access_item in access
-        ]
-
     def get_main_image(self, obj):
         request = self.context.get('request')
         if obj.main_image and request:
@@ -46,12 +39,26 @@ class OrganizationSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(f'Invalid phone number: {phone}')
         return value
 
+    def get_users(self, obj):  # noqa
+        access = Organizer.objects.filter(organization=obj)
+        return [
+            {'user': access_item.user.email,
+             'role': access_item.user.role,
+             }
+            for access_item in access
+        ]
+
 
 class OrganizerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Organizer
-        fields = ['user', 'role']
-
     user = serializers.SlugRelatedField(
         slug_field='email', queryset=CustomUser.objects.all()
     )
+    organization = serializers.SlugRelatedField(
+        slug_field='name', queryset=Organization.objects.all()
+    )
+
+    class Meta:
+        model = Organizer
+        fields = ['user', 'organization']
+
+

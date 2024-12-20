@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'authentication',
     'custom_admin',
     'organization',
-    # 'user',
+    'user',
     'event',
     'public_event',
     'event.distance_details',

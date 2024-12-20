@@ -4,6 +4,7 @@ from event.serializers import CompetitionTypeSerializer
 
 
 class SwaggerDocs:
+
     class CompetitionsTypeViewSet:
         get = {
             'tags': ['Competition Type'],

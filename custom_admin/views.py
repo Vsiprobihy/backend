@@ -7,27 +7,10 @@ from authentication.models import CustomUser
 from authentication.permissions import IsAdmin
 from event.models import CompetitionType
 from event.serializers import CompetitionTypeSerializer
-from organization.models import Organizer
 from swagger.custom_admin import SwaggerDocs
-from utils.custom_exceptions import BadRequestError, CreatedResponse, ForbiddenError, SuccessResponse
+from utils.custom_exceptions import BadRequestError, ForbiddenError, SuccessResponse
 
 from .models import OrganizerRequest
-
-
-class RequestOrganizerView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, member_id):  # noqa
-        user = CustomUser.objects.filter(id=member_id).first()
-
-        if not user:
-            return BadRequestError('User not found.').get_response()
-
-        if OrganizerRequest.objects.filter(user=user, is_approved=False).exists():
-            return BadRequestError('You already have a pending request.').get_response()
-
-        OrganizerRequest.objects.create(user=user)
-        return CreatedResponse('Request submitted successfully.').get_response()
 
 
 class ApproveOrganizerView(APIView):
@@ -45,7 +28,7 @@ class ApproveOrganizerView(APIView):
         organizer_request.save()
 
         user = organizer_request.user
-        user.role = Organizer.ORGANIZER
+        user.role = CustomUser.ORGANIZER
         user.save()
 
         return SuccessResponse('Request approved and user is now an organizer.').get_response()

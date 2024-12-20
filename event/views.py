@@ -2,12 +2,13 @@ from datetime import datetime
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentication.permissions import IsOrganizer
+from authentication.permissions import IsAdmin, IsOrganizer
 from event.models import Event
-from event.serializers import EventSerializer
+from event.serializers import EventSerializer, UpdateEventStatusSerializer
 from organization.decorators import (
     check_organization_access_decorator,
     check_organizer_access_decorator,
@@ -16,7 +17,7 @@ from organization.decorators import (
 )
 from organization.models import Organizer
 from swagger.event import SwaggerDocs
-from utils.custom_exceptions import NotFoundError
+from utils.custom_exceptions import BadRequestError, NotFoundError, SuccessResponse
 from utils.pagination import Pagination
 
 
@@ -121,3 +122,25 @@ class EventDetailView(APIView):
         event = self.get_object(event_id, organization_id)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UpdateEventStatusView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    @swagger_auto_schema(**SwaggerDocs.UpdateEventStatusView.post)
+    def post(self, request, event_id):  # noqa
+        serializer = UpdateEventStatusSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=400)
+
+        event_status = serializer.validated_data.get('status')
+        event = Event.objects.filter(id=event_id).first()
+
+        if not event:
+            return BadRequestError('Event not found.').get_response()
+
+        event.status = event_status
+        event.save()
+
+        return SuccessResponse(f'Event status updated to {event_status}.').get_response()

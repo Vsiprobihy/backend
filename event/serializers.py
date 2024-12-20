@@ -10,7 +10,8 @@ from event.models import (
 )
 from event.promo_code.models import PromoCode
 from organization.models import Organization, Organizer
-from organization.serializers import OrganizationSerializer
+from organization.serializers import OrganizerSerializer
+from utils.constants.constants_event import STATUS_CHOICES
 
 
 class CompetitionTypeSerializer(serializers.ModelSerializer):
@@ -22,16 +23,17 @@ class CompetitionTypeSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     organization_id = serializers.IntegerField(write_only=True)
-    organizer = OrganizationSerializer(read_only=True)
     distances = DistanceEventSerializer(many=True, required=True)
     competition_type = CompetitionTypeSerializer(many=True)
+    organizer = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = [
-            'id', 'name', 'competition_type', 'date_from', 'date_to', 'place', 'place_region',
+            'id', 'name', 'organizer', 'organization_id', 'competition_type', 'date_from', 'date_to',
+            'place', 'place_region',
             'photos', 'description', 'registration_link', 'hide_participants', 'schedule_pdf',
-            'co_organizer', 'organizer', 'organization_id', 'distances', 'extended_description'
+            'co_organizer', 'distances', 'extended_description',
         ]
 
     def __init__(self, *args, **kwargs):
@@ -79,12 +81,14 @@ class EventSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
 
         if not Organizer.objects.filter(organization_id=organization_id, user=user).exists():
-            raise serializers.ValidationError({'organization_id': 'You do not have access to the specified organization.'})
+            raise serializers.ValidationError({'organization_id': 'You do not have access to the specified '
+                                                                  'organization.'})
 
         try:
             organization = Organization.objects.get(id=organization_id)
         except Organization.DoesNotExist:
-            raise serializers.ValidationError({'organization_id': 'The organization with the specified ID was not found.'})
+            raise serializers.ValidationError({'organization_id': 'The organization with the specified ID was not '
+                                                                  'found.'})
 
         event = Event.objects.create(organization=organization, **validated_data)
 
@@ -183,4 +187,13 @@ class EventSerializer(serializers.ModelSerializer):
 
         return instance
 
+    def get_organizer(self, obj):  # noqa
+        organizer = Organizer.objects.filter(organization=obj.organization).first()
+        return OrganizerSerializer(organizer).data if organizer else None
 
+
+class UpdateEventStatusSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(
+        choices=STATUS_CHOICES,
+        required=True,
+    )

@@ -25,7 +25,6 @@ REGIONS = [
     ('chernivtsi_region', 'Chernivtsi oblast'),
 ]
 
-
 COMPETITION_TYPES = [
     ('running', 'Running'),
     ('trail', 'Trail'),
@@ -38,14 +37,12 @@ COMPETITION_TYPES = [
     ('triathlon', 'Triathlon'),
 ]
 
-
 STATUS_PENDING = 'pending'
 STATUS_UNPUBLISHED = 'unpublished'
 STATUS_PUBLISHED = 'published'
-STATUS_COMPLETED = 'completed'
 
 STATUS_CHOICES = [
-    (STATUS_PENDING, 'Pending approval'),
+    (STATUS_PENDING, 'Pending'),
     (STATUS_UNPUBLISHED, 'Unpublished'),
     (STATUS_PUBLISHED, 'Published'),
 ]

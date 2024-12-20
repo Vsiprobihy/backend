@@ -59,26 +59,17 @@ class Organization(models.Model):
 
 
 class Organizer(models.Model):
-    OWNER = 'owner'
-    ORGANIZER = 'organizer'
-
-    ROLE_CHOICES = [
-        (OWNER, 'Owner'),
-        (ORGANIZER, 'Organizer'),
-    ]
-
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='organizer_user', null=False
     )
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, related_name='organizer_organization', null=False
     )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=False)
 
     class Meta:
         unique_together = ('user', 'organization')
 
     def __str__(self):
         return (
-            f'{self.user.email} - {self.get_role_display()} в {self.organization.name}'
+            f'{self.user.email} - {self.user.role} в {self.organization.name}'
         )

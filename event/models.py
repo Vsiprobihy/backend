@@ -40,14 +40,3 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
-
-    def approve_event(self):
-        """Method for approving the event by the administrator."""
-        self.status = self.STATUS_UNPUBLISHED
-        self.save()
-
-    def publish_event(self):
-        """Method for publishing an event by the organizer."""
-        if self.status == self.STATUS_UNPUBLISHED:
-            self.status = self.STATUS_PUBLISHED
-            self.save()

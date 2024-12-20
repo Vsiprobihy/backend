@@ -4,11 +4,13 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentication.models import CustomUser
 from authentication.permissions import IsOrganizer
 from organization.models import Organization, Organizer
 from organization.serializers import OrganizationSerializer
 from swagger.organization import SwaggerDocs
-from utils.custom_exceptions import NotFoundError, UnauthorizedError, ForbiddenError, SuccessResponse
+from utils.custom_exceptions import ForbiddenError, NotFoundError, SuccessResponse, UnauthorizedError
+
 
 User = get_user_model()
 
@@ -32,7 +34,6 @@ class OrganizationListCreateView(APIView):
             Organizer.objects.create(
                 user=request.user,
                 organization=organization,
-                role=Organizer.OWNER,
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -48,14 +49,14 @@ class OrganizationDetailView(APIView):
             if organization:
                 serializer = OrganizationSerializer(organization, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            return ForbiddenError('You dont have permission to this action')
-        return UnauthorizedError('Unauthorized')
+            return ForbiddenError('You dont have permission to this action').get_response()
+        return UnauthorizedError('Unauthorized').get_response()
 
     @swagger_auto_schema(**SwaggerDocs.Organization.put)
     def put(self, request, organization_id):
         organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
         if not organization:
-            return ForbiddenError('You dont have permission to this action')
+            return ForbiddenError('You dont have permission to this action').get_response()
 
         serializer = OrganizationSerializer(organization, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
@@ -67,7 +68,7 @@ class OrganizationDetailView(APIView):
     def patch(self, request, organization_id):
         organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
         if not organization:
-            return ForbiddenError('You dont have permission to this action')
+            return ForbiddenError('You dont have permission to this action').get_response()
 
         serializer = OrganizationSerializer(organization, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
@@ -81,7 +82,7 @@ class OrganizationDetailView(APIView):
         if event:
             event.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return ForbiddenError('You dont have permission to this action')
+        return ForbiddenError('You dont have permission to this action').get_response()
 
 
 class InviteOrganizerView(APIView):
@@ -94,20 +95,20 @@ class InviteOrganizerView(APIView):
 
         user = User.objects.filter(email=email).first()
         if not user:
-            return NotFoundError('User with this email not found')
+            return NotFoundError('User with this email not found').get_response()
 
         organization = Organization.objects.filter(pk=organization_id).first()
         if not organization:
-            return NotFoundError('User with this email not found')
+            return NotFoundError('User with this email not found').get_response()
 
-        is_owner = Organizer.objects.filter(
-            organization=organization, user=request.user, role=Organizer.OWNER
+        is_organizer = Organizer.objects.filter(
+            organization=organization, user=request.user, role=CustomUser.ORGANIZER
         ).exists()
-        if not is_owner:
-            return ForbiddenError('You are not the owner of this organization')
+        if not is_organizer:
+            return ForbiddenError('You are not the organizer of this organization').get_response()
 
         Organizer.objects.create(
-            user=user, organization=organization, role=Organizer.ORGANIZER
+            user=user, organization=organization, role=CustomUser.ORGANIZER
         )
 
-        return SuccessResponse('Organizer invited successfully')
+        return SuccessResponse('Organizer invited successfully').get_response()
