@@ -5,7 +5,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentication.models import AdditionalProfile, CustomUser
-from authentication.serializers import AdditionalProfileDetailSerializer, AdditionalProfileSerializer
+from authentication.serializers import (
+    AdditionalProfileDetailSerializer,
+    AdditionalProfileSerializer,
+    UserProfileSerializer,
+)
 from custom_admin.models import OrganizerRequest
 from event.distance_details.models import DistanceEvent
 from swagger.user import SwaggerDocs
@@ -104,3 +108,31 @@ class AdditionalProfileDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(**SwaggerDocs.Profile.get)
+    def get(self, request):
+        user = request.user
+        serializer = UserProfileSerializer(user, context={'request': request})
+        return Response(serializer.data)
+
+    @swagger_auto_schema(**SwaggerDocs.Profile.put)
+    def put(self, request):
+        user = request.user
+        serializer = UserProfileSerializer(user, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(**SwaggerDocs.Profile.patch)
+    def patch(self, request):
+        user = request.user
+        serializer = UserProfileSerializer(user, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

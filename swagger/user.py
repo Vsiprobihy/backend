@@ -1,6 +1,10 @@
 from drf_yasg import openapi
 
-from authentication.serializers import AdditionalProfileDetailSerializer, AdditionalProfileSerializer
+from authentication.serializers import (
+    AdditionalProfileDetailSerializer,
+    AdditionalProfileSerializer,
+    UserProfileSerializer,
+)
 from user.serializer import UserDistanceRegistrationSerializer  # noqa
 
 
@@ -348,4 +352,179 @@ class SwaggerDocs:
                     required=['detail'],
                 ),
             },
+        }
+
+
+    class Profile:
+        get = {
+            'tags': ['Profile'],
+            'responses': {
+                200: UserProfileSerializer,
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                401: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                403: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to access this resource.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='The requested resource does not exist.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+            },
+            'operation_description': 'Get user profile data',
+        }
+
+        put = {
+            'tags': ['Profile'],
+            'request_body': UserProfileSerializer,
+            'responses': {
+                200: UserProfileSerializer,
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                401: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                403: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to update this resource.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='The resource to update does not exist.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+            },
+            'operation_description': 'Update user profile data',
+        }
+
+        patch = {
+            'tags': ['Profile'],
+            'request_body': UserProfileSerializer,
+            'responses': {
+                200: UserProfileSerializer,
+                400: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Invalid request parameters or data.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                401: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING, description='Invalid credentials.'
+                        )
+                    },
+                    required=['detail'],
+                ),
+                403: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Insufficient permissions to partially update this resource.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                404: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='The resource to partially update does not exist.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+                500: openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='An unexpected error occurred on the server.',
+                        )
+                    },
+                    required=['detail'],
+                ),
+            },
+            'operation_description': 'Partial update of user profile data',
         }

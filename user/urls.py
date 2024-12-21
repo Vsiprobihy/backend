@@ -5,6 +5,7 @@ from .views import (
     AdditionalProfileListView,
     RequestOrganizerView,
     UserDistanceRegistrationView,
+    UserProfileView,
 )
 
 
@@ -21,4 +22,5 @@ urlpatterns = [
         AdditionalProfileDetailView.as_view(),
         name='additional_profile_detail',
     ),
+    path('profile/', UserProfileView.as_view(), name='user_profile'),
 ]
