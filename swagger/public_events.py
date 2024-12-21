@@ -144,13 +144,13 @@ class SwaggerDocs:
                             ),
                             'items': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(
+                                items=openapi.Items(  # noqa
                                     type=openapi.TYPE_OBJECT,
                                     properties={
                                         'name': openapi.Schema(type=openapi.TYPE_STRING),
                                         'competition_type': openapi.Schema(
                                             type=openapi.TYPE_ARRAY,
-                                            items=openapi.Items(type=openapi.TYPE_STRING),
+                                            items=openapi.Items(type=openapi.TYPE_STRING),  # noqa
                                         ),
                                         'date_from': openapi.Schema(type=openapi.TYPE_STRING),
                                         'date_to': openapi.Schema(type=openapi.TYPE_STRING),
@@ -159,7 +159,7 @@ class SwaggerDocs:
                                         'photos': openapi.Schema(type=openapi.TYPE_OBJECT, nullable=True),
                                         'distances': openapi.Schema(
                                             type=openapi.TYPE_ARRAY,
-                                            items=openapi.Items(
+                                            items=openapi.Items(  # noqa
                                                 type=openapi.TYPE_OBJECT,
                                                 properties={
                                                     'name': openapi.Schema(type=openapi.TYPE_STRING),

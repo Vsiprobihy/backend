@@ -8,21 +8,39 @@ from authentication.permissions import IsAdmin
 from event.models import CompetitionType
 from event.serializers import CompetitionTypeSerializer
 from swagger.custom_admin import SwaggerDocs
-from utils.custom_exceptions import BadRequestError, ForbiddenError, SuccessResponse
+from user.models import UserDistanceRegistration
+from utils.custom_exceptions import ForbiddenError, NotFoundError, SuccessResponse
 
 from .models import OrganizerRequest
+
+
+class ApproveDistanceRegistrationView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    @swagger_auto_schema(**SwaggerDocs.ApproveDistanceRegistrationView.post)
+    def post(self, request, registration_id):  # noqa
+        registration = UserDistanceRegistration.objects.filter(id=registration_id, is_confirmed=False).first()
+
+        if not registration:
+            return NotFoundError('Registration not found or already confirmed.').get_response()
+
+        registration.is_confirmed = True
+        registration.save()
+
+        return SuccessResponse('Registration approved successfully.').get_response()
 
 
 class ApproveOrganizerView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
-    def post(self, request, member_id):  # noqa
+    @swagger_auto_schema(**SwaggerDocs.ApproveOrganizerView.post)
+    def post(self, request, user_id):  # noqa
         if not request.user.is_superuser:
-            return ForbiddenError('Permission denied.').get_response()
+            return ForbiddenError('You do not have permission to perform this action.').get_response()
 
-        organizer_request = OrganizerRequest.objects.filter(user_id=member_id, is_approved=False).first()
+        organizer_request = OrganizerRequest.objects.filter(user_id=user_id, is_approved=False).first()
         if not organizer_request:
-            return BadRequestError('Request not found.').get_response()
+            return NotFoundError('Request not found.').get_response()
 
         organizer_request.is_approved = True
         organizer_request.save()

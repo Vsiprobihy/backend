@@ -74,7 +74,7 @@ class LoginView(APIView):
         response = Response()
         response.data = {
             'access_token': {
-                'value': str(refresh.access_token),
+                'value': str(refresh.access_token),  # noqa
                 'expires': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
             },
             'refresh_token': {
@@ -213,22 +213,3 @@ class AdditionalProfileDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except AdditionalProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-# class AdminOnlyView(APIView):
-#     permission_classes = [IsAuthenticated, IsAdmin]
-
-#     def get(self, request):
-#         return Response({"message": "Only for admins"})
-
-# class OrganizerOnlyView(APIView):
-#     permission_classes = [IsAuthenticated, IsOrganizer]
-
-#     def get(self, request):
-#         return Response({"message": "Only for organizers"})
-
-# class PublicView(APIView):
-#     permission_classes = []
-
-#     def get(self, request):
-#         return Response({"message": "This is a public endpoint, accessible by anyone."})

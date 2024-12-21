@@ -4,7 +4,7 @@ from event.additional_items.models import AdditionalItemEvent
 from event.additional_items.serializers import AdditionalItemEventSerializer
 from event.age_category.models import AgeCategory
 from event.age_category.serializers import AgeCategorySerializer
-from event.distance_details.models import CostChangeRule, DistanceEvent
+from event.distance_details.models import CostChangeRule, DistanceEvent, FavoriteDistance
 from event.models import Event
 from event.promo_code.models import PromoCode
 from event.promo_code.serializers import PromoCodeSerializer
@@ -166,6 +166,14 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                     PromoCode.objects.create(**promo_code_data)
 
         return instance
+
+
+class FavoriteDistanceSerializer(serializers.ModelSerializer):
+    distance = DistanceEventSerializer()
+
+    class Meta:
+        model = FavoriteDistance
+        fields = ['id', 'user', 'distance']
 
 
 class PublicDistanceEventSerializer(serializers.ModelSerializer):

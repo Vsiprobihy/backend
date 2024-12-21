@@ -109,7 +109,6 @@ def check_organizer_access_decorator(organizer_extractor):
 
             try:
                 organizer = organizer_extractor(request, *args, **kwargs)  # noqa: F841
-                print(organizer)
 
             except Organizer.DoesNotExist:
                 raise NotFoundError('Organization not found.')

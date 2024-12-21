@@ -10,16 +10,16 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("distance_details", "0001_initial"),
-        ("additional_items", "0001_initial"),
+        ("age_category", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="additionalitemevent",
+            model_name="agecategory",
             name="distance",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="additional_options",
+                related_name="age_categories",
                 to="distance_details.distanceevent",
             ),
         ),

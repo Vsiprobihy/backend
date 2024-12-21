@@ -18,10 +18,27 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['email', 'password', 'password2']
+        fields = [
+            'email',
+            'password',
+            'password2',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'date_of_birth',
+            'gender',
+            'date_of_birth',
+            't_shirt_size',
+            'country',
+            'city',
+            'phone_number',
+            'sports_club',
+            'emergency_contact_name',
+            'emergency_contact_phone',
+        ]
 
     @staticmethod
-    def validate_password(value):
+    def validate_password(value):   #ToDO:  повернути на проді
         """
         Ensure that the password contains at least:
         - 1 uppercase letter
@@ -46,14 +63,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('password2')
         user = get_user_model().objects.create_user(**validated_data)
-        # user.is_active = False
+        # user.is_active = False  #ToDO:  повернути на проді
         user.save()
         return user
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField(default="user@example.com")
-    password = serializers.CharField(default="string")
+    email = serializers.CharField(default='user@example.com')
+    password = serializers.CharField(default='string')
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -101,7 +118,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.avatar.url)
         return None
 
-    def get_email(self, obj):
+    def get_email(self, obj):  # noqa
         return obj.email
 
 

@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/custom-admin/', include('custom_admin.urls')),
     path('api/authentication/', include('authentication.urls')),
     path('api/user/', include('user.urls')),
+    path('api/distance/', include('event.distance_details.urls')),
     path('api/organization/', include('organization.urls')),
     path('api/organization/', include('event.urls')),
     path('api/public-event/', include('public_event.urls')),

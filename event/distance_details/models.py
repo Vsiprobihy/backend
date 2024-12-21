@@ -1,5 +1,6 @@
 from django.db import models
 
+from authentication.models import CustomUser
 from utils.constants.constants_distance import CATEGORY_CHOICES
 from utils.constants.constants_event import COMPETITION_TYPES
 
@@ -32,6 +33,27 @@ class DistanceEvent(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class FavoriteDistance(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='favorite_distances'
+    )
+    distance = models.ForeignKey(
+        DistanceEvent,
+        on_delete=models.CASCADE,
+        related_name='favorite_by'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'distance')
+
+    def __str__(self):
+        return f'{self.user.email} - {self.distance.name}'
+
 
 class CostChangeRule(models.Model):
     distance = models.ForeignKey(

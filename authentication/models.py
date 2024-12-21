@@ -28,29 +28,25 @@ class BaseProfile(models.Model):
         ('XXXL', 'Very Extra Extra Large'),
     ]
 
-    first_name = models.CharField(max_length=50, null=True, blank=True)
-    last_name = models.CharField(max_length=50, null=True, blank=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
 
     first_name_eng = models.CharField(max_length=50, null=True, blank=True)
     last_name_eng = models.CharField(max_length=50, null=True, blank=True)
 
-    gender = models.CharField(
-        max_length=10, choices=[('M', 'Male'), ('F', 'Female')], null=True, blank=True
-    )
-    date_of_birth = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female')], null=True)
+    date_of_birth = models.DateField(null=True)
     t_shirt_size = models.CharField(
-        max_length=5, choices=T_SHIRT_SIZE_CHOICES, null=True, blank=True
+        max_length=5, choices=T_SHIRT_SIZE_CHOICES, null=True
     )
 
-    country = models.CharField(max_length=100, null=True, blank=True)
-    city = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, default='Unknown', null=True)
+    city = models.CharField(max_length=100, default='Unknown', null=True)
 
     phone_number = models.CharField(
         _('phone number'),
         max_length=20,
         null=True,
-        unique=False,
-        blank=True,
         validators=[validate_phone_number],
     )
 
@@ -62,15 +58,13 @@ class BaseProfile(models.Model):
         validators=[validate_image_file, validate_file_size]
     )
 
-    sports_club = models.CharField(max_length=100, null=True, blank=True)
+    sports_club = models.CharField(max_length=100, null=True)
 
-    emergency_contact_name = models.CharField(max_length=100, null=True, blank=True)
+    emergency_contact_name = models.CharField(max_length=100, null=True)
     emergency_contact_phone = models.CharField(
         _('phone number'),
-        max_length=20,
         null=True,
-        unique=False,
-        blank=True,
+        max_length=20,
         validators=[validate_phone_number],
     )
 

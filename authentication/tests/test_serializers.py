@@ -4,8 +4,8 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from event.distance_details.models import DistanceEvent
-from organization.models import Organization
 from event.models import Event
+from organization.models import Organization
 
 
 User = get_user_model()
