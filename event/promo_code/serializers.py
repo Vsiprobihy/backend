@@ -8,7 +8,7 @@ class PromoCodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PromoCode
-        fields = ['id', 'name', 'promo_type', 'discount_value', 'is_active', 'is_single_use', 'distance']
+        fields = ['id', 'name', 'promoType', 'discountValue', 'isActive', 'isSingleUse', 'distance']
         extra_kwargs = {
             'distance': {'read_only': True}
         }

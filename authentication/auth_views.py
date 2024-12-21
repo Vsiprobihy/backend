@@ -17,8 +17,8 @@ def google_login(request):
 
     return JsonResponse(
         {
-            'access_token': access_token,
-            'refresh_token': refresh_token,
+            'accessToken': access_token,
+            'refreshToken': refresh_token,
         }
     )
 

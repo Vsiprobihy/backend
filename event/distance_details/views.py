@@ -18,7 +18,7 @@ class MyDistanceListView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.MyDistanceListView.get)
     def get(self, request):  # noqa
-        distances = UserDistanceRegistration.objects.filter(user=request.user, is_confirmed=True)
+        distances = UserDistanceRegistration.objects.filter(user=request.user, isConfirmed=True)
         if distances:
             serializer = UserDistanceRegistrationSerializer(distances, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)

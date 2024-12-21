@@ -20,7 +20,7 @@ class SwaggerDocs:
             'request_body': openapi.Schema(
                 type=openapi.TYPE_OBJECT,
                 properties={
-                    'item_type': openapi.Schema(type=openapi.TYPE_STRING),
+                    'itemType': openapi.Schema(type=openapi.TYPE_STRING),
                     'price': openapi.Schema(type=openapi.TYPE_NUMBER),
                 },
             ),
@@ -44,7 +44,7 @@ class SwaggerDocs:
                             type=openapi.TYPE_INTEGER,
                             description='ID of the additional item',
                         ),
-                        'item_type': openapi.Schema(
+                        'itemType': openapi.Schema(
                             type=openapi.TYPE_STRING,
                             description='Item type, choices: "transfer", "medal", "t_shirt"',
                         ),
@@ -55,7 +55,7 @@ class SwaggerDocs:
                             type=openapi.TYPE_BOOLEAN, description='Is the item free'
                         ),
                     },
-                    required=['id', 'item_type', 'price', 'is_free'],
+                    required=['id', 'itemType', 'price', 'is_free'],
                 ),
             ),
             'responses': {
@@ -76,7 +76,7 @@ class SwaggerDocs:
                         type=openapi.TYPE_INTEGER,
                         description='ID of the additional item (required for update)',
                     ),
-                    'item_type': openapi.Schema(
+                    'itemType': openapi.Schema(
                         type=openapi.TYPE_STRING,
                         description='Type of the item, choices: "transfer", "medal", "t_shirt"',
                     ),

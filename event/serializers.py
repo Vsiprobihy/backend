@@ -24,16 +24,16 @@ class EventSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     organization_id = serializers.IntegerField(write_only=True)
     distances = DistanceEventSerializer(many=True, required=True)
-    competition_type = CompetitionTypeSerializer(many=True)
+    competitionType = CompetitionTypeSerializer(many=True)
     organizer = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = [
-            'id', 'name', 'organizer', 'organization_id', 'competition_type', 'date_from', 'date_to',
-            'place', 'place_region',
-            'photos', 'description', 'registration_link', 'hide_participants', 'schedule_pdf',
-            'co_organizer', 'distances', 'extended_description',
+            'id', 'name', 'organizer', 'organization_id', 'competitionType', 'dateFrom', 'dateTo',
+            'place', 'placeRegion',
+            'photos', 'description', 'registrationLink', 'hideParticipants', 'schedulePdf',
+            'coOrganizer', 'distances', 'extendedDescription',
         ]
 
     def __init__(self, *args, **kwargs):
@@ -45,30 +45,30 @@ class EventSerializer(serializers.ModelSerializer):
             self.fields['distances'].required = False
 
         self.fields['name'].required = True
-        self.fields['competition_type'].required = True
-        self.fields['date_from'].required = True
-        self.fields['date_to'].required = True
+        self.fields['competitionType'].required = True
+        self.fields['dateFrom'].required = True
+        self.fields['dateTo'].required = True
         self.fields['place'].required = True
-        self.fields['place_region'].required = True
+        self.fields['placeRegion'].required = True
         self.fields['description'].required = False
-        self.fields['registration_link'].required = False
-        self.fields['hide_participants'].required = False
-        self.fields['schedule_pdf'].required = False
-        self.fields['extended_description'].required = False
-        self.fields['co_organizer'].required = False
+        self.fields['registrationLink'].required = False
+        self.fields['hideParticipants'].required = False
+        self.fields['schedulePdf'].required = False
+        self.fields['extendedDescription'].required = False
+        self.fields['coOrganizer'].required = False
 
     def validate(self, data):
-        instance_date_from = getattr(self.instance, 'date_from', None)
-        instance_date_to = getattr(self.instance, 'date_to', None)
+        instanceDateFrom = getattr(self.instance, 'dateFrom', None)
+        instanceDateTo = getattr(self.instance, 'dateTo', None)
 
-        date_from = data.get('date_from', instance_date_from)
-        date_to = data.get('date_to', instance_date_to)
+        dateFrom = data.get('dateFrom', instanceDateFrom)
+        dateTo = data.get('dateTo', instanceDateTo)
 
-        if date_from and date_to:
-            if date_to < date_from:
+        if dateFrom and dateTo:
+            if dateTo < dateFrom:
                 raise serializers.ValidationError({
-                    'date_to': 'The end date cannot be earlier than the start date.',
-                    'date_from': 'The start date cannot be later than the end date.'
+                    'dateTo': 'The end date cannot be earlier than the start date.',
+                    'dateFrom': 'The start date cannot be later than the end date.'
                 })
 
         return data
@@ -76,7 +76,7 @@ class EventSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         organization_id = validated_data.pop('organization_id')
         distances_data = validated_data.pop('distances')
-        competition_type_data = validated_data.pop('competition_type', [])
+        competitionTypeData = validated_data.pop('competitionType', [])
 
         user = self.context['request'].user
 
@@ -92,12 +92,12 @@ class EventSerializer(serializers.ModelSerializer):
 
         event = Event.objects.create(organization=organization, **validated_data)
 
-        competition_types = []
-        for comp in competition_type_data:
-            competition_type = CompetitionType.objects.get(name=comp['name'])
-            competition_types.append(competition_type)
+        competitionTypes = []
+        for comp in competitionTypeData:
+            competitionType = CompetitionType.objects.get(name=comp['name'])
+            competitionTypes.append(competitionType)
 
-        event.competition_type.set(competition_types)
+        event.competitionType.set(competitionTypes)
 
         for distance_data in distances_data:
             additional_options_data = distance_data.pop('additional_options', [])
@@ -127,38 +127,38 @@ class EventSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         distances_data = validated_data.pop('distances', None)
-        competition_type_data = validated_data.pop('competition_type', [])
+        competitionTypeData = validated_data.pop('competitionType', [])
 
         instance.name = validated_data.get('name', instance.name)
-        instance.date_from = validated_data.get('date_from', instance.date_from)
-        instance.date_to = validated_data.get('date_to', instance.date_to)
+        instance.dateFrom = validated_data.get('dateFrom', instance.dateFrom)
+        instance.dateTo = validated_data.get('dateTo', instance.dateTo)
         instance.place = validated_data.get('place', instance.place)
-        instance.place_region = validated_data.get('place_region', instance.place_region)
+        instance.placeRegion = validated_data.get('placeRegion', instance.placeRegion)
         instance.photos = validated_data.get('photos', instance.photos)
         instance.description = validated_data.get('description', instance.description)
-        instance.registration_link = validated_data.get('registration_link', instance.registration_link)
-        instance.hide_participants = validated_data.get('hide_participants', instance.hide_participants)
-        instance.schedule_pdf = validated_data.get('schedule_pdf', instance.schedule_pdf)
-        instance.extended_description = validated_data.get('extended_description', instance.extended_description)
-        instance.co_organizer = validated_data.get('co_organizer', instance.co_organizer)
+        instance.registrationLink = validated_data.get('registrationLink', instance.registrationLink)
+        instance.hideParticipants = validated_data.get('hideParticipants', instance.hideParticipants)
+        instance.schedulePdf = validated_data.get('schedulePdf', instance.schedulePdf)
+        instance.extendedDescription = validated_data.get('extendedDescription', instance.extendedDescription)
+        instance.coOrganizer = validated_data.get('coOrganizer', instance.coOrganizer)
         instance.save()
 
         # Update or add competition types
-        competition_types = []
-        for comp in competition_type_data:
-            competition_type_obj = None
+        competitionTypes = []
+        for comp in competitionTypeData:
+            competitionTypeObj = None
             if 'id' in comp:
-                competition_type_obj = CompetitionType.objects.filter(id=comp['id']).first()
+                competitionTypeObj = CompetitionType.objects.filter(id=comp['id']).first()
             elif 'name' in comp:
-                competition_type_obj = CompetitionType.objects.filter(name=comp['name']).first()
+                competitionTypeObj = CompetitionType.objects.filter(name=comp['name']).first()
 
-            if competition_type_obj:
-                competition_types.append(competition_type_obj)
+            if competitionTypeObj:
+                competitionTypes.append(competitionTypeObj)
             else:
                 raise serializers.ValidationError(
-                    {'competition_type': f"Competition type '{comp.get('name', comp.get('id'))}' does not exist."})
+                    {'competitionType': f"Competition type '{comp.get('name', comp.get('id'))}' does not exist."})
 
-        instance.competition_type.set(competition_types)
+        instance.competitionType.set(competitionTypes)
 
         # Handle distances (create, update, or delete)
         if distances_data is not None:

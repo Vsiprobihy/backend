@@ -46,7 +46,7 @@ class RequestOrganizerView(APIView):
         if user.role != CustomUser.USER:
             return ForbiddenError('You do not have permission to perform this action.').get_response()
 
-        if OrganizerRequest.objects.filter(user=user, is_approved=False).exists():
+        if OrganizerRequest.objects.filter(user=user, isApproved=False).exists():
             return BadRequestError('You already have a pending request.').get_response()
 
         OrganizerRequest.objects.create(user=user)

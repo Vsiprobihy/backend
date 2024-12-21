@@ -67,17 +67,17 @@ class LoginView(APIView):
         if user is None:
             raise UnauthorizedError('Invalid credentials')
 
-        if not user.is_active:
+        if not user.isActive:
             raise ForbiddenError('User account is not active')
 
         refresh = RefreshToken.for_user(user)
         response = Response()
         response.data = {
-            'access_token': {
+            'accessToken': {
                 'value': str(refresh.access_token),  # noqa
                 'expires': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
             },
-            'refresh_token': {
+            'refreshToken': {
                 'value': str(refresh),
                 'expires': settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
             },
@@ -98,7 +98,7 @@ class ActivateUserEmailView(APIView):
             return NotFoundError('User does not exist')
 
         if default_token_generator.check_token(user, token):
-            user.is_active = True
+            user.isActive = True
             user.save()
 
             return SuccessResponse('Your account has been activated successfully').get_response()

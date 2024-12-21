@@ -19,12 +19,12 @@ class ApproveDistanceRegistrationView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.ApproveDistanceRegistrationView.post)
     def post(self, request, registration_id):  # noqa
-        registration = UserDistanceRegistration.objects.filter(id=registration_id, is_confirmed=False).first()
+        registration = UserDistanceRegistration.objects.filter(id=registration_id, isConfirmed=False).first()
 
         if not registration:
             return NotFoundError('Registration not found or already confirmed.').get_response()
 
-        registration.is_confirmed = True
+        registration.isConfirmed = True
         registration.save()
 
         return SuccessResponse('Registration approved successfully.').get_response()
@@ -38,11 +38,11 @@ class ApproveOrganizerView(APIView):
         if not request.user.is_superuser:
             return ForbiddenError('You do not have permission to perform this action.').get_response()
 
-        organizer_request = OrganizerRequest.objects.filter(user_id=user_id, is_approved=False).first()
+        organizer_request = OrganizerRequest.objects.filter(user_id=user_id, isApproved=False).first()
         if not organizer_request:
             return NotFoundError('Request not found.').get_response()
 
-        organizer_request.is_approved = True
+        organizer_request.isApproved = True
         organizer_request.save()
 
         user = organizer_request.user

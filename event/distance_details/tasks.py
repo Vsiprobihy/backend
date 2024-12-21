@@ -13,10 +13,10 @@ def apply_cost_change_rules(distance):
 
     # Apply rules based on participants and date
     for rule in applicable_rules:
-        if rule.from_date and rule.from_date <= today:
+        if rule.fromDate and rule.fromDate <= today:
             # Rule based on date
             distance.cost = rule.cost
-        elif rule.from_participants and current_participants >= rule.from_participants:
+        elif rule.fromParticipants and current_participants >= rule.fromParticipants:
             # Rule based on participants
             distance.cost = rule.cost
 

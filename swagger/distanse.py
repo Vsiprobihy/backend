@@ -25,7 +25,7 @@ class SwaggerDocs:
                                     type=openapi.TYPE_STRING,
                                     description='Name of the distance.',
                                 ),
-                                'competition_type': openapi.Schema(
+                                'competitionType': openapi.Schema(
                                     type=openapi.TYPE_STRING,
                                     description='Type of competition.',
                                 ),
@@ -44,11 +44,11 @@ class SwaggerDocs:
                                 'start_number_to': openapi.Schema(
                                     type=openapi.TYPE_INTEGER, description='End number.'
                                 ),
-                                'age_from': openapi.Schema(
+                                'ageFrom': openapi.Schema(
                                     type=openapi.TYPE_INTEGER,
                                     description='Minimum age.',
                                 ),
-                                'age_to': openapi.Schema(
+                                'ageTo': openapi.Schema(
                                     type=openapi.TYPE_INTEGER,
                                     description='Maximum age.',
                                 ),
@@ -107,7 +107,7 @@ class SwaggerDocs:
                                     type=openapi.TYPE_STRING,
                                     description='Name of the distance.',
                                 ),
-                                'competition_type': openapi.Schema(
+                                'competitionType': openapi.Schema(
                                     type=openapi.TYPE_STRING,
                                     description='Type of competition.',
                                 ),
@@ -126,11 +126,11 @@ class SwaggerDocs:
                                 'start_number_to': openapi.Schema(
                                     type=openapi.TYPE_INTEGER, description='End number.'
                                 ),
-                                'age_from': openapi.Schema(
+                                'ageFrom': openapi.Schema(
                                     type=openapi.TYPE_INTEGER,
                                     description='Minimum age.',
                                 ),
-                                'age_to': openapi.Schema(
+                                'ageTo': openapi.Schema(
                                     type=openapi.TYPE_INTEGER,
                                     description='Maximum age.',
                                 ),

@@ -9,14 +9,14 @@ from organization.serializers import OrganizerSerializer
 
 class PublicEventSerializer(serializers.ModelSerializer):
     distances = PublicDistanceEventSerializer(many=True)
-    competition_type = CompetitionTypeSerializer(many=True)
-    place_region = serializers.CharField(required=True)
+    competitionType = CompetitionTypeSerializer(many=True)
+    placeRegion = serializers.CharField(required=True)
     organizer = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
-        fields = ['name', 'organizer', 'competition_type', 'date_from', 'date_to',
-                  'place_region', 'place', 'photos', 'distances']
+        fields = ['name', 'organizer', 'competitionType', 'dateFrom', 'dateTo',
+                  'placeRegion', 'place', 'photos', 'distances']
         ref_name = 'EventSerializer'
 
     def get_organizer(self, obj):

@@ -15,7 +15,7 @@ class CostChangeRuleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CostChangeRule
-        fields = ['id', 'cost', 'from_participants', 'from_date']
+        fields = ['id', 'cost', 'fromParticipants', 'fromDate']
 
 
 class DistanceEventSerializer(serializers.ModelSerializer):
@@ -29,8 +29,8 @@ class DistanceEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = DistanceEvent
         fields = [
-            'id', 'name', 'competition_type', 'category', 'allow_registration',
-            'length', 'start_number_from', 'start_number_to', 'age_from', 'age_to',
+            'id', 'name', 'competitionType', 'category', 'allow_registration',
+            'length', 'start_number_from', 'start_number_to', 'ageFrom', 'ageTo',
             'cost', 'is_free', 'promo_only_registration',
             'show_name_on_number', 'show_start_number', 'event',
             'additional_options', 'cost_change_rules', 'age_categories', 'promo_codes'

@@ -8,7 +8,7 @@ from utils.constants.constants_event import COMPETITION_TYPES
 class DistanceEvent(models.Model):
 
     name = models.CharField(max_length=255)
-    competition_type = models.CharField(
+    competitionType = models.CharField(
         max_length=50, choices=COMPETITION_TYPES, default='running'
     )
     category = models.CharField(
@@ -21,8 +21,8 @@ class DistanceEvent(models.Model):
     start_number_to = models.PositiveIntegerField(blank=True, null=True)
     show_start_number = models.BooleanField(default=False)
     show_name_on_number = models.BooleanField(default=False)
-    age_from = models.PositiveIntegerField(blank=True, null=True)
-    age_to = models.PositiveIntegerField(blank=True, null=True)
+    ageFrom = models.PositiveIntegerField(blank=True, null=True)
+    ageTo = models.PositiveIntegerField(blank=True, null=True)
     cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     is_free = models.BooleanField(default=False)
     promo_only_registration = models.BooleanField(default=False)
@@ -46,7 +46,7 @@ class FavoriteDistance(models.Model):
         on_delete=models.CASCADE,
         related_name='favorite_by'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'distance')
@@ -63,8 +63,8 @@ class CostChangeRule(models.Model):
         db_index=True
     )
     cost = models.DecimalField(max_digits=10, decimal_places=2)
-    from_participants = models.PositiveIntegerField(null=True, blank=True)
-    from_date = models.DateField(null=True, blank=True)
+    fromParticipants = models.PositiveIntegerField(null=True, blank=True)
+    fromDate = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f'Cost: {self.cost}, From Participants: {self.from_participants}, From Date: {self.from_date}'
+        return f'Cost: {self.cost}, From Participants: {self.fromParticipants}, From Date: {self.fromDate}'

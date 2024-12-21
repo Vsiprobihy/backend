@@ -22,19 +22,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'password2',
-            'first_name',
-            'last_name',
-            'phone_number',
-            'date_of_birth',
+            'firstName',
+            'lastName',
+            'phoneNumber',
+            'dateOfBirth',
             'gender',
-            'date_of_birth',
-            't_shirt_size',
+            'dateOfBirth',
+            'tShirtSize',
             'country',
             'city',
-            'phone_number',
-            'sports_club',
-            'emergency_contact_name',
-            'emergency_contact_phone',
+            'phoneNumber',
+            'sportsClub',
+            'emergencyContactName',
+            'emergencyContactPhone',
         ]
 
     @staticmethod
@@ -63,7 +63,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('password2')
         user = get_user_model().objects.create_user(**validated_data)
-        # user.is_active = False  #ToDO:  повернути на проді
+        # user.isActive = False  #ToDO:  повернути на проді
         user.save()
         return user
 
@@ -82,19 +82,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'id',
             'email',
             'role',
-            'first_name',
-            'last_name',
-            'first_name_eng',
-            'last_name_eng',
+            'firstName',
+            'lastName',
+            'firstNameEng',
+            'lastNameEng',
             'gender',
-            'date_of_birth',
-            't_shirt_size',
+            'dateOfBirth',
+            'tShirtSize',
             'country',
             'city',
-            'phone_number',
-            'sports_club',
-            'emergency_contact_name',
-            'emergency_contact_phone',
+            'phoneNumber',
+            'sportsClub',
+            'emergencyContactName',
+            'emergencyContactPhone',
             'avatar',
         ]
 

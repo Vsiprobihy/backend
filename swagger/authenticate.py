@@ -57,7 +57,7 @@ class SwaggerDocs:
                 200: openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'access_token': openapi.Schema(
+                        'accessToken': openapi.Schema(
                             type=openapi.TYPE_OBJECT,
                             properties={
                                 'value': openapi.Schema(
@@ -82,7 +82,7 @@ class SwaggerDocs:
                             required=['value', 'expires'],
                         ),
                     },
-                    required=['access_token', 'refresh_token'],
+                    required=['accessToken', 'refreshToken'],
                 ),
                 400: openapi.Schema(
                     type=openapi.TYPE_OBJECT,

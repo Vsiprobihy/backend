@@ -18,7 +18,6 @@ def validate_phone_number(value):
         raise ValidationError(f'{value} is not a valid phone number format.')
 
 
-
 def validate_image_file(file):
     # Check the file extension
     allowed_extensions = ['jpg', 'jpeg', 'png']

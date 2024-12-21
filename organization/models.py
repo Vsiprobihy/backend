@@ -23,22 +23,22 @@ def organization_background_image_path(instance, filename):
 
 class Organization(models.Model):
     name = models.CharField(max_length=255)
-    site_url = models.URLField(blank=True, null=True)
-    phone_numbers = ArrayField(
+    siteUrl = models.URLField(blank=True, null=True)
+    phoneNumbers = ArrayField(
         models.CharField(max_length=20), blank=True, default=list
     )
     email = models.EmailField()
-    instagram_url = models.URLField(blank=True, null=True)
-    facebook_url = models.URLField(blank=True, null=True)
-    telegram_url = models.URLField(blank=True, null=True)
-    main_image = models.ImageField(
+    instagramUrl = models.URLField(blank=True, null=True)
+    facebookUrl = models.URLField(blank=True, null=True)
+    telegramUrl = models.URLField(blank=True, null=True)
+    mainImage = models.ImageField(
         upload_to=organization_main_image_path,
         blank=True,
         null=True,
         max_length=255,
         validators=[validate_image_file, validate_file_size]
     )
-    background_image = models.ImageField(
+    backgroundImage = models.ImageField(
         upload_to=organization_background_image_path,
         blank=True,
         null=True,
@@ -48,10 +48,10 @@ class Organization(models.Model):
 
     def save(self, *args, **kwargs):
         # Process images before saving them to the database
-        if self.main_image:
-            process_image(self.main_image, size=(300, 300))
-        if self.background_image:
-            process_image(self.background_image)
+        if self.mainImage:
+            process_image(self.mainImage, size=(300, 300))
+        if self.backgroundImage:
+            process_image(self.backgroundImage)
         super().save(*args, **kwargs)
 
     def __str__(self):

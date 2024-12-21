@@ -10,7 +10,7 @@ class AdditionalItemEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AdditionalItemEvent
-        fields = ['id', 'item_type', 'price', 'distance']
+        fields = ['id', 'itemType', 'price', 'distance']
         extra_kwargs = {
             'id': {'read_only': True}
         }

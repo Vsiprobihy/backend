@@ -39,12 +39,12 @@ class EventsListCreateView(APIView):
 
         if archives:
             events = (Event.objects.filter(organization__id__in=organizer_ids)
-                      .order_by('-date_from')
-                      .filter(date_to__lt=current_date)
+                      .order_by('-dateFrom')
+                      .filter(dateTo__lt=current_date)
                       )
         else:
             events = (Event.objects.filter(organization__id__in=organizer_ids)
-                      .order_by('-date_from')
+                      .order_by('-dateFrom')
                       )
 
         paginator = Pagination()

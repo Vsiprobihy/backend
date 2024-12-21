@@ -10,13 +10,13 @@ def test_create_user():
     user = CustomUser.objects.create_user(
         email='user@example.com',
         password='testpass123',
-        first_name='John',
-        last_name='Doe',
+        firstName='John',
+        lastName='Doe',
     )
     assert user.email == 'user@example.com'
     assert user.check_password('testpass123')
-    assert user.is_active
-    assert not user.is_staff
+    assert user.isActive
+    assert not user.isStaff
     assert not user.is_superuser
 
 
@@ -32,13 +32,13 @@ def test_create_superuser():
     superuser = CustomUser.objects.create_superuser(
         email='admin@example.com',
         password='adminpass123',
-        first_name='Admin',
-        last_name='User',
+        firstName='Admin',
+        lastName='User',
     )
     assert superuser.email == 'admin@example.com'
     assert superuser.check_password('adminpass123')
-    assert superuser.is_active
-    assert superuser.is_staff
+    assert superuser.isActive
+    assert superuser.isStaff
     assert superuser.is_superuser
 
 
@@ -47,8 +47,8 @@ def test_user_string_representation():
     user = CustomUser.objects.create_user(
         email='user@example.com',
         password='testpass123',
-        first_name='John',
-        last_name='Doe',
+        firstName='John',
+        lastName='Doe',
     )
     assert str(user) == 'user@example.com'
 
@@ -58,26 +58,26 @@ def test_user_fields():
     user = CustomUser.objects.create_user(
         email='user@example.com',
         password='testpass123',
-        first_name='John',
-        last_name='Doe',
+        firstName='John',
+        lastName='Doe',
         gender='M',
-        date_of_birth='1990-01-01',
-        t_shirt_size='M',
+        dateOfBirth='1990-01-01',
+        tShirtSize='M',
         country='USA',
         city='New York',
-        phone_number='+1234567890',
-        sports_club='NY Club',
-        emergency_contact_name='Jane Doe',
-        emergency_contact_phone='+0987654321',
+        phoneNumber='+1234567890',
+        sportsClub='NY Club',
+        emergencyContactName='Jane Doe',
+        emergencyContactPhone='+0987654321',
     )
-    assert user.first_name == 'John'
-    assert user.last_name == 'Doe'
+    assert user.firstName == 'John'
+    assert user.lastName == 'Doe'
     assert user.gender == 'M'
-    assert str(user.date_of_birth) == '1990-01-01'
-    assert user.t_shirt_size == 'M'
+    assert str(user.dateOfBirth) == '1990-01-01'
+    assert user.tShirtSize == 'M'
     assert user.country == 'USA'
     assert user.city == 'New York'
-    assert user.phone_number == '+1234567890'
-    assert user.sports_club == 'NY Club'
-    assert user.emergency_contact_name == 'Jane Doe'
-    assert user.emergency_contact_phone == '+0987654321'
+    assert user.phoneNumber == '+1234567890'
+    assert user.sportsClub == 'NY Club'
+    assert user.emergencyContactName == 'Jane Doe'
+    assert user.emergencyContactPhone == '+0987654321'

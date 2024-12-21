@@ -10,4 +10,4 @@ class UserDistanceRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserDistanceRegistration
-        fields = ['id', 'user', 'distance', 'registration_date', 'is_confirmed']
+        fields = ['id', 'user', 'distance', 'registrationDate', 'isConfirmed']
