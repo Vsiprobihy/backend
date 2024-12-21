@@ -135,10 +135,10 @@ class Responce:
                         type=openapi.TYPE_OBJECT,
                         required=[
                             'id', 'name', 'competitionType', 'category',
-                            'start_number_from', 'start_number_to',
-                            'allow_registration', 'length',
-                            'promo_only_registration', 'cost', 'is_free',
-                            'show_name_on_number', 'show_start_number', 'event'
+                            'startNumberFrom', 'startNumberTo',
+                            'allowRegistration', 'length',
+                            'promoOnlyRegistration', 'cost', 'isFree',
+                            'showNameOnNumber', 'showStartNumber', 'event'
                         ],
                         properties={
                             'id': openapi.Schema(
@@ -157,7 +157,7 @@ class Responce:
                                 type=openapi.TYPE_STRING,
                                 description='Category of participants'
                             ),
-                            'allow_registration': openapi.Schema(
+                            'allowRegistration': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Flag for registration availability'
                             ),
@@ -165,11 +165,11 @@ class Responce:
                                 type=openapi.TYPE_STRING,
                                 description='Distance length'
                             ),
-                            'start_number_from': openapi.Schema(
+                            'startNumberFrom': openapi.Schema(
                                 type=openapi.TYPE_INTEGER,
                                 description='Start number range (from)'
                             ),
-                            'start_number_to': openapi.Schema(
+                            'startNumberTo': openapi.Schema(
                                 type=openapi.TYPE_INTEGER,
                                 description='Start number range (to)'
                             ),
@@ -185,19 +185,19 @@ class Responce:
                                 type=openapi.TYPE_STRING,
                                 description='Cost of participation'
                             ),
-                            'is_free': openapi.Schema(
+                            'isFree': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Flag indicating free participation'
                             ),
-                            'promo_only_registration': openapi.Schema(
+                            'promoOnlyRegistration': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Promo-only registration flag'
                             ),
-                            'show_name_on_number': openapi.Schema(
+                            'showNameOnNumber': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Flag to show name on number'
                             ),
-                            'show_start_number': openapi.Schema(
+                            'showStartNumber': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Flag to show start number'
                             ),
@@ -205,7 +205,7 @@ class Responce:
                                 type=openapi.TYPE_INTEGER,
                                 description='Associated event ID'
                             ),
-                            'additional_options': openapi.Schema(
+                            'additionalOptions': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
                                 items=openapi.Schema(
                                     type=openapi.TYPE_OBJECT,
@@ -230,7 +230,7 @@ class Responce:
                                     },
                                 ),
                             ),
-                            'cost_change_rules': openapi.Schema(
+                            'costChangeRules': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
                                 items=openapi.Schema(
                                     type=openapi.TYPE_OBJECT,
@@ -258,7 +258,7 @@ class Responce:
                                 ),
                                 description='List of cost change rules for the distance'
                             ),
-                            'age_categories': openapi.Schema(
+                            'ageCategories': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
                                 items=openapi.Schema(
                                     type=openapi.TYPE_OBJECT,
@@ -288,7 +288,7 @@ class Responce:
                                 ),
                                 description='List of age categories for the distance'
                             ),
-                            'promo_codes': openapi.Schema(
+                            'promoCodes': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
                                 items=openapi.Schema(
                                     type=openapi.TYPE_OBJECT,
@@ -423,16 +423,16 @@ class Request:
                         'length': openapi.Schema(type=openapi.TYPE_NUMBER,
                                                  description='Length of the distance in km', default=5.0),
 
-                        'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER,
+                        'startNumberFrom': openapi.Schema(type=openapi.TYPE_INTEGER,
                                                             description='Starting number', default=1),
 
-                        'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER,
+                        'startNumberTo': openapi.Schema(type=openapi.TYPE_INTEGER,
                                                           description='Ending number', default=300),
 
-                        'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'showStartNumber': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                             description='Show start number', default=True),
 
-                        'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'showNameOnNumber': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                               description='Show name on the number',
                                                               default=True),
                         'ageFrom': openapi.Schema(type=openapi.TYPE_INTEGER, description='Minimum age',
@@ -441,16 +441,16 @@ class Request:
                                                  default=60),
                         'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description='Cost of the distance',
                                                default=55),
-                        'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free',
+                        'isFree': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free',
                                                   # noqa: E501
                                                   default=False),
-                        'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'promoOnlyRegistration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                                   description='Promo-only registration',
                                                                   default=False),
-                        'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'allowRegistration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                              description='Allow registration', default=True),
 
-                        'additional_options': openapi.Schema(
+                        'additionalOptions': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
@@ -468,7 +468,7 @@ class Request:
                             ),
                             description='Additional options for the distance'
                         ),
-                        'cost_change_rules': openapi.Schema(
+                        'costChangeRules': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
@@ -498,7 +498,7 @@ class Request:
                             ),
                             description='List of cost change rules for the distance'
                         ),
-                        'age_categories': openapi.Schema(
+                        'ageCategories': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
@@ -533,7 +533,7 @@ class Request:
                             ),
                             description='List of age categories for the distance'
                         ),
-                        'promo_codes': openapi.Schema(
+                        'promoCodes': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
@@ -576,10 +576,10 @@ class Request:
                     },
                     required=[
                         'name', 'competitionType', 'category',
-                        'start_number_from', 'start_number_to',
-                        'allow_registration', 'length',
-                        'promo_only_registration', 'cost', 'is_free',
-                        'show_name_on_number', 'show_start_number', 'event'
+                        'startNumberFrom', 'startNumberTo',
+                        'allowRegistration', 'length',
+                        'promoOnlyRegistration', 'cost', 'isFree',
+                        'showNameOnNumber', 'showStartNumber', 'event'
                     ],
                 ),
                 description='List of distances',
@@ -694,16 +694,16 @@ class Request:
                         'length': openapi.Schema(type=openapi.TYPE_NUMBER,
                                                  description='Length of the distance in km', default=5.0),
 
-                        'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER,
+                        'startNumberFrom': openapi.Schema(type=openapi.TYPE_INTEGER,
                                                             description='Starting number', default=1),
 
-                        'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER,
+                        'startNumberTo': openapi.Schema(type=openapi.TYPE_INTEGER,
                                                           description='Ending number', default=300),
 
-                        'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'showStartNumber': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                             description='Show start number', default=True),
 
-                        'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'showNameOnNumber': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                               description='Show name on the number',
                                                               default=True),
                         'ageFrom': openapi.Schema(type=openapi.TYPE_INTEGER, description='Minimum age',
@@ -712,16 +712,16 @@ class Request:
                                                  default=60),
                         'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description='Cost of the distance',
                                                default=55),
-                        'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free',
+                        'isFree': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free',
                                                   # noqa: E501
                                                   default=False),
-                        'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'promoOnlyRegistration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                                   description='Promo-only registration',
                                                                   default=False),
-                        'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'allowRegistration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                              description='Allow registration', default=True),
 
-                        'additional_options': openapi.Schema(
+                        'additionalOptions': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
@@ -737,7 +737,7 @@ class Request:
                             ),
                             description='Additional options for the distance'
                         ),
-                        'cost_change_rules': openapi.Schema(
+                        'costChangeRules': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
@@ -762,7 +762,7 @@ class Request:
                             ),
                             description='List of cost change rules for the distance'
                         ),
-                        'age_categories': openapi.Schema(
+                        'ageCategories': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
@@ -792,7 +792,7 @@ class Request:
                             ),
                             description='List of age categories for the distance'
                         ),
-                        'promo_codes': openapi.Schema(
+                        'promoCodes': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
@@ -830,10 +830,10 @@ class Request:
                     },
                     required=[
                         'name', 'competitionType', 'category',
-                        'start_number_from', 'start_number_to',
-                        'allow_registration', 'length',
-                        'promo_only_registration', 'cost', 'is_free',
-                        'show_name_on_number', 'show_start_number', 'event'
+                        'startNumberFrom', 'startNumberTo',
+                        'allowRegistration', 'length',
+                        'promoOnlyRegistration', 'cost', 'isFree',
+                        'showNameOnNumber', 'showStartNumber', 'event'
                     ],
                 ),
                 description='List of distances',

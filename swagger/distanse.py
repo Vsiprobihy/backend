@@ -37,11 +37,11 @@ class SwaggerDocs:
                                     type=openapi.TYPE_NUMBER,
                                     description='Distance length.',
                                 ),
-                                'start_number_from': openapi.Schema(
+                                'startNumberFrom': openapi.Schema(
                                     type=openapi.TYPE_INTEGER,
                                     description='Start number.',
                                 ),
-                                'start_number_to': openapi.Schema(
+                                'startNumberTo': openapi.Schema(
                                     type=openapi.TYPE_INTEGER, description='End number.'
                                 ),
                                 'ageFrom': openapi.Schema(
@@ -56,23 +56,23 @@ class SwaggerDocs:
                                     type=openapi.TYPE_NUMBER,
                                     description='Participation cost.',
                                 ),
-                                'is_free': openapi.Schema(
+                                'isFree': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Is event free.',
                                 ),
-                                'promo_only_registration': openapi.Schema(
+                                'promoOnlyRegistration': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Promo registration only.',
                                 ),
-                                'allow_registration': openapi.Schema(
+                                'allowRegistration': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Allow registration.',
                                 ),
-                                'show_name_on_number': openapi.Schema(
+                                'showNameOnNumber': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Show name on number.',
                                 ),
-                                'show_start_number': openapi.Schema(
+                                'showStartNumber': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Show start number.',
                                 ),
@@ -119,11 +119,11 @@ class SwaggerDocs:
                                     type=openapi.TYPE_NUMBER,
                                     description='Distance length.',
                                 ),
-                                'start_number_from': openapi.Schema(
+                                'startNumberFrom': openapi.Schema(
                                     type=openapi.TYPE_INTEGER,
                                     description='Start number.',
                                 ),
-                                'start_number_to': openapi.Schema(
+                                'startNumberTo': openapi.Schema(
                                     type=openapi.TYPE_INTEGER, description='End number.'
                                 ),
                                 'ageFrom': openapi.Schema(
@@ -138,23 +138,23 @@ class SwaggerDocs:
                                     type=openapi.TYPE_NUMBER,
                                     description='Participation cost.',
                                 ),
-                                'is_free': openapi.Schema(
+                                'isFree': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Is event free.',
                                 ),
-                                'promo_only_registration': openapi.Schema(
+                                'promoOnlyRegistration': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Promo registration only.',
                                 ),
-                                'allow_registration': openapi.Schema(
+                                'allowRegistration': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Allow registration.',
                                 ),
-                                'show_name_on_number': openapi.Schema(
+                                'showNameOnNumber': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Show name on number.',
                                 ),
-                                'show_start_number': openapi.Schema(
+                                'showStartNumber': openapi.Schema(
                                     type=openapi.TYPE_BOOLEAN,
                                     description='Show start number.',
                                 ),

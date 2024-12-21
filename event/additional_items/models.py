@@ -7,7 +7,7 @@ class AdditionalItemEvent(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     distance = models.ForeignKey(
         'distance_details.DistanceEvent',
-        related_name='additional_options',
+        related_name='additionalOptions',
         on_delete=models.CASCADE, null=False
         )
 

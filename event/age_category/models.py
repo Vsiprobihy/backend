@@ -9,7 +9,7 @@ class AgeCategory(models.Model):
     ageTo = models.PositiveIntegerField()
     distance = models.ForeignKey(
         'distance_details.DistanceEvent',
-        related_name='age_categories',
+        related_name='ageCategories',
         on_delete=models.CASCADE
     )
 

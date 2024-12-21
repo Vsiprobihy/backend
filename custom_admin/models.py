@@ -4,7 +4,7 @@ from authentication.models import CustomUser
 
 
 class OrganizerRequest(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='organizer_requests')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='organizerRequests')
     isApproved = models.BooleanField(default=False)
     createdAt = models.DateTimeField(auto_now_add=True)
 

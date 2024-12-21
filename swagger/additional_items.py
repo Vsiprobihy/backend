@@ -51,11 +51,11 @@ class SwaggerDocs:
                         'price': openapi.Schema(
                             type=openapi.TYPE_NUMBER, description='Item price'
                         ),
-                        'is_free': openapi.Schema(
+                        'isFree': openapi.Schema(
                             type=openapi.TYPE_BOOLEAN, description='Is the item free'
                         ),
                     },
-                    required=['id', 'itemType', 'price', 'is_free'],
+                    required=['id', 'itemType', 'price', 'isFree'],
                 ),
             ),
             'responses': {
@@ -83,7 +83,7 @@ class SwaggerDocs:
                     'price': openapi.Schema(
                         type=openapi.TYPE_NUMBER, description='Price of the item'
                     ),
-                    'is_free': openapi.Schema(
+                    'isFree': openapi.Schema(
                         type=openapi.TYPE_BOOLEAN, description='Is the item free or not'
                     ),
                 },

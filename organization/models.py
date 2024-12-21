@@ -60,10 +60,10 @@ class Organization(models.Model):
 
 class Organizer(models.Model):
     user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='organizer_user', null=False
+        CustomUser, on_delete=models.CASCADE, related_name='organizerUser', null=False
     )
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name='organizer_organization', null=False
+        Organization, on_delete=models.CASCADE, related_name='organizerOrganization', null=False
     )
 
     class Meta:

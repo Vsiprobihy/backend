@@ -9,7 +9,7 @@ def apply_cost_change_rules(distance):
     today = date.today()
     current_participants = 100  # Replace this with logic to get the current participant count
 
-    applicable_rules = distance.cost_change_rules.all()
+    applicable_rules = distance.costChangeRules.all()
 
     # Apply rules based on participants and date
     for rule in applicable_rules:

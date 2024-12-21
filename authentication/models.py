@@ -105,7 +105,7 @@ class CustomUser(BaseProfile, AbstractBaseUser, PermissionsMixin):
 class AdditionalProfile(BaseProfile):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name='additional_profiles',
+        related_name='additionalProfiles',
         on_delete=models.CASCADE,
     )
     email = models.EmailField()

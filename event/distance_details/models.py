@@ -17,16 +17,16 @@ class DistanceEvent(models.Model):
     length = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )  # Distance in km or meters
-    start_number_from = models.PositiveIntegerField(blank=True, null=True)
-    start_number_to = models.PositiveIntegerField(blank=True, null=True)
-    show_start_number = models.BooleanField(default=False)
-    show_name_on_number = models.BooleanField(default=False)
+    startNumberFrom = models.PositiveIntegerField(blank=True, null=True)
+    startNumberTo = models.PositiveIntegerField(blank=True, null=True)
+    showStartNumber = models.BooleanField(default=False)
+    showNameOnNumber = models.BooleanField(default=False)
     ageFrom = models.PositiveIntegerField(blank=True, null=True)
     ageTo = models.PositiveIntegerField(blank=True, null=True)
     cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    is_free = models.BooleanField(default=False)
-    promo_only_registration = models.BooleanField(default=False)
-    allow_registration = models.BooleanField(default=True)
+    isFree = models.BooleanField(default=False)
+    promoOnlyRegistration = models.BooleanField(default=False)
+    allowRegistration = models.BooleanField(default=True)
     event = models.ForeignKey(
         'event.Event', related_name='distances', on_delete=models.CASCADE
     )
@@ -39,12 +39,12 @@ class FavoriteDistance(models.Model):
     user = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
-        related_name='favorite_distances'
+        related_name='favoriteDistances'
     )
     distance = models.ForeignKey(
         DistanceEvent,
         on_delete=models.CASCADE,
-        related_name='favorite_by'
+        related_name='favoriteBy'
     )
     createdAt = models.DateTimeField(auto_now_add=True)
 
@@ -58,7 +58,7 @@ class FavoriteDistance(models.Model):
 class CostChangeRule(models.Model):
     distance = models.ForeignKey(
         'distance_details.DistanceEvent',
-        related_name='cost_change_rules',
+        related_name='costChangeRules',
         on_delete=models.CASCADE,
         db_index=True
     )

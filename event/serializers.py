@@ -100,26 +100,26 @@ class EventSerializer(serializers.ModelSerializer):
         event.competitionType.set(competitionTypes)
 
         for distance_data in distances_data:
-            additional_options_data = distance_data.pop('additional_options', [])
-            cost_change_rules_data = distance_data.pop('cost_change_rules', [])
-            age_categories_data = distance_data.pop('age_categories', [])
-            promo_codes_data = distance_data.pop('promo_codes', [])
+            additionalOptionsData = distance_data.pop('additionalOptions', [])
+            costChangeRulesData = distance_data.pop('costChangeRules', [])
+            ageCategoriesData = distance_data.pop('ageCategories', [])
+            promoCodesData = distance_data.pop('promoCodes', [])
 
             distance = DistanceEvent.objects.create(event=event, **distance_data)
 
-            for option_data in additional_options_data:
+            for option_data in additionalOptionsData:
                 option_data['distance'] = distance
                 AdditionalItemEvent.objects.create(**option_data)
 
-            for rule_data in cost_change_rules_data:
+            for rule_data in costChangeRulesData:
                 rule_data['distance'] = distance
                 CostChangeRule.objects.create(**rule_data)
 
-            for category_data in age_categories_data:
+            for category_data in ageCategoriesData:
                 category_data['distance'] = distance
                 AgeCategory.objects.create(**category_data)
 
-            for promo_code_data in promo_codes_data:
+            for promo_code_data in promoCodesData:
                 promo_code_data['distance'] = distance
                 PromoCode.objects.create(**promo_code_data)
 

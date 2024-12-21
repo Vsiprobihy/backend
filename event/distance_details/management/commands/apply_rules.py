@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         distances = DistanceEvent.objects.filter(
             event__status='published',
-            cost_change_rules__isnull=False
+            costChangeRules__isnull=False
         ).distinct()
 
         if not distances.exists():

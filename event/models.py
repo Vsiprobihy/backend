@@ -32,7 +32,7 @@ class Event(models.Model):
     schedulePdf = models.FileField(upload_to='event_schedule/', blank=True, null=True)
     coOrganizer = models.TextField(blank=True, null=True)
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name='event_organization', null=False
+        Organization, on_delete=models.CASCADE, related_name='eventOrganization', null=False
     )
     status = models.CharField(
         max_length=12, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True

@@ -21,7 +21,7 @@ class OrganizationListCreateView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Organization.get)
     def get(self, request):
         if request.user.is_authenticated:
-            organization = Organization.objects.filter(organizer_organization__user=request.user)
+            organization = Organization.objects.filter(organizerOrganization__user=request.user)
             serializer = OrganizationSerializer(organization, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response([], status=status.HTTP_200_OK)
@@ -45,7 +45,7 @@ class OrganizationDetailView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Organization.get)
     def get(self, request, organization_id):
         if request.user.is_authenticated:
-            organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
+            organization = Organization.objects.filter(organizerOrganization__user=request.user, pk=organization_id).first()  # noqa: E501
             if organization:
                 serializer = OrganizationSerializer(organization, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -54,7 +54,7 @@ class OrganizationDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Organization.put)
     def put(self, request, organization_id):
-        organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
+        organization = Organization.objects.filter(organizerOrganization__user=request.user, pk=organization_id).first()  # noqa: E501
         if not organization:
             return ForbiddenError('You dont have permission to this action').get_response()
 
@@ -66,7 +66,7 @@ class OrganizationDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Organization.patch)
     def patch(self, request, organization_id):
-        organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
+        organization = Organization.objects.filter(organizerOrganization__user=request.user, pk=organization_id).first()  # noqa: E501
         if not organization:
             return ForbiddenError('You dont have permission to this action').get_response()
 
@@ -78,7 +78,7 @@ class OrganizationDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Organization.delete)
     def delete(self, request, organization_id):
-        event = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()
+        event = Organization.objects.filter(organizerOrganization__user=request.user, pk=organization_id).first()
         if event:
             event.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

@@ -20,7 +20,7 @@ class PromoCode(models.Model):
     isSingleUse = models.BooleanField(default=False)
     distance = models.ForeignKey(
         'distance_details.DistanceEvent',
-        related_name='promo_codes',
+        related_name='promoCodes',
         on_delete=models.CASCADE
     )
 
