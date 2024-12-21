@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from event.distance_details.serializers import DistanceEventSerializer
+
 from .models import UserDistanceRegistration
 
 
