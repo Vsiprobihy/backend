@@ -4,8 +4,6 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from authentication.auth_views import google_account_info, google_login
 from authentication.views import (
     ActivateUserEmailView,
-    AdditionalProfileDetailView,
-    AdditionalProfileListView,
     CustomResetPasswordConfirmView,
     CustomResetPasswordView,
     LoginView,
@@ -33,14 +31,4 @@ urlpatterns = [
         name='reset_password_confirm',
     ),
     path('activate/<str:uid>/<str:token>/', ActivateUserEmailView.as_view(), name='activate email'),
-    path(
-        'profile/additional_profiles/',
-        AdditionalProfileListView.as_view(),
-        name='additional_profiles_list',
-    ),
-    path(
-        'profile/additional_profiles/<int:id>/',
-        AdditionalProfileDetailView.as_view(),
-        name='additional_profile_detail',
-    ),
 ]

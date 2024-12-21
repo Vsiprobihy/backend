@@ -11,10 +11,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from authentication.models import AdditionalProfile, CustomUser
+from authentication.models import CustomUser
 from authentication.serializers import (
-    AdditionalProfileDetailSerializer,
-    AdditionalProfileSerializer,
     LoginSerializer,
     RegisterSerializer,
     UserProfileSerializer,
@@ -161,55 +159,3 @@ class UserProfileView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AdditionalProfileListView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileList.get)
-    def get(self, request):
-        profiles = request.user.additional_profiles.all()
-        serializer = AdditionalProfileSerializer(profiles, many=True)
-        return Response(serializer.data)
-
-    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileList.post)
-    def post(self, request):
-        serializer = AdditionalProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AdditionalProfileDetailView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.get)
-    def get(self, request, _id):
-        try:
-            profile = request.user.additional_profiles.get(id=_id)
-            serializer = AdditionalProfileDetailSerializer(profile)
-            return Response(serializer.data)
-        except AdditionalProfile.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.put)
-    def put(self, request, _id):
-        try:
-            profile = request.user.additional_profiles.get(id=_id)
-            serializer = AdditionalProfileDetailSerializer(profile, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except AdditionalProfile.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    @swagger_auto_schema(**SwaggerDocs.AdditionalProfileDetail.delete)
-    def delete(self, request, _id):
-        try:
-            profile = request.user.additional_profiles.get(id=_id)
-            profile.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except AdditionalProfile.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
