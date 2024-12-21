@@ -18,8 +18,8 @@ def user(db):
     return User.objects.create_user(
         email='user@example.com',
         password='String1!',
-        first_name='John',
-        last_name='Doe',
+        firstName='John',
+        lastName='Doe',
     )
 
 
@@ -66,20 +66,20 @@ def test_get_user_profile(api_client, user):
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['first_name'] == 'John'
-    assert response.data['last_name'] == 'Doe'
+    assert response.data['firstName'] == 'John'
+    assert response.data['lastName'] == 'Doe'
 
 
 @pytest.mark.django_db
 def test_update_user_profile_put(api_client, user):
     api_client.force_authenticate(user=user)
     url = reverse('user_profile')
-    data = {'first_name': 'Jane', 'last_name': 'Smith', 'city': 'New York'}
+    data = {'firstName': 'Jane', 'lastName': 'Smith', 'city': 'New York'}
     response = api_client.put(url, data)
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['first_name'] == 'Jane'
-    assert response.data['last_name'] == 'Smith'
+    assert response.data['firstName'] == 'Jane'
+    assert response.data['lastName'] == 'Smith'
     assert response.data['city'] == 'New York'
 
 
@@ -87,9 +87,9 @@ def test_update_user_profile_put(api_client, user):
 def test_update_user_profile_patch(api_client, user):
     api_client.force_authenticate(user=user)
     url = reverse('user_profile')
-    data = {'first_name': 'Jane'}
+    data = {'firstName': 'Jane'}
     response = api_client.patch(url, data)
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['first_name'] == 'Jane'
-    assert response.data['last_name'] == 'Doe'
+    assert response.data['firstName'] == 'Jane'
+    assert response.data['lastName'] == 'Doe'

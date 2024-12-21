@@ -28,29 +28,25 @@ class BaseProfile(models.Model):
         ('XXXL', 'Very Extra Extra Large'),
     ]
 
-    first_name = models.CharField(max_length=50, null=True, blank=True)
-    last_name = models.CharField(max_length=50, null=True, blank=True)
+    firstName = models.CharField(max_length=50)
+    lastName = models.CharField(max_length=50)
 
-    first_name_eng = models.CharField(max_length=50, null=True, blank=True)
-    last_name_eng = models.CharField(max_length=50, null=True, blank=True)
+    firstNameEng = models.CharField(max_length=50, null=True, blank=True)
+    lastNameEng = models.CharField(max_length=50, null=True, blank=True)
 
-    gender = models.CharField(
-        max_length=10, choices=[('M', 'Male'), ('F', 'Female')], null=True, blank=True
-    )
-    date_of_birth = models.DateField(null=True, blank=True)
-    t_shirt_size = models.CharField(
-        max_length=5, choices=T_SHIRT_SIZE_CHOICES, null=True, blank=True
+    gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female')], null=True)
+    dateOfBirth = models.DateField(null=True)
+    tShirtSize = models.CharField(
+        max_length=5, choices=T_SHIRT_SIZE_CHOICES, null=True
     )
 
-    country = models.CharField(max_length=100, null=True, blank=True)
-    city = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, default='Unknown', null=True)
+    city = models.CharField(max_length=100, default='Unknown', null=True)
 
-    phone_number = models.CharField(
+    phoneNumber = models.CharField(
         _('phone number'),
         max_length=20,
         null=True,
-        unique=False,
-        blank=True,
         validators=[validate_phone_number],
     )
 
@@ -62,15 +58,13 @@ class BaseProfile(models.Model):
         validators=[validate_image_file, validate_file_size]
     )
 
-    sports_club = models.CharField(max_length=100, null=True, blank=True)
+    sportsClub = models.CharField(max_length=100, null=True)
 
-    emergency_contact_name = models.CharField(max_length=100, null=True, blank=True)
-    emergency_contact_phone = models.CharField(
+    emergencyContactName = models.CharField(max_length=100, null=True)
+    emergencyContactPhone = models.CharField(
         _('phone number'),
-        max_length=20,
         null=True,
-        unique=False,
-        blank=True,
+        max_length=20,
         validators=[validate_phone_number],
     )
 
@@ -96,13 +90,13 @@ class CustomUser(BaseProfile, AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=USER)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    isActive = models.BooleanField(default=True)
+    isStaff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['firstName', 'lastName']
 
     def __str__(self):
         return self.email
@@ -111,10 +105,10 @@ class CustomUser(BaseProfile, AbstractBaseUser, PermissionsMixin):
 class AdditionalProfile(BaseProfile):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name='additional_profiles',
+        related_name='additionalProfiles',
         on_delete=models.CASCADE,
     )
     email = models.EmailField()
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.email})'
+        return f'{self.firstName} {self.lastName} ({self.email})'

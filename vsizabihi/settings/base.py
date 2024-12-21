@@ -30,14 +30,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # installed apps
     'djoser',
     'rest_framework',
     'corsheaders',
     'drf_yasg',
     'social_django',
+
+    # my app
     'authentication',
     'custom_admin',
     'organization',
+    'user',
     'event',
     'public_event',
     'event.distance_details',

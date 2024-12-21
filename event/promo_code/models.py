@@ -14,15 +14,15 @@ class PromoCode(models.Model):
     ]
 
     name = models.CharField(max_length=255)
-    promo_type = models.CharField(max_length=20, choices=PROMO_TYPE_CHOICES)
-    discount_value = models.DecimalField(max_digits=10, decimal_places=2)
-    is_active = models.BooleanField(default=False)
-    is_single_use = models.BooleanField(default=False)
+    promoType = models.CharField(max_length=20, choices=PROMO_TYPE_CHOICES)
+    discountValue = models.DecimalField(max_digits=10, decimal_places=2)
+    isActive = models.BooleanField(default=False)
+    isSingleUse = models.BooleanField(default=False)
     distance = models.ForeignKey(
         'distance_details.DistanceEvent',
-        related_name='promo_codes',
+        related_name='promoCodes',
         on_delete=models.CASCADE
     )
 
     def __str__(self):
-        return f'{self.name} - {self.get_promo_type_display()} ({self.discount_value})'
+        return f'{self.name} - {self.get_promoType_display()} ({self.discountValue})'

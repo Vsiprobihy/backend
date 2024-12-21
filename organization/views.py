@@ -4,10 +4,12 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentication.models import CustomUser
 from authentication.permissions import IsOrganizer
 from organization.models import Organization, Organizer
 from organization.serializers import OrganizationSerializer
 from swagger.organization import SwaggerDocs
+from utils.custom_exceptions import ForbiddenError, NotFoundError, SuccessResponse, UnauthorizedError
 
 
 User = get_user_model()
@@ -19,7 +21,7 @@ class OrganizationListCreateView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Organization.get)
     def get(self, request):
         if request.user.is_authenticated:
-            organization = Organization.objects.filter(organizer_organization__user=request.user)
+            organization = Organization.objects.filter(organizerOrganization__user=request.user)
             serializer = OrganizationSerializer(organization, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response([], status=status.HTTP_200_OK)
@@ -32,7 +34,6 @@ class OrganizationListCreateView(APIView):
             Organizer.objects.create(
                 user=request.user,
                 organization=organization,
-                role=Organizer.OWNER,
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -44,18 +45,18 @@ class OrganizationDetailView(APIView):
     @swagger_auto_schema(**SwaggerDocs.Organization.get)
     def get(self, request, organization_id):
         if request.user.is_authenticated:
-            organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
+            organization = Organization.objects.filter(organizerOrganization__user=request.user, pk=organization_id).first()  # noqa: E501
             if organization:
                 serializer = OrganizationSerializer(organization, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+            return ForbiddenError('You dont have permission to this action').get_response()
+        return UnauthorizedError('Unauthorized').get_response()
 
     @swagger_auto_schema(**SwaggerDocs.Organization.put)
     def put(self, request, organization_id):
-        organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
+        organization = Organization.objects.filter(organizerOrganization__user=request.user, pk=organization_id).first()  # noqa: E501
         if not organization:
-            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
+            return ForbiddenError('You dont have permission to this action').get_response()
 
         serializer = OrganizationSerializer(organization, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
@@ -65,9 +66,9 @@ class OrganizationDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Organization.patch)
     def patch(self, request, organization_id):
-        organization = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()  # noqa: E501
+        organization = Organization.objects.filter(organizerOrganization__user=request.user, pk=organization_id).first()  # noqa: E501
         if not organization:
-            return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
+            return ForbiddenError('You dont have permission to this action').get_response()
 
         serializer = OrganizationSerializer(organization, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
@@ -77,14 +78,14 @@ class OrganizationDetailView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.Organization.delete)
     def delete(self, request, organization_id):
-        event = Organization.objects.filter(organizer_organization__user=request.user, pk=organization_id).first()
+        event = Organization.objects.filter(organizerOrganization__user=request.user, pk=organization_id).first()
         if event:
             event.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response({'error': 'You dont have permission to this action'}, status=status.HTTP_404_NOT_FOUND)
+        return ForbiddenError('You dont have permission to this action').get_response()
 
 
-class InviteModeratorView(APIView):
+class InviteOrganizerView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOrganizer]
 
     @swagger_auto_schema(**SwaggerDocs.Organization.post)
@@ -94,32 +95,20 @@ class InviteModeratorView(APIView):
 
         user = User.objects.filter(email=email).first()
         if not user:
-            return Response(
-                {'error': 'User with this email not found'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return NotFoundError('User with this email not found').get_response()
 
         organization = Organization.objects.filter(pk=organization_id).first()
         if not organization:
-            return Response(
-                {'error': 'Organization not found'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return NotFoundError('User with this email not found').get_response()
 
-        is_owner = Organizer.objects.filter(
-            organization=organization, user=request.user, role=Organizer.OWNER
+        is_organizer = Organizer.objects.filter(
+            organization=organization, user=request.user, role=CustomUser.ORGANIZER
         ).exists()
-        if not is_owner:
-            return Response(
-                {'error': 'You are not the owner of this organization'},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        if not is_organizer:
+            return ForbiddenError('You are not the organizer of this organization').get_response()
 
         Organizer.objects.create(
-            user=user, organization=organization, role=Organizer.MODERATOR
+            user=user, organization=organization, role=CustomUser.ORGANIZER
         )
 
-        return Response(
-            {'success': 'Moderator invited successfully'},
-            status=status.HTTP_200_OK
-        )
+        return SuccessResponse('Organizer invited successfully').get_response()

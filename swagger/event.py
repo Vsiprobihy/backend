@@ -1,5 +1,6 @@
 from drf_yasg import openapi
 
+from event.serializers import UpdateEventStatusSerializer  # noqa
 from swagger.event_variables import Request, Responce
 
 
@@ -71,4 +72,16 @@ class SwaggerDocs:
                 404: 'Event not found',
             },
             'operation_description': 'Delete an event by ID.',
+        }
+
+    class UpdateEventStatusView:
+        post = {
+            'tags': ['Event'],
+            'request_body': UpdateEventStatusSerializer,
+            'responses': {
+                200: 'Event status updated successfully',
+                400: 'Bad Request',
+                403: 'Forbidden',
+            },
+            'operation_description': 'Update event status by ID.',
         }

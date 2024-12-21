@@ -8,7 +8,7 @@ class AgeCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AgeCategory
-        fields = ['id', 'name', 'gender', 'age_from', 'age_to', 'distance']
+        fields = ['id', 'name', 'gender', 'ageFrom', 'ageTo', 'distance']
         extra_kwargs = {
             'distance': {'read_only': True}
         }

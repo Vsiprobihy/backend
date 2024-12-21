@@ -1,4 +1,3 @@
-
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
@@ -19,10 +18,27 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['email', 'password', 'password2']
+        fields = [
+            'email',
+            'password',
+            'password2',
+            'firstName',
+            'lastName',
+            'phoneNumber',
+            'dateOfBirth',
+            'gender',
+            'dateOfBirth',
+            'tShirtSize',
+            'country',
+            'city',
+            'phoneNumber',
+            'sportsClub',
+            'emergencyContactName',
+            'emergencyContactPhone',
+        ]
 
     @staticmethod
-    def validate_password(value):
+    def validate_password(value):   #ToDO:  повернути на проді
         """
         Ensure that the password contains at least:
         - 1 uppercase letter
@@ -47,14 +63,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('password2')
         user = get_user_model().objects.create_user(**validated_data)
-        # user.is_active = False
+        # user.isActive = False  #ToDO:  повернути на проді
         user.save()
         return user
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField()
-    password = serializers.CharField()
+    email = serializers.CharField(default='user@example.com')
+    password = serializers.CharField(default='string')
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -64,21 +80,22 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             'id',
-            'first_name',
-            'last_name',
-            'first_name_eng',
-            'last_name_eng',
+            'email',
+            'role',
+            'firstName',
+            'lastName',
+            'firstNameEng',
+            'lastNameEng',
             'gender',
-            'date_of_birth',
-            't_shirt_size',
+            'dateOfBirth',
+            'tShirtSize',
             'country',
             'city',
-            'phone_number',
-            'sports_club',
-            'emergency_contact_name',
-            'emergency_contact_phone',
+            'phoneNumber',
+            'sportsClub',
+            'emergencyContactName',
+            'emergencyContactPhone',
             'avatar',
-            'email',
         ]
 
     def update(self, instance, validated_data):
@@ -101,7 +118,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.avatar.url)
         return None
 
-    def get_email(self, obj):
+    def get_email(self, obj):  # noqa
         return obj.email
 
 

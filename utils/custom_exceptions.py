@@ -11,13 +11,13 @@ class CustomBaseResponse(APIException):
         return Response({'message': self.message}, status=self.status_code)
 
 
-class SuccessResponseCustom(CustomBaseResponse):
+class SuccessResponse(CustomBaseResponse):
     status_code = 200
     default_detail = 'Success'
     default_code = 'success'
 
 
-class CreatedResponseCustom(CustomBaseResponse):
+class CreatedResponse(CustomBaseResponse):
     status_code = 201
     default_detail = 'Created'
     default_code = 'created'

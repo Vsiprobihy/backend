@@ -24,7 +24,7 @@ class PublicEventListView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.PublicEventListView.get)
     def get(self, request):
-        events = (Event.objects.filter(status='published').order_by('-date_from'))
+        events = (Event.objects.filter(status='published').order_by('-dateFrom'))
 
         paginator = Pagination()
         paginator.page_size = 3
@@ -61,58 +61,58 @@ class PublicEventFilterView(APIView):
 
     @swagger_auto_schema(**SwaggerDocs.PublicEventFilterView.get)
     def get(self, request):
-        competition_type = request.GET.getlist('competition_type')
+        competitionType = request.GET.getlist('competitionType')
         name = request.GET.get('name', None)
-        date_from = request.GET.get('date_from', None)
-        date_to = request.GET.get('date_to', None)
+        dateFrom = request.GET.get('dateFrom', None)
+        dateTo = request.GET.get('dateTo', None)
         place = request.GET.get('place', None)
         distance_min = request.GET.get('distance_min', None)
         distance_max = request.GET.get('distance_max', None)
 
         # Sorting by date
-        events = Event.objects.all().order_by('-date_from')
+        events = Event.objects.all().order_by('-dateFrom')
 
-        if competition_type:
+        if competitionType:
             # Get the IDs of the competition types passed in the request
-            competition_types = CompetitionType.objects.filter(
-                name__in=competition_type
+            competitionTypes = CompetitionType.objects.filter(
+                name__in=competitionType
             ).values_list('id', flat=True)
-            if not competition_types:
+            if not competitionTypes:
                 return Response(
                     {'error': 'No valid competition types found'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
             # Filter events that have at least one of the specified types
-            events = events.filter(competition_type__id__in=competition_types)
+            events = events.filter(competitionType__id__in=competitionTypes)
 
             # Ensure that the event contains all the specified types
             events = (
-                events.annotate(num_types=Count('competition_type'))
-                .filter(num_types__gte=len(competition_type))
+                events.annotate(num_types=Count('competitionType'))
+                .filter(num_types__gte=len(competitionType))
                 .distinct()
             )
 
         if name:
             events = events.filter(name__icontains=name)
 
-        if date_from:
+        if dateFrom:
             try:
-                date_from = datetime.strptime(date_from, '%Y-%m-%d').date()
-                events = events.filter(date_to__gte=date_from)
+                dateFrom = datetime.strptime(dateFrom, '%Y-%m-%d').date()
+                events = events.filter(dateTo__gte=dateFrom)
             except ValueError:
                 return Response(
-                    {'error': 'Invalid date_from format. Use YYYY-MM-DD.'},
+                    {'error': 'Invalid dateFrom format. Use YYYY-MM-DD.'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-        if date_to:
+        if dateTo:
             try:
-                date_to = datetime.strptime(date_to, '%Y-%m-%d').date()
-                events = events.filter(date_from__lte=date_to)
+                dateTo = datetime.strptime(dateTo, '%Y-%m-%d').date()
+                events = events.filter(dateFrom__lte=dateTo)
             except ValueError:
                 return Response(
-                    {'error': 'Invalid date_to format. Use YYYY-MM-DD.'},
+                    {'error': 'Invalid dateTo format. Use YYYY-MM-DD.'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -121,7 +121,7 @@ class PublicEventFilterView(APIView):
                 return Response(
                     {'error': 'Invalid region'}, status=status.HTTP_400_BAD_REQUEST
                 )
-            events = events.filter(place_region=place)
+            events = events.filter(placeRegion=place)
 
         if distance_min or distance_max:
             try:

@@ -4,7 +4,7 @@ from event.additional_items.models import AdditionalItemEvent
 from event.additional_items.serializers import AdditionalItemEventSerializer
 from event.age_category.models import AgeCategory
 from event.age_category.serializers import AgeCategorySerializer
-from event.distance_details.models import CostChangeRule, DistanceEvent
+from event.distance_details.models import CostChangeRule, DistanceEvent, FavoriteDistance
 from event.models import Event
 from event.promo_code.models import PromoCode
 from event.promo_code.serializers import PromoCodeSerializer
@@ -15,74 +15,73 @@ class CostChangeRuleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CostChangeRule
-        fields = ['id', 'cost', 'from_participants', 'from_date']
-
+        fields = ['id', 'cost', 'fromParticipants', 'fromDate']
 
 
 class DistanceEventSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=False)
-    additional_options = AdditionalItemEventSerializer(many=True, required=False)
-    cost_change_rules = CostChangeRuleSerializer(many=True, required=False)
-    age_categories = AgeCategorySerializer(many=True, required=False)
-    promo_codes = PromoCodeSerializer(many=True, required=False)
+    additionalOptions = AdditionalItemEventSerializer(many=True, required=False)
+    costChangeRules = CostChangeRuleSerializer(many=True, required=False)
+    ageCategories = AgeCategorySerializer(many=True, required=False)
+    promoCodes = PromoCodeSerializer(many=True, required=False)
 
     class Meta:
         model = DistanceEvent
         fields = [
-            'id', 'name', 'competition_type', 'category', 'allow_registration',
-            'length', 'start_number_from', 'start_number_to', 'age_from', 'age_to',
-            'cost', 'is_free', 'promo_only_registration',
-            'show_name_on_number', 'show_start_number', 'event',
-            'additional_options', 'cost_change_rules', 'age_categories', 'promo_codes'
+            'id', 'name', 'competitionType', 'category', 'allowRegistration',
+            'length', 'startNumberFrom', 'startNumberTo', 'ageFrom', 'ageTo',
+            'cost', 'isFree', 'promoOnlyRegistration',
+            'showNameOnNumber', 'showStartNumber', 'event',
+            'additionalOptions', 'costChangeRules', 'ageCategories', 'promoCodes'
         ]
         extra_kwargs = {'event': {'read_only': True}}
 
     def create(self, validated_data):
-        cost_change_rules_data = validated_data.pop('cost_change_rules', [])
-        additional_options_data = validated_data.pop('additional_options', [])
-        age_categories_data = validated_data.pop('age_categories', [])
-        promo_codes_data = validated_data.pop('promo_codes', [])
+        costChangeRulesData = validated_data.pop('costChangeRules', [])
+        additionalOptionsData = validated_data.pop('additionalOptions', [])
+        ageCategoriesData = validated_data.pop('ageCategories', [])
+        promoCodesData = validated_data.pop('promoCodes', [])
 
         distance = DistanceEvent.objects.create(**validated_data)
 
-        for option_data in additional_options_data:
+        for option_data in additionalOptionsData:
             option_data['distance'] = distance
             AdditionalItemEvent.objects.create(**option_data)
 
-        for rule_data in cost_change_rules_data:
+        for rule_data in costChangeRulesData:
             rule_data['distance'] = distance
             CostChangeRule.objects.create(**rule_data)
 
-        for age_category_data in age_categories_data:
+        for age_category_data in ageCategoriesData:
             age_category_data['distance'] = distance
             AgeCategory.objects.create(**age_category_data)
 
-        for promo_code_data in promo_codes_data:
+        for promo_code_data in promoCodesData:
             promo_code_data['distance'] = distance
             PromoCode.objects.create(**promo_code_data)
 
         return distance
 
     def update(self, instance, validated_data):
-        cost_change_rules_data = validated_data.pop('cost_change_rules', None)
-        additional_options_data = validated_data.pop('additional_options', None)
-        age_categories_data = validated_data.pop('age_categories', None)
-        promo_codes_data = validated_data.pop('promo_codes', None)
+        costChangeRulesData = validated_data.pop('costChangeRules', None)
+        additionalOptionsData = validated_data.pop('additionalOptions', None)
+        ageCategoriesData = validated_data.pop('ageCategories', None)
+        promoCodesData = validated_data.pop('promoCodes', None)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
         # Update cost change rules
-        if cost_change_rules_data is not None:
-            existing_ids = [rule.id for rule in instance.cost_change_rules.all()]
-            input_ids = [item.get('id') for item in cost_change_rules_data if 'id' in item]
+        if costChangeRulesData is not None:
+            existing_ids = [rule.id for rule in instance.costChangeRules.all()]
+            input_ids = [item.get('id') for item in costChangeRulesData if 'id' in item]
 
             for rule_id in set(existing_ids) - set(input_ids):
                 CostChangeRule.objects.filter(id=rule_id).delete()
 
-            for rule_data in cost_change_rules_data:
+            for rule_data in costChangeRulesData:
                 rule_id = rule_data.get('id', None)
                 if rule_id:
                     try:
@@ -98,14 +97,14 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                     CostChangeRule.objects.create(**rule_data)
 
         # Update additional options
-        if additional_options_data is not None:
-            existing_ids = [opt.id for opt in instance.additional_options.all()]
-            input_ids = [item.get('id') for item in additional_options_data if 'id' in item]
+        if additionalOptionsData is not None:
+            existing_ids = [opt.id for opt in instance.additionalOptions.all()]
+            input_ids = [item.get('id') for item in additionalOptionsData if 'id' in item]
 
             for opt_id in set(existing_ids) - set(input_ids):
                 AdditionalItemEvent.objects.filter(id=opt_id).delete()
 
-            for option_data in additional_options_data:
+            for option_data in additionalOptionsData:
                 option_id = option_data.get('id', None)
                 if option_id:
                     try:
@@ -121,14 +120,14 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                     AdditionalItemEvent.objects.create(**option_data)
 
         # Update age categories
-        if age_categories_data is not None:
-            existing_ids = [cat.id for cat in instance.age_categories.all()]
-            input_ids = [item.get('id') for item in age_categories_data if 'id' in item]
+        if ageCategoriesData is not None:
+            existing_ids = [cat.id for cat in instance.ageCategories.all()]
+            input_ids = [item.get('id') for item in ageCategoriesData if 'id' in item]
 
             for cat_id in set(existing_ids) - set(input_ids):
                 AgeCategory.objects.filter(id=cat_id).delete()
 
-            for age_category_data in age_categories_data:
+            for age_category_data in ageCategoriesData:
                 cat_id = age_category_data.get('id', None)
                 if cat_id:
                     try:
@@ -144,14 +143,14 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                     AgeCategory.objects.create(**age_category_data)
 
         # Update promo codes
-        if promo_codes_data is not None:
-            existing_ids = [promo.id for promo in instance.promo_codes.all()]
-            input_ids = [item.get('id') for item in promo_codes_data if 'id' in item]
+        if promoCodesData is not None:
+            existing_ids = [promo.id for promo in instance.promoCodes.all()]
+            input_ids = [item.get('id') for item in promoCodesData if 'id' in item]
 
             for promo_id in set(existing_ids) - set(input_ids):
                 PromoCode.objects.filter(id=promo_id).delete()
 
-            for promo_code_data in promo_codes_data:
+            for promo_code_data in promoCodesData:
                 promo_id = promo_code_data.get('id', None)
                 if promo_id:
                     try:
@@ -167,6 +166,14 @@ class DistanceEventSerializer(serializers.ModelSerializer):
                     PromoCode.objects.create(**promo_code_data)
 
         return instance
+
+
+class FavoriteDistanceSerializer(serializers.ModelSerializer):
+    distance = DistanceEventSerializer()
+
+    class Meta:
+        model = FavoriteDistance
+        fields = ['id', 'user', 'distance']
 
 
 class PublicDistanceEventSerializer(serializers.ModelSerializer):

@@ -86,13 +86,13 @@ class SwaggerDocs:
                     'name', openapi.IN_QUERY, description='Event name', type=openapi.TYPE_STRING
                 ),
                 openapi.Parameter(
-                    'date_from',
+                    'dateFrom',
                     openapi.IN_QUERY,
                     description='Start date of the event (YYYY-MM-DD)',
                     type=openapi.TYPE_STRING
                 ),
                 openapi.Parameter(
-                    'date_to',
+                    'dateTo',
                     openapi.IN_QUERY,
                     description='End date of the event (YYYY-MM-DD)',
                     type=openapi.TYPE_STRING
@@ -144,22 +144,22 @@ class SwaggerDocs:
                             ),
                             'items': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
-                                items=openapi.Items(
+                                items=openapi.Items(  # noqa
                                     type=openapi.TYPE_OBJECT,
                                     properties={
                                         'name': openapi.Schema(type=openapi.TYPE_STRING),
-                                        'competition_type': openapi.Schema(
+                                        'competitionType': openapi.Schema(
                                             type=openapi.TYPE_ARRAY,
-                                            items=openapi.Items(type=openapi.TYPE_STRING),
+                                            items=openapi.Items(type=openapi.TYPE_STRING),  # noqa
                                         ),
-                                        'date_from': openapi.Schema(type=openapi.TYPE_STRING),
-                                        'date_to': openapi.Schema(type=openapi.TYPE_STRING),
-                                        'place_region': openapi.Schema(type=openapi.TYPE_STRING),
+                                        'dateFrom': openapi.Schema(type=openapi.TYPE_STRING),
+                                        'dateTo': openapi.Schema(type=openapi.TYPE_STRING),
+                                        'placeRegion': openapi.Schema(type=openapi.TYPE_STRING),
                                         'place': openapi.Schema(type=openapi.TYPE_STRING),
                                         'photos': openapi.Schema(type=openapi.TYPE_OBJECT, nullable=True),
                                         'distances': openapi.Schema(
                                             type=openapi.TYPE_ARRAY,
-                                            items=openapi.Items(
+                                            items=openapi.Items(  # noqa
                                                 type=openapi.TYPE_OBJECT,
                                                 properties={
                                                     'name': openapi.Schema(type=openapi.TYPE_STRING),
@@ -170,10 +170,10 @@ class SwaggerDocs:
                                     },
                                     required=[
                                         'name',
-                                        'competition_type',
-                                        'date_from',
-                                        'date_to',
-                                        'place_region',
+                                        'competitionType',
+                                        'dateFrom',
+                                        'dateTo',
+                                        'placeRegion',
                                         'place',
                                         'distances'
                                     ],

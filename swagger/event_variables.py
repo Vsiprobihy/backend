@@ -7,8 +7,8 @@ class Responce:
         schema=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             required=[
-                'id', 'name', 'competition_type', 'date_from', 'date_to',
-                'place', 'place_region', 'organizer', 'distances'
+                'id', 'name', 'competitionType', 'dateFrom', 'dateTo',
+                'place', 'placeRegion', 'organizer', 'distances'
             ],
             properties={
                 'id': openapi.Schema(
@@ -19,7 +19,7 @@ class Responce:
                     type=openapi.TYPE_STRING,
                     description='Event name'
                 ),
-                'competition_type': openapi.Schema(
+                'competitionType': openapi.Schema(
                     type=openapi.TYPE_ARRAY,
                     items=openapi.Schema(
                         type=openapi.TYPE_OBJECT,
@@ -32,11 +32,11 @@ class Responce:
                         },
                     ),
                 ),
-                'date_from': openapi.Schema(
+                'dateFrom': openapi.Schema(
                     type=openapi.FORMAT_DATE,
                     description='Event start date'
                 ),
-                'date_to': openapi.Schema(
+                'dateTo': openapi.Schema(
                     type=openapi.FORMAT_DATE,
                     description='Event end date'
                 ),
@@ -44,7 +44,7 @@ class Responce:
                     type=openapi.TYPE_STRING,
                     description='Event location'
                 ),
-                'place_region': openapi.Schema(
+                'placeRegion': openapi.Schema(
                     type=openapi.TYPE_STRING,
                     description='Region of the event'
                 ),
@@ -57,20 +57,20 @@ class Responce:
                     type=openapi.TYPE_STRING,
                     description='Short description of the event'
                 ),
-                'registration_link': openapi.Schema(
+                'registrationLink': openapi.Schema(
                     type=openapi.TYPE_STRING,
                     description='Registration link for the event'
                 ),
-                'hide_participants': openapi.Schema(
+                'hideParticipants': openapi.Schema(
                     type=openapi.TYPE_BOOLEAN,
                     description='Hide participants flag'
                 ),
-                'schedule_pdf': openapi.Schema(
+                'schedulePdf': openapi.Schema(
                     type=openapi.TYPE_STRING,
                     nullable=True,
                     description='Schedule PDF link'
                 ),
-                'co_organizer': openapi.Schema(
+                'coOrganizer': openapi.Schema(
                     type=openapi.TYPE_STRING,
                     description='Co-Organizer description'
                 ),
@@ -103,11 +103,11 @@ class Responce:
                             type=openapi.TYPE_STRING,
                             description='Organizer name'
                         ),
-                        'site_url': openapi.Schema(
+                        'siteUrl': openapi.Schema(
                             type=openapi.TYPE_STRING,
                             description='Organizer website'
                         ),
-                        'phone_number': openapi.Schema(
+                        'phoneNumber': openapi.Schema(
                             type=openapi.TYPE_STRING,
                             description='Organizer phone number'
                         ),
@@ -115,15 +115,15 @@ class Responce:
                             type=openapi.TYPE_STRING,
                             description='Organizer email'
                         ),
-                        'instagram_url': openapi.Schema(
+                        'instagramUrl': openapi.Schema(
                             type=openapi.TYPE_STRING,
                             description='Organizer Instagram URL'
                         ),
-                        'facebook_url': openapi.Schema(
+                        'facebookUrl': openapi.Schema(
                             type=openapi.TYPE_STRING,
                             description='Organizer Facebook URL'
                         ),
-                        'telegram_url': openapi.Schema(
+                        'telegramUrl': openapi.Schema(
                             type=openapi.TYPE_STRING,
                             description='Organizer Telegram URL'
                         ),
@@ -134,11 +134,11 @@ class Responce:
                     items=openapi.Schema(
                         type=openapi.TYPE_OBJECT,
                         required=[
-                            'id', 'name', 'competition_type', 'category',
-                            'start_number_from', 'start_number_to',
-                            'allow_registration', 'length',
-                            'promo_only_registration', 'cost', 'is_free',
-                            'show_name_on_number', 'show_start_number', 'event'
+                            'id', 'name', 'competitionType', 'category',
+                            'startNumberFrom', 'startNumberTo',
+                            'allowRegistration', 'length',
+                            'promoOnlyRegistration', 'cost', 'isFree',
+                            'showNameOnNumber', 'showStartNumber', 'event'
                         ],
                         properties={
                             'id': openapi.Schema(
@@ -149,7 +149,7 @@ class Responce:
                                 type=openapi.TYPE_STRING,
                                 description='Distance name'
                             ),
-                            'competition_type': openapi.Schema(
+                            'competitionType': openapi.Schema(
                                 type=openapi.TYPE_STRING,
                                 description='Type of competition'
                             ),
@@ -157,7 +157,7 @@ class Responce:
                                 type=openapi.TYPE_STRING,
                                 description='Category of participants'
                             ),
-                            'allow_registration': openapi.Schema(
+                            'allowRegistration': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Flag for registration availability'
                             ),
@@ -165,19 +165,19 @@ class Responce:
                                 type=openapi.TYPE_STRING,
                                 description='Distance length'
                             ),
-                            'start_number_from': openapi.Schema(
+                            'startNumberFrom': openapi.Schema(
                                 type=openapi.TYPE_INTEGER,
                                 description='Start number range (from)'
                             ),
-                            'start_number_to': openapi.Schema(
+                            'startNumberTo': openapi.Schema(
                                 type=openapi.TYPE_INTEGER,
                                 description='Start number range (to)'
                             ),
-                            'age_from': openapi.Schema(
+                            'ageFrom': openapi.Schema(
                                 type=openapi.TYPE_INTEGER,
                                 description='Minimum age'
                             ),
-                            'age_to': openapi.Schema(
+                            'ageTo': openapi.Schema(
                                 type=openapi.TYPE_INTEGER,
                                 description='Maximum age'
                             ),
@@ -185,19 +185,19 @@ class Responce:
                                 type=openapi.TYPE_STRING,
                                 description='Cost of participation'
                             ),
-                            'is_free': openapi.Schema(
+                            'isFree': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Flag indicating free participation'
                             ),
-                            'promo_only_registration': openapi.Schema(
+                            'promoOnlyRegistration': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Promo-only registration flag'
                             ),
-                            'show_name_on_number': openapi.Schema(
+                            'showNameOnNumber': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Flag to show name on number'
                             ),
-                            'show_start_number': openapi.Schema(
+                            'showStartNumber': openapi.Schema(
                                 type=openapi.TYPE_BOOLEAN,
                                 description='Flag to show start number'
                             ),
@@ -205,17 +205,17 @@ class Responce:
                                 type=openapi.TYPE_INTEGER,
                                 description='Associated event ID'
                             ),
-                            'additional_options': openapi.Schema(
+                            'additionalOptions': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
                                 items=openapi.Schema(
                                     type=openapi.TYPE_OBJECT,
-                                    required=['id', 'item_type', 'price', 'distance'],
+                                    required=['id', 'itemType', 'price', 'distance'],
                                     properties={
                                         'id': openapi.Schema(
                                             type=openapi.TYPE_INTEGER,
                                             description='Option ID'
                                         ),
-                                        'item_type': openapi.Schema(
+                                        'itemType': openapi.Schema(
                                             type=openapi.TYPE_STRING,
                                             description='Type of additional item'
                                         ),
@@ -230,11 +230,11 @@ class Responce:
                                     },
                                 ),
                             ),
-                            'cost_change_rules': openapi.Schema(
+                            'costChangeRules': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
                                 items=openapi.Schema(
                                     type=openapi.TYPE_OBJECT,
-                                    required=['id', 'cost', 'from_date'],
+                                    required=['id', 'cost', 'fromDate'],
                                     properties={
                                         'id': openapi.Schema(
                                             type=openapi.TYPE_INTEGER,
@@ -244,12 +244,12 @@ class Responce:
                                             type=openapi.TYPE_STRING,
                                             description='Updated cost for the distance'
                                         ),
-                                        'from_participants': openapi.Schema(
+                                        'fromParticipants': openapi.Schema(
                                             type=openapi.TYPE_INTEGER,
                                             nullable=True,
                                             description='Minimum number of participants to apply this rule'
                                         ),
-                                        'from_date': openapi.Schema(
+                                        'fromDate': openapi.Schema(
                                             type=openapi.TYPE_STRING,
                                             format=openapi.FORMAT_DATE,
                                             description='Start date for the cost change rule'
@@ -258,11 +258,11 @@ class Responce:
                                 ),
                                 description='List of cost change rules for the distance'
                             ),
-                            'age_categories': openapi.Schema(
+                            'ageCategories': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
                                 items=openapi.Schema(
                                     type=openapi.TYPE_OBJECT,
-                                    required=['id', 'name', 'gender', 'age_from', 'age_to'],
+                                    required=['id', 'name', 'gender', 'ageFrom', 'ageTo'],
                                     properties={
                                         'id': openapi.Schema(
                                             type=openapi.TYPE_INTEGER,
@@ -276,11 +276,11 @@ class Responce:
                                             type=openapi.TYPE_STRING,
                                             description='Gender for the category (e.g., male, female)'
                                         ),
-                                        'age_from': openapi.Schema(
+                                        'ageFrom': openapi.Schema(
                                             type=openapi.TYPE_INTEGER,
                                             description='Minimum age for this category'
                                         ),
-                                        'age_to': openapi.Schema(
+                                        'ageTo': openapi.Schema(
                                             type=openapi.TYPE_INTEGER,
                                             description='Maximum age for this category'
                                         )
@@ -288,11 +288,11 @@ class Responce:
                                 ),
                                 description='List of age categories for the distance'
                             ),
-                            'promo_codes': openapi.Schema(
+                            'promoCodes': openapi.Schema(
                                 type=openapi.TYPE_ARRAY,
                                 items=openapi.Schema(
                                     type=openapi.TYPE_OBJECT,
-                                    required=['id', 'name', 'promo_type', 'discount_value', 'is_active'],
+                                    required=['id', 'name', 'promoType', 'discountValue', 'isActive'],
                                     properties={
                                         'id': openapi.Schema(
                                             type=openapi.TYPE_INTEGER,
@@ -302,19 +302,19 @@ class Responce:
                                             type=openapi.TYPE_STRING,
                                             description='Name of the promo code'
                                         ),
-                                        'promo_type': openapi.Schema(
+                                        'promoType': openapi.Schema(
                                             type=openapi.TYPE_STRING,
                                             description='Type of promo code (e.g., discount, free entry)'
                                         ),
-                                        'discount_value': openapi.Schema(
+                                        'discountValue': openapi.Schema(
                                             type=openapi.TYPE_NUMBER,
                                             description='Value of the discount'
                                         ),
-                                        'is_active': openapi.Schema(
+                                        'isActive': openapi.Schema(
                                             type=openapi.TYPE_BOOLEAN,
                                             description='Whether the promo code is active'
                                         ),
-                                        'is_single_use': openapi.Schema(
+                                        'isSingleUse': openapi.Schema(
                                             type=openapi.TYPE_BOOLEAN,
                                             description='Whether the promo code can only be used once'
                                         ),
@@ -325,7 +325,7 @@ class Responce:
                         },
                     ),
                 ),
-                'extended_description': openapi.Schema(
+                'extendedDescription': openapi.Schema(
                     type=openapi.TYPE_STRING,
                     description='Detailed description of the event'
                 ),
@@ -343,7 +343,7 @@ class Request:
                 description='Name of the event',
                 default='Winter Wonderland Run 2024',
             ),
-            'competition_type': openapi.Schema(
+            'competitionType': openapi.Schema(
                 type=openapi.TYPE_ARRAY,
                 items=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
@@ -358,13 +358,13 @@ class Request:
                 ),
                 description='List of competition types',
             ),
-            'date_from': openapi.Schema(
+            'dateFrom': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_DATE,
                 description='Event start date',
                 default='2024-10-28',
             ),
-            'date_to': openapi.Schema(
+            'dateTo': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_DATE,
                 description='Event end date',
@@ -375,7 +375,7 @@ class Request:
                 description='Location of the event',
                 default='Lviv',
             ),
-            'place_region': openapi.Schema(
+            'placeRegion': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 description='Location of the event',
                 default='lviv_region',
@@ -385,18 +385,18 @@ class Request:
                 description='Event description',
                 default='Embrace the winter spirit with our Winter Wonderland Run!',
             ),
-            'registration_link': openapi.Schema(
+            'registrationLink': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_URI,
                 description='Registration link',
                 default='http://site.com/registration/winter-wonderland-run-2024',
             ),
-            'hide_participants': openapi.Schema(
+            'hideParticipants': openapi.Schema(
                 type=openapi.TYPE_BOOLEAN,
                 description='Whether to hide participants',
                 default=True,
             ),
-            'co_organizer': openapi.Schema(
+            'coOrganizer': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 description='Co-Organizer description'
             ),
@@ -414,7 +414,7 @@ class Request:
                                              default=1),
                         'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the distance',
                                                default='5km Snow Run'),
-                        'competition_type': openapi.Schema(type=openapi.TYPE_STRING,
+                        'competitionType': openapi.Schema(type=openapi.TYPE_STRING,
                                                            description='Type of competition',
                                                            default='running'),
                         'category': openapi.Schema(type=openapi.TYPE_STRING,
@@ -423,56 +423,56 @@ class Request:
                         'length': openapi.Schema(type=openapi.TYPE_NUMBER,
                                                  description='Length of the distance in km', default=5.0),
 
-                        'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER,
+                        'startNumberFrom': openapi.Schema(type=openapi.TYPE_INTEGER,
                                                             description='Starting number', default=1),
 
-                        'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER,
+                        'startNumberTo': openapi.Schema(type=openapi.TYPE_INTEGER,
                                                           description='Ending number', default=300),
 
-                        'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'showStartNumber': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                             description='Show start number', default=True),
 
-                        'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'showNameOnNumber': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                               description='Show name on the number',
                                                               default=True),
-                        'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description='Minimum age',
+                        'ageFrom': openapi.Schema(type=openapi.TYPE_INTEGER, description='Minimum age',
                                                    default=16),
-                        'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description='Maximum age',
+                        'ageTo': openapi.Schema(type=openapi.TYPE_INTEGER, description='Maximum age',
                                                  default=60),
                         'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description='Cost of the distance',
                                                default=55),
-                        'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free',
+                        'isFree': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free',
                                                   # noqa: E501
                                                   default=False),
-                        'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'promoOnlyRegistration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                                   description='Promo-only registration',
                                                                   default=False),
-                        'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'allowRegistration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                              description='Allow registration', default=True),
 
-                        'additional_options': openapi.Schema(
+                        'additionalOptions': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
                                 properties={
                                     'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='id',
                                                          default=1),
-                                    'item_type': openapi.Schema(type=openapi.TYPE_STRING,
+                                    'itemType': openapi.Schema(type=openapi.TYPE_STRING,
                                                                 description='Type of additional option',
                                                                 default='t_shirt'),
                                     'price': openapi.Schema(type=openapi.TYPE_NUMBER,
                                                             description='Price of additional option',
                                                             default=250),
                                 },
-                                required=['item_type', 'price'],
+                                required=['itemType', 'price'],
                             ),
                             description='Additional options for the distance'
                         ),
-                        'cost_change_rules': openapi.Schema(
+                        'costChangeRules': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
-                                required=['cost', 'from_date'],
+                                required=['cost', 'fromDate'],
                                 properties={
                                     'id': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
@@ -484,12 +484,12 @@ class Request:
                                         description='Updated cost for the distance',
                                         default='100'
                                     ),
-                                    'from_participants': openapi.Schema(
+                                    'fromParticipants': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
                                         nullable=True,
                                         description='Minimum number of participants to apply this rule'
                                     ),
-                                    'from_date': openapi.Schema(
+                                    'fromDate': openapi.Schema(
                                         type=openapi.TYPE_STRING,
                                         format=openapi.FORMAT_DATE,
                                         description='Start date for the cost change rule'
@@ -498,11 +498,11 @@ class Request:
                             ),
                             description='List of cost change rules for the distance'
                         ),
-                        'age_categories': openapi.Schema(
+                        'ageCategories': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
-                                required=['name', 'gender', 'age_from', 'age_to'],
+                                required=['name', 'gender', 'ageFrom', 'ageTo'],
                                 properties={
                                     'id': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
@@ -519,12 +519,12 @@ class Request:
                                         description='Gender for the category (e.g., male, female)',
                                         default='M'
                                     ),
-                                    'age_from': openapi.Schema(
+                                    'ageFrom': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
                                         description='Minimum age for this category',
                                         default=16
                                     ),
-                                    'age_to': openapi.Schema(
+                                    'ageTo': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
                                         description='Maximum age for this category',
                                         default=25
@@ -533,11 +533,11 @@ class Request:
                             ),
                             description='List of age categories for the distance'
                         ),
-                        'promo_codes': openapi.Schema(
+                        'promoCodes': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
-                                required=['name', 'promo_type', 'discount_value', 'is_active'],
+                                required=['name', 'promoType', 'discountValue', 'isActive'],
                                 properties={
                                     'id': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
@@ -549,22 +549,22 @@ class Request:
                                         description='Name of the promo code',
                                         default='WINTER10'
                                     ),
-                                    'promo_type': openapi.Schema(
+                                    'promoType': openapi.Schema(
                                         type=openapi.TYPE_STRING,
                                         description='Type of promo code (e.g., discount, free entry)',
                                         default='percentage'
                                     ),
-                                    'discount_value': openapi.Schema(
+                                    'discountValue': openapi.Schema(
                                         type=openapi.TYPE_NUMBER,
                                         description='Value of the discount',
                                         default=10
                                     ),
-                                    'is_active': openapi.Schema(
+                                    'isActive': openapi.Schema(
                                         type=openapi.TYPE_BOOLEAN,
                                         description='Whether the promo code is active',
                                         default=True
                                     ),
-                                    'is_single_use': openapi.Schema(
+                                    'isSingleUse': openapi.Schema(
                                         type=openapi.TYPE_BOOLEAN,
                                         description='Whether the promo code can only be used once',
                                         default=False
@@ -575,16 +575,16 @@ class Request:
                         ),
                     },
                     required=[
-                        'name', 'competition_type', 'category',
-                        'start_number_from', 'start_number_to',
-                        'allow_registration', 'length',
-                        'promo_only_registration', 'cost', 'is_free',
-                        'show_name_on_number', 'show_start_number', 'event'
+                        'name', 'competitionType', 'category',
+                        'startNumberFrom', 'startNumberTo',
+                        'allowRegistration', 'length',
+                        'promoOnlyRegistration', 'cost', 'isFree',
+                        'showNameOnNumber', 'showStartNumber', 'event'
                     ],
                 ),
                 description='List of distances',
             ),
-            'extended_description': openapi.Schema(
+            'extendedDescription': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 description='Extended description of the event',
                 default='Experience the beauty of winter while getting fit!',
@@ -592,11 +592,11 @@ class Request:
         },
         required=[
             'name',
-            'competition_type',
-            'date_from',
-            'date_to',
+            'competitionType',
+            'dateFrom',
+            'dateTo',
             'place',
-            'place_region',
+            'placeRegion',
             'organization_id',
             'additional_items',
             'distances',
@@ -611,11 +611,16 @@ class Request:
                 description='Name of the event',
                 default='Winter Wonderland Run 2024',
             ),
-            'competition_type': openapi.Schema(
+            'competitionType': openapi.Schema(
                 type=openapi.TYPE_ARRAY,
                 items=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
+                        'id': openapi.Schema(
+                            type=openapi.TYPE_INTEGER,
+                            description='Id of competition',
+                            default=1,
+                        ),
                         'name': openapi.Schema(
                             type=openapi.TYPE_STRING,
                             description='Type of competition',
@@ -626,13 +631,13 @@ class Request:
                 ),
                 description='List of competition types',
             ),
-            'date_from': openapi.Schema(
+            'dateFrom': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_DATE,
                 description='Event start date',
                 default='2024-10-28',
             ),
-            'date_to': openapi.Schema(
+            'dateTo': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_DATE,
                 description='Event end date',
@@ -643,7 +648,7 @@ class Request:
                 description='Location of the event',
                 default='Lviv',
             ),
-            'place_region': openapi.Schema(
+            'placeRegion': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 description='Location of the event',
                 default='lviv_region',
@@ -653,18 +658,18 @@ class Request:
                 description='Event description',
                 default='Embrace the winter spirit with our Winter Wonderland Run!',
             ),
-            'registration_link': openapi.Schema(
+            'registrationLink': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 format=openapi.FORMAT_URI,
                 description='Registration link',
                 default='http://site.com/registration/winter-wonderland-run-2024',
             ),
-            'hide_participants': openapi.Schema(
+            'hideParticipants': openapi.Schema(
                 type=openapi.TYPE_BOOLEAN,
                 description='Whether to hide participants',
                 default=True,
             ),
-            'co_organizer': openapi.Schema(
+            'coOrganizer': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 description='Co-Organizer description'
             ),
@@ -680,7 +685,7 @@ class Request:
                     properties={
                         'name': openapi.Schema(type=openapi.TYPE_STRING, description='Name of the distance',
                                                default='5km Snow Run'),
-                        'competition_type': openapi.Schema(type=openapi.TYPE_STRING,
+                        'competitionType': openapi.Schema(type=openapi.TYPE_STRING,
                                                            description='Type of competition',
                                                            default='running'),
                         'category': openapi.Schema(type=openapi.TYPE_STRING,
@@ -689,66 +694,66 @@ class Request:
                         'length': openapi.Schema(type=openapi.TYPE_NUMBER,
                                                  description='Length of the distance in km', default=5.0),
 
-                        'start_number_from': openapi.Schema(type=openapi.TYPE_INTEGER,
+                        'startNumberFrom': openapi.Schema(type=openapi.TYPE_INTEGER,
                                                             description='Starting number', default=1),
 
-                        'start_number_to': openapi.Schema(type=openapi.TYPE_INTEGER,
+                        'startNumberTo': openapi.Schema(type=openapi.TYPE_INTEGER,
                                                           description='Ending number', default=300),
 
-                        'show_start_number': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'showStartNumber': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                             description='Show start number', default=True),
 
-                        'show_name_on_number': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'showNameOnNumber': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                               description='Show name on the number',
                                                               default=True),
-                        'age_from': openapi.Schema(type=openapi.TYPE_INTEGER, description='Minimum age',
+                        'ageFrom': openapi.Schema(type=openapi.TYPE_INTEGER, description='Minimum age',
                                                    default=16),
-                        'age_to': openapi.Schema(type=openapi.TYPE_INTEGER, description='Maximum age',
+                        'ageTo': openapi.Schema(type=openapi.TYPE_INTEGER, description='Maximum age',
                                                  default=60),
                         'cost': openapi.Schema(type=openapi.TYPE_NUMBER, description='Cost of the distance',
                                                default=55),
-                        'is_free': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free',
+                        'isFree': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Is the distance free',
                                                   # noqa: E501
                                                   default=False),
-                        'promo_only_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'promoOnlyRegistration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                                   description='Promo-only registration',
                                                                   default=False),
-                        'allow_registration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
+                        'allowRegistration': openapi.Schema(type=openapi.TYPE_BOOLEAN,
                                                              description='Allow registration', default=True),
 
-                        'additional_options': openapi.Schema(
+                        'additionalOptions': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
                                 properties={
-                                    'item_type': openapi.Schema(type=openapi.TYPE_STRING,
+                                    'itemType': openapi.Schema(type=openapi.TYPE_STRING,
                                                                 description='Type of additional option',
                                                                 default='t_shirt'),
                                     'price': openapi.Schema(type=openapi.TYPE_NUMBER,
                                                             description='Price of additional option',
                                                             default=250),
                                 },
-                                required=['item_type', 'price'],
+                                required=['itemType', 'price'],
                             ),
                             description='Additional options for the distance'
                         ),
-                        'cost_change_rules': openapi.Schema(
+                        'costChangeRules': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
-                                required=['cost', 'from_date'],
+                                required=['cost', 'fromDate'],
                                 properties={
                                     'cost': openapi.Schema(
                                         type=openapi.TYPE_STRING,
                                         description='Updated cost for the distance',
                                         default='100'
                                     ),
-                                    'from_participants': openapi.Schema(
+                                    'fromParticipants': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
                                         nullable=True,
                                         description='Minimum number of participants to apply this rule'
                                     ),
-                                    'from_date': openapi.Schema(
+                                    'fromDate': openapi.Schema(
                                         type=openapi.TYPE_STRING,
                                         format=openapi.FORMAT_DATE,
                                         description='Start date for the cost change rule'
@@ -757,11 +762,11 @@ class Request:
                             ),
                             description='List of cost change rules for the distance'
                         ),
-                        'age_categories': openapi.Schema(
+                        'ageCategories': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
-                                required=['name', 'gender', 'age_from', 'age_to'],
+                                required=['name', 'gender', 'ageFrom', 'ageTo'],
                                 properties={
                                     'name': openapi.Schema(
                                         type=openapi.TYPE_STRING,
@@ -773,12 +778,12 @@ class Request:
                                         description='Gender for the category (e.g., male, female)',
                                         default='M'
                                     ),
-                                    'age_from': openapi.Schema(
+                                    'ageFrom': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
                                         description='Minimum age for this category',
                                         default=16
                                     ),
-                                    'age_to': openapi.Schema(
+                                    'ageTo': openapi.Schema(
                                         type=openapi.TYPE_INTEGER,
                                         description='Maximum age for this category',
                                         default=25
@@ -787,33 +792,33 @@ class Request:
                             ),
                             description='List of age categories for the distance'
                         ),
-                        'promo_codes': openapi.Schema(
+                        'promoCodes': openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
-                                required=['name', 'promo_type', 'discount_value', 'is_active'],
+                                required=['name', 'promoType', 'discountValue', 'isActive'],
                                 properties={
                                     'name': openapi.Schema(
                                         type=openapi.TYPE_STRING,
                                         description='Name of the promo code',
                                         default='WINTER10'
                                     ),
-                                    'promo_type': openapi.Schema(
+                                    'promoType': openapi.Schema(
                                         type=openapi.TYPE_STRING,
                                         description='Type of promo code (e.g., discount, free entry)',
                                         default='percentage'
                                     ),
-                                    'discount_value': openapi.Schema(
+                                    'discountValue': openapi.Schema(
                                         type=openapi.TYPE_NUMBER,
                                         description='Value of the discount',
                                         default=10
                                     ),
-                                    'is_active': openapi.Schema(
+                                    'isActive': openapi.Schema(
                                         type=openapi.TYPE_BOOLEAN,
                                         description='Whether the promo code is active',
                                         default=True
                                     ),
-                                    'is_single_use': openapi.Schema(
+                                    'isSingleUse': openapi.Schema(
                                         type=openapi.TYPE_BOOLEAN,
                                         description='Whether the promo code can only be used once',
                                         default=False
@@ -824,16 +829,16 @@ class Request:
                         ),
                     },
                     required=[
-                        'name', 'competition_type', 'category',
-                        'start_number_from', 'start_number_to',
-                        'allow_registration', 'length',
-                        'promo_only_registration', 'cost', 'is_free',
-                        'show_name_on_number', 'show_start_number', 'event'
+                        'name', 'competitionType', 'category',
+                        'startNumberFrom', 'startNumberTo',
+                        'allowRegistration', 'length',
+                        'promoOnlyRegistration', 'cost', 'isFree',
+                        'showNameOnNumber', 'showStartNumber', 'event'
                     ],
                 ),
                 description='List of distances',
             ),
-            'extended_description': openapi.Schema(
+            'extendedDescription': openapi.Schema(
                 type=openapi.TYPE_STRING,
                 description='Extended description of the event',
                 default='Experience the beauty of winter while getting fit!',
@@ -841,11 +846,11 @@ class Request:
         },
         required=[
             'name',
-            'competition_type',
-            'date_from',
-            'date_to',
+            'competitionType',
+            'dateFrom',
+            'dateTo',
             'place',
-            'place_region',
+            'placeRegion',
             'organization_id',
             'additional_items',
             'distances',
